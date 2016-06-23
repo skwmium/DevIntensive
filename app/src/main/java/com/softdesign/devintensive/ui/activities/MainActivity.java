@@ -1,8 +1,11 @@
 package com.softdesign.devintensive.ui.activities;
 
+import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 
 import com.softdesign.devintensive.R;
+import com.softdesign.devintensive.data.viewmodel.ProfileViewModel;
+import com.softdesign.devintensive.databinding.ActivityProfileBinding;
 import com.softdesign.devintensive.utils.L;
 
 public class MainActivity extends BaseActivity {
@@ -10,7 +13,9 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile);
+
+        ActivityProfileBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_profile);
+        binding.setProfile(ProfileViewModel.createTestProfile());
 
         L.d("onCreate", savedInstanceState == null ?
                 " (is first start)" : " (isn't first start)");
