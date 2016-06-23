@@ -10,4 +10,5 @@
     <color name="profile_item_divider">#E6E6E6</color>
     <color name="profile_item_text">#1C1C1C</color>
     <color name="profile_item_text_hint">#999999</color>
+    <color name="profile_fab_bg">#E74B3C</color>
 </resources>

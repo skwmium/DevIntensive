@@ -7,7 +7,6 @@ import android.graphics.drawable.Drawable;
 import android.widget.ImageView;
 
 import com.softdesign.devintensive.BR;
-import com.softdesign.devintensive.R;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -61,12 +60,11 @@ public class ProfileViewModel extends BaseObservable {
     private String mAbout;
     private String mAvatarUrl;
 
-    @BindingAdapter({"bind:imageUrl", "bind:error"})
-    public static void loadImage(ImageView view, String url, Drawable error) {
+    @BindingAdapter({"bind:imageUrl", "bind:placeholder"})
+    public static void loadImage(ImageView view, String url, Drawable placeholder) {
         Picasso.with(view.getContext())
                 .load(url)
-                .error(R.drawable.img_profile_heder_default)
-                .centerCrop()
+                .placeholder(placeholder)
                 .into(view);
     }
 

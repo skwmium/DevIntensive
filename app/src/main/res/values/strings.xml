@@ -1,6 +1,9 @@
 <resources>
     <string name="app_name">Куприн Сергей</string>
 
+    <!--nav drawer-->
+    <string name="nav_item_test">Test Item</string>
+
     <!--profile screen-->
     <string name="profile_label_rating">Рейтинг</string>
     <string name="profile_label_lines_count">Написано строк кода</string>
@@ -10,4 +13,8 @@
     <string name="profile_label_profile_vk">Профиль в VK</string>
     <string name="profile_label_repository">Репозиторий</string>
     <string name="profile_label_about_me">О себе</string>
+
+    <!--other-->
+    <string name="username">Куприн Сергей</string>
+    <string name="email">skwmium@gmail.com</string>
 </resources>
