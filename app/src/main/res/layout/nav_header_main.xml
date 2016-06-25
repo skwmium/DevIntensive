@@ -11,6 +11,7 @@
     android:paddingTop="@dimen/drawer_header_padding_top">
 
     <ImageView
+        android:id="@+id/image_avatar"
         android:layout_width="@dimen/drawer_header_avatar_size"
         android:layout_height="@dimen/drawer_header_avatar_size"
         android:contentDescription="@null"

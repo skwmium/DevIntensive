@@ -9,11 +9,14 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.softdesign.devintensive.R;
 import com.softdesign.devintensive.data.viewmodel.ProfileViewModel;
 import com.softdesign.devintensive.databinding.AppBarProfileBinding;
+import com.softdesign.devintensive.utils.CropCircleTransformation;
 import com.softdesign.devintensive.utils.L;
+import com.squareup.picasso.Picasso;
 
 public class ActivityProfile extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
     private Toolbar mToolbar;
@@ -44,6 +47,14 @@ public class ActivityProfile extends BaseActivity implements NavigationView.OnNa
         View bindingProfileView = $(R.id.app_bar_profile);
         AppBarProfileBinding binding = DataBindingUtil.bind(bindingProfileView);
         binding.setProfile(ProfileViewModel.createTestProfile());
+
+        //test circle transformation
+        ImageView imageAvatar = (ImageView) mNavigationView.getHeaderView(0).findViewById(R.id.image_avatar);
+        Picasso.with(this)
+                .load("https://new.vk.com/images/camera_400.png")
+                .placeholder(R.drawable.nav_avatar_default)
+                .transform(new CropCircleTransformation())
+                .into(imageAvatar);
     }
 
     @Override
