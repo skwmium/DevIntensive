@@ -2,7 +2,8 @@
     <string name="app_name">Куприн Сергей</string>
 
     <!--nav drawer-->
-    <string name="nav_item_test">Test Item</string>
+    <string name="nav_item_profile">Профиль</string>
+    <string name="nav_item_contacts">Контакты</string>
 
     <!--profile screen-->
     <string name="profile_label_rating">Рейтинг</string>
