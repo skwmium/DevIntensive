@@ -10,4 +10,8 @@ public final class BuildConfiguration {
 
     // ---------- LOG ----------
     public static final boolean LOG_ENABLED = DEBUG;
+
+    // ---------- ANALYTICS ----------
+    public static final boolean CRASHLYTICS_ENABLED = true;//!DEBUG;
+
 }
