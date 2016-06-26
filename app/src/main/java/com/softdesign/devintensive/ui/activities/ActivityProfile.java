@@ -53,7 +53,7 @@ public class ActivityProfile extends BaseActivity implements NavigationView.OnNa
         Picasso.with(this)
                 .load("https://new.vk.com/images/camera_400.png")
                 .placeholder(R.drawable.nav_avatar_default)
-                .transform(new CropCircleTransformation())
+//                .transform(new CropCircleTransformation())
                 .into(imageAvatar);
     }
 
