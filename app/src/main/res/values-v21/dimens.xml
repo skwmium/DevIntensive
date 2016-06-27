@@ -1,0 +1,5 @@
+<resources>
+    <!--nav drawer-->
+    <dimen name="drawer_header_padding_top">40dp</dimen>
+    <dimen name="drawer_header_height">184dp</dimen>
+</resources>

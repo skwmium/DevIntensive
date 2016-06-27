@@ -3,4 +3,12 @@
     <color name="color_primary">#3F51B5</color>
     <color name="color_primary_dark">#303F9F</color>
     <color name="color_accent">#FF4081</color>
+
+    <!--profile screen-->
+    <color name="profile_subheader_bg">#595959</color>
+    <color name="profile_subheader_divider">#7C7C7C</color>
+    <color name="profile_item_divider">#E6E6E6</color>
+    <color name="profile_item_text">#1C1C1C</color>
+    <color name="profile_item_text_hint">#999999</color>
+    <color name="profile_fab_bg">#E74B3C</color>
 </resources>

@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <data>
+
+        <variable
+            name="profile"
+            type="com.softdesign.devintensive.data.viewmodel.ProfileViewModel" />
+    </data>
+
+    <LinearLayout
+        style="@style/profile_subheader"
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/profile_subheader_height"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            style="@style/profile_subheader_item"
+            android:layout_weight="0.25">
+
+            <TextView
+                style="@style/profile_subheader_text"
+                android:text="@{profile.rating}" />
+
+            <TextView
+                style="@style/profile_subheader_text.subtext"
+                android:text="@string/profile_label_rating" />
+        </LinearLayout>
+
+        <View style="@style/profile_subheader_divider" />
+
+        <LinearLayout
+            style="@style/profile_subheader_item"
+            android:layout_weight="0.5">
+
+            <TextView
+                style="@style/profile_subheader_text"
+                android:text="@{profile.linesCount}" />
+
+            <TextView
+                style="@style/profile_subheader_text.subtext"
+                android:text="@string/profile_label_lines_count" />
+        </LinearLayout>
+
+        <View style="@style/profile_subheader_divider" />
+
+        <LinearLayout
+            style="@style/profile_subheader_item"
+            android:layout_weight="0.25">
+
+            <TextView
+                style="@style/profile_subheader_text"
+                android:text="@{profile.projectCount}" />
+
+            <TextView
+                style="@style/profile_subheader_text.subtext"
+                android:text="@string/profile_label_projects_count" />
+        </LinearLayout>
+    </LinearLayout>
+</layout>
