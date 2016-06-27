@@ -12,11 +12,19 @@ import android.view.View;
 import android.widget.ImageView;
 
 import com.softdesign.devintensive.R;
+import com.softdesign.devintensive.data.network.api.ServiceGenerator;
+import com.softdesign.devintensive.data.network.api.SoftdesignClient;
+import com.softdesign.devintensive.data.network.params.AuthParam;
+import com.softdesign.devintensive.data.network.restmodels.AuthResult;
+import com.softdesign.devintensive.data.network.restmodels.BaseResponse;
 import com.softdesign.devintensive.data.viewmodel.ProfileViewModel;
 import com.softdesign.devintensive.databinding.AppBarProfileBinding;
-import com.softdesign.devintensive.utils.CropCircleTransformation;
 import com.softdesign.devintensive.utils.L;
 import com.squareup.picasso.Picasso;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 public class ActivityProfile extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
     private Toolbar mToolbar;
@@ -55,6 +63,33 @@ public class ActivityProfile extends BaseActivity implements NavigationView.OnNa
                 .placeholder(R.drawable.nav_avatar_default)
 //                .transform(new CropCircleTransformation())
                 .into(imageAvatar);
+
+        //test auth
+        final AuthParam authParam = new AuthParam("skwmium@gmail.com", "");
+        final SoftdesignClient softdesignService = ServiceGenerator.createSoftdesignService();
+
+        Call<BaseResponse<AuthResult>> baseResponseCall = softdesignService.userAuth(authParam);
+        baseResponseCall.enqueue(new Callback<BaseResponse<AuthResult>>() {
+            @Override
+            public void onResponse(Call<BaseResponse<AuthResult>> call, Response<BaseResponse<AuthResult>> response) {
+                BaseResponse<AuthResult> authResult;
+                if (response.isSuccessful()) {
+                    authResult = response.body();
+                } else {
+                    authResult = ServiceGenerator.parseError(response);
+                }
+                if (!authResult.isSuccess()) {
+                    L.e("non success - ", authResult.getError());
+                } else {
+                    L.e("success! ", authResult.getBody().getUser().getFirstName());
+                }
+            }
+
+            @Override
+            public void onFailure(Call<BaseResponse<AuthResult>> call, Throwable t) {
+                L.e("fail", t);
+            }
+        });
     }
 
     @Override
