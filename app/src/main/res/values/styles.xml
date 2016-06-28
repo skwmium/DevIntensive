@@ -95,8 +95,6 @@
         <item name="android:textColor">@color/profile_item_text</item>
         <item name="android:textColorHint">@color/profile_item_text_hint</item>
         <item name="android:fontFamily">sans-serif-condensed</item>
-        <item name="android:enabled">false</item>
-        <item name="android:focusable">false</item>
         <item name="android:inputType">textMultiLine</item>
         <item name="android:paddingTop">@dimen/spacing_small_8</item>
     </style>

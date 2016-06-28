@@ -6,5 +6,9 @@ package com.softdesign.devintensive.utils;
 public final class Const {
 
     // ---------- PREFS ----------
-    public static final String PREF_AUTH_TOKEN = "_auth_token";
+    public static final String PREF_AUTH_TOKEN = "_pref_auth_token";
+    public static final String PREF_PROFILE = "_pref_profile";
+
+    // ---------- KEYS ----------
+    public static final String KEY_PROFILE = "_key_profile";
 }

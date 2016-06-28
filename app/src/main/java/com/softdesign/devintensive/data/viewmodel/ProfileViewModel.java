@@ -1,6 +1,5 @@
 package com.softdesign.devintensive.data.viewmodel;
 
-import android.databinding.BaseObservable;
 import android.databinding.Bindable;
 import android.databinding.BindingAdapter;
 import android.graphics.drawable.Drawable;
@@ -11,12 +10,12 @@ import com.squareup.picasso.Picasso;
 
 /**
  * Created by skwmium on 23.06.16.
- * <p/>
+ * <p>
  * Приведение данных к необходимому для отображения виду происходит в сеттерах,
  * тк Data Binding позволяет менять модель не из UI потока, и в этом случае преобразования
  * не будут тормозить ui
  */
-public class ProfileViewModel extends BaseObservable {
+public class ProfileViewModel extends BaseViewModel implements EditableModel {
 
     //TODO remove this method after test
     public static ProfileViewModel createTestProfile() {
@@ -59,6 +58,7 @@ public class ProfileViewModel extends BaseObservable {
     private String mRepository;
     private String mAbout;
     private String mAvatarUrl;
+    private boolean mIsEditable;
 
     @BindingAdapter({"bind:imageUrl", "bind:placeholder"})
     public static void loadImage(ImageView view, String url, Drawable placeholder) {
@@ -113,6 +113,11 @@ public class ProfileViewModel extends BaseObservable {
         return mAvatarUrl;
     }
 
+    @Override
+    @Bindable
+    public boolean isEditable() {
+        return mIsEditable;
+    }
 
     // ---------- SETTERS ----------
 
@@ -159,5 +164,10 @@ public class ProfileViewModel extends BaseObservable {
     public void setAvatarUrl(String avatarUrl) {
         mAvatarUrl = avatarUrl;
         notifyPropertyChanged(BR.avatarUrl);
+    }
+
+    public void setEditable(boolean editable) {
+        mIsEditable = editable;
+        notifyPropertyChanged(BR.editable);
     }
 }
