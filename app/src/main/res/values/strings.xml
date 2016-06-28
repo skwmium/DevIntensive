@@ -5,6 +5,16 @@
     <string name="nav_item_profile">Профиль</string>
     <string name="nav_item_contacts">Контакты</string>
 
+    <!--auth screen-->
+    <string name="auth_email">@string/profile_label_email</string>
+    <string name="auth_password">Пароль</string>
+    <string name="auth_button_login">Авторизоваться</string>
+    <string name="auth_button_try_demo">Демо-режим</string>
+    <string name="auth_error_empty_email">Введите e-mail!</string>
+    <string name="auth_error_empty_password">Введите пароль!</string>
+    <string name="auth_error_invalid_pass_or_email">Ошибка в логине или пароле!</string>
+    <string name="auth_error_indefinite">Ошибка авторизации!</string>
+
     <!--profile screen-->
     <string name="profile_label_rating">Рейтинг</string>
     <string name="profile_label_lines_count">Написано строк кода</string>

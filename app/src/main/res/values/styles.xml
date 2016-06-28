@@ -19,6 +19,12 @@
         <item name="android:windowBackground">@drawable/bg_launch_screen</item>
     </style>
 
+    <style name="AppTheme.NoActionBar.Auth"/>
+
+    <style name="activity_base_progress_dialog">
+        <item name="android:fullDark">@android:color/transparent</item>
+    </style>
+
     <!--drawer-->
     <style name="drawer_header_text">
         <item name="android:layout_width">wrap_content</item>
@@ -106,5 +112,36 @@
         <item name="android:layout_height">1dp</item>
         <item name="android:layout_marginLeft">@dimen/spacing_larger_72</item>
         <item name="android:background">@color/profile_item_divider</item>
+    </style>
+
+
+    <!--auth screen-->
+    <style name="auth_text_input">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">@dimen/spacing_medial_24</item>
+    </style>
+
+    <style name="auth_text_input_edit">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColorHint">@android:color/white</item>
+    </style>
+
+    <style name="auth_button_login">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">@dimen/spacing_medial_24</item>
+    </style>
+
+    <style name="auth_button_login_demo">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">@dimen/spacing_medial_24</item>
+        <item name="android:layout_marginRight">@dimen/spacing_medial_24</item>
+        <item name="android:background">?android:attr/selectableItemBackground</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:fontFamily">sans-serif</item>
     </style>
 </resources>

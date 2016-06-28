@@ -1,7 +1,10 @@
 package com.softdesign.devintensive.ui.activities;
 
+import android.content.Context;
+import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -27,6 +30,11 @@ import retrofit2.Callback;
 import retrofit2.Response;
 
 public class ActivityProfile extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
+    public static void start(@NonNull Context context) {
+        Intent intent = new Intent(context, ActivityProfile.class);
+        context.startActivity(intent);
+    }
+
     private Toolbar mToolbar;
     private DrawerLayout mDrawerLayout;
     private NavigationView mNavigationView;
