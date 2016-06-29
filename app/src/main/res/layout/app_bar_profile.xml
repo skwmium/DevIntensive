@@ -27,7 +27,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:fitsSystemWindows="true"
-                app:contentScrim="?attr/colorPrimary"
+                app:contentScrim="@color/profile_subheader_bg"
                 app:expandedTitleMarginEnd="64dp"
                 app:expandedTitleMarginStart="48dp"
                 app:layout_scrollFlags="scroll|exitUntilCollapsed">
@@ -59,6 +59,20 @@
                 layout="@layout/content_profile"
                 bind:profile="@{profile}"/>
         </android.support.v4.widget.NestedScrollView>
+
+        <!--subheader-->
+        <LinearLayout
+            style="@style/profile_subheader"
+            android:layout_width="match_parent"
+            android:layout_height="@dimen/profile_subheader_height"
+            android:minHeight="@dimen/profile_subheader_height_min"
+            android:orientation="horizontal"
+            app:layout_behavior=".ui.view.behaviors.ProfileSubheaderBehavior">
+
+            <include
+                layout="@layout/profile_subheader"
+                bind:profile="@{profile}"/>
+        </LinearLayout>
 
         <android.support.design.widget.FloatingActionButton
             android:id="@+id/fab_edit_profile"

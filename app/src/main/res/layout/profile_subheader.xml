@@ -5,14 +5,10 @@
 
         <variable
             name="profile"
-            type="com.softdesign.devintensive.data.viewmodel.ProfileViewModel" />
+            type="com.softdesign.devintensive.data.viewmodel.ProfileViewModel"/>
     </data>
 
-    <LinearLayout
-        style="@style/profile_subheader"
-        android:layout_width="match_parent"
-        android:layout_height="@dimen/profile_subheader_height"
-        android:orientation="horizontal">
+    <merge>
 
         <LinearLayout
             style="@style/profile_subheader_item"
@@ -20,14 +16,14 @@
 
             <TextView
                 style="@style/profile_subheader_text"
-                android:text="@{profile.rating}" />
+                android:text="@{profile.rating}"/>
 
             <TextView
                 style="@style/profile_subheader_text.subtext"
-                android:text="@string/profile_label_rating" />
+                android:text="@string/profile_label_rating"/>
         </LinearLayout>
 
-        <View style="@style/profile_subheader_divider" />
+        <View style="@style/profile_subheader_divider"/>
 
         <LinearLayout
             style="@style/profile_subheader_item"
@@ -35,14 +31,14 @@
 
             <TextView
                 style="@style/profile_subheader_text"
-                android:text="@{profile.linesCount}" />
+                android:text="@{profile.linesCount}"/>
 
             <TextView
                 style="@style/profile_subheader_text.subtext"
-                android:text="@string/profile_label_lines_count" />
+                android:text="@string/profile_label_lines_count"/>
         </LinearLayout>
 
-        <View style="@style/profile_subheader_divider" />
+        <View style="@style/profile_subheader_divider"/>
 
         <LinearLayout
             style="@style/profile_subheader_item"
@@ -50,11 +46,11 @@
 
             <TextView
                 style="@style/profile_subheader_text"
-                android:text="@{profile.projectCount}" />
+                android:text="@{profile.projectCount}"/>
 
             <TextView
                 style="@style/profile_subheader_text.subtext"
-                android:text="@string/profile_label_projects_count" />
+                android:text="@string/profile_label_projects_count"/>
         </LinearLayout>
-    </LinearLayout>
+    </merge>
 </layout>
