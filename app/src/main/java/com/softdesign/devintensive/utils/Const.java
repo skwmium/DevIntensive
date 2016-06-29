@@ -11,4 +11,5 @@ public final class Const {
 
     // ---------- KEYS ----------
     public static final String KEY_PROFILE = "_key_profile";
+    public static final String KEY_API_USER = "_key_api_user";
 }

@@ -28,14 +28,14 @@
         android:orientation="vertical">
 
         <TextView
+            android:id="@+id/text_name"
             style="@style/drawer_header_text"
-            android:fontFamily="sans-serif-medium"
-            android:text="@string/username"/>
+            android:fontFamily="sans-serif-medium"/>
 
         <TextView
+            android:id="@+id/text_email"
             style="@style/drawer_header_text"
-            android:fontFamily="sans-serif"
-            android:text="@string/email"/>
+            android:fontFamily="sans-serif"/>
     </LinearLayout>
 
 </RelativeLayout>

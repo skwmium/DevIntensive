@@ -14,18 +14,29 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.softdesign.devintensive.R;
 import com.softdesign.devintensive.data.managers.PreferencesManager;
+import com.softdesign.devintensive.data.network.restmodels.User;
 import com.softdesign.devintensive.data.viewmodel.ProfileViewModel;
 import com.softdesign.devintensive.databinding.AppBarProfileBinding;
 import com.softdesign.devintensive.utils.Const;
 import com.softdesign.devintensive.utils.JsonUtils;
+import com.squareup.picasso.Picasso;
 
+//FIXME dont load and store object on disk in ui thread
 public class ActivityProfile extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener
         , View.OnClickListener {
     public static void start(@NonNull Context context) {
         Intent intent = new Intent(context, ActivityProfile.class);
+        context.startActivity(intent);
+    }
+
+    public static void start(@NonNull Context context, @Nullable User user) {
+        Intent intent = new Intent(context, ActivityProfile.class);
+        intent.putExtra(Const.KEY_API_USER, user);
         context.startActivity(intent);
     }
 
@@ -50,6 +61,7 @@ public class ActivityProfile extends BaseActivity implements NavigationView.OnNa
 
         initToolbar();
         initProfile(savedInstanceState);
+        syncUi();
     }
 
     @Override
@@ -91,14 +103,37 @@ public class ActivityProfile extends BaseActivity implements NavigationView.OnNa
         toggle.syncState();
     }
 
+    private void syncUi() {
+        if (mProfile == null) return;
+        View headerView = mNavigationView.getHeaderView(0);
+        ImageView imageAvatar = (ImageView) headerView.findViewById(R.id.image_avatar);
+        TextView textName = (TextView) headerView.findViewById(R.id.text_name);
+        TextView textEmail = (TextView) headerView.findViewById(R.id.text_email);
+
+        textName.setText(mProfile.getName());
+        textEmail.setText(mProfile.getEmail());
+        Picasso.with(this)
+                .load(mProfile.getAvatarUrl())
+                .placeholder(R.drawable.nav_avatar_default)
+                .into(imageAvatar);
+    }
+
     private void initProfile(@Nullable Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             mProfile = (ProfileViewModel) savedInstanceState.getSerializable(Const.KEY_PROFILE);
-        } else {
+        }
+        if (mProfile == null) {
+            User apiUser = (User) getIntent().getSerializableExtra(Const.KEY_API_USER);
+            mProfile = ProfileViewModel.from(apiUser);
+            storeData();
+        }
+        if (mProfile == null) {
             String profileJsonSerialized = PreferencesManager.getInst().get(Const.PREF_PROFILE, null);
             mProfile = JsonUtils.jsonToObject(profileJsonSerialized, ProfileViewModel.class);
         }
-        if (mProfile == null) mProfile = ProfileViewModel.createTestProfile();
+        if (mProfile == null) {
+            mProfile = ProfileViewModel.createTestProfile();
+        }
         //data binding
         View bindingProfileView = $(R.id.app_bar_profile);
         AppBarProfileBinding binding = DataBindingUtil.bind(bindingProfileView);
@@ -111,6 +146,7 @@ public class ActivityProfile extends BaseActivity implements NavigationView.OnNa
             mProfile.setEditable(false);
             mFloatingActionEdit.setImageResource(R.drawable.ic_edit_24dp);
             storeData();
+            showSnackbar(R.string.profile_data_saved);
         } else {
             mProfile.setEditable(true);
             mFloatingActionEdit.setImageResource(R.drawable.ic_done_24dp);
@@ -118,6 +154,7 @@ public class ActivityProfile extends BaseActivity implements NavigationView.OnNa
     }
 
     private void storeData() {
+        if (mProfile == null) return;
         String profileJsonSerialized = JsonUtils.objectToJson(mProfile);
         PreferencesManager.getInst().put(Const.PREF_PROFILE, profileJsonSerialized);
     }

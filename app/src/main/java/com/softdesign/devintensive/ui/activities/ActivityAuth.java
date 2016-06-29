@@ -107,7 +107,7 @@ public class ActivityAuth extends BaseActivity {
                     L.e("Auth success! ");
                     PreferencesManager.getInst().put(Const.PREF_AUTH_TOKEN
                             , authResult.getBody().getToken());
-                    ActivityProfile.start(ActivityAuth.this);
+                    ActivityProfile.start(ActivityAuth.this, authResult.getBody().getUser());
                 }
                 hideProgress();
             }
