@@ -13,6 +13,7 @@ buildscript {
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 apply plugin: 'me.tatarka.retrolambda'
+apply plugin: 'android-apt'
 
 repositories {
     maven { url 'https://maven.fabric.io/public' }
@@ -59,6 +60,9 @@ dependencies {
     compile 'com.squareup.retrofit2:retrofit:2.1.0'
     compile 'com.squareup.retrofit2:converter-jackson:2.1.0'
     compile 'com.squareup.okhttp3:logging-interceptor:3.3.1'
+
+    compile 'com.jakewharton:butterknife:8.1.0'
+    apt 'com.jakewharton:butterknife-compiler:8.1.0'
 
     compile('com.crashlytics.sdk.android:crashlytics:2.5.7@aar') {
         transitive = true;

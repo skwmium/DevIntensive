@@ -26,6 +26,8 @@ import com.softdesign.devintensive.utils.Const;
 import com.softdesign.devintensive.utils.JsonUtils;
 import com.squareup.picasso.Picasso;
 
+import butterknife.BindView;
+
 //FIXME dont load and store object on disk in ui thread
 public class ActivityProfile extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener
         , View.OnClickListener {
@@ -40,10 +42,17 @@ public class ActivityProfile extends BaseActivity implements NavigationView.OnNa
         context.startActivity(intent);
     }
 
-    private Toolbar mToolbar;
-    private DrawerLayout mDrawerLayout;
-    private NavigationView mNavigationView;
-    private FloatingActionButton mFloatingActionEdit;
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
+
+    @BindView(R.id.drawer_layout)
+    DrawerLayout drawerLayout;
+
+    @BindView(R.id.nav_view)
+    NavigationView navigationView;
+
+    @BindView(R.id.fab_edit_profile)
+    FloatingActionButton floatingActionEdit;
 
     private ProfileViewModel mProfile;
 
@@ -52,12 +61,7 @@ public class ActivityProfile extends BaseActivity implements NavigationView.OnNa
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        mToolbar = $(R.id.toolbar);
-        mDrawerLayout = $(R.id.drawer_layout);
-        mNavigationView = $(R.id.nav_view);
-        mFloatingActionEdit = $(R.id.fab_edit_profile);
-
-        mFloatingActionEdit.setOnClickListener(this);
+        floatingActionEdit.setOnClickListener(this);
 
         initToolbar();
         initProfile(savedInstanceState);
@@ -72,7 +76,7 @@ public class ActivityProfile extends BaseActivity implements NavigationView.OnNa
 
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
-        if (mDrawerLayout != null) mDrawerLayout.closeDrawer(GravityCompat.START);
+        if (drawerLayout != null) drawerLayout.closeDrawer(GravityCompat.START);
         return false;
     }
 
@@ -87,25 +91,25 @@ public class ActivityProfile extends BaseActivity implements NavigationView.OnNa
 
     @Override
     public void onBackPressed() {
-        if (mDrawerLayout != null && mDrawerLayout.isDrawerOpen(GravityCompat.START)) {
-            mDrawerLayout.closeDrawer(GravityCompat.START);
+        if (drawerLayout != null && drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            drawerLayout.closeDrawer(GravityCompat.START);
         } else {
             super.onBackPressed();
         }
     }
 
     private void initToolbar() {
-        setSupportActionBar(mToolbar);
-        mNavigationView.setNavigationItemSelectedListener(this);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, mDrawerLayout, mToolbar, 0, 0);
+        setSupportActionBar(toolbar);
+        navigationView.setNavigationItemSelectedListener(this);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawerLayout, toolbar, 0, 0);
         //noinspection deprecation
-        mDrawerLayout.setDrawerListener(toggle);
+        drawerLayout.setDrawerListener(toggle);
         toggle.syncState();
     }
 
     private void syncUi() {
         if (mProfile == null) return;
-        View headerView = mNavigationView.getHeaderView(0);
+        View headerView = navigationView.getHeaderView(0);
         ImageView imageAvatar = (ImageView) headerView.findViewById(R.id.image_avatar);
         TextView textName = (TextView) headerView.findViewById(R.id.text_name);
         TextView textEmail = (TextView) headerView.findViewById(R.id.text_email);
@@ -144,12 +148,12 @@ public class ActivityProfile extends BaseActivity implements NavigationView.OnNa
         if (mProfile == null) return;
         if (mProfile.isEditable()) {
             mProfile.setEditable(false);
-            mFloatingActionEdit.setImageResource(R.drawable.ic_edit_24dp);
+            floatingActionEdit.setImageResource(R.drawable.ic_edit_24dp);
             storeData();
             showSnackbar(R.string.profile_data_saved);
         } else {
             mProfile.setEditable(true);
-            mFloatingActionEdit.setImageResource(R.drawable.ic_done_24dp);
+            floatingActionEdit.setImageResource(R.drawable.ic_done_24dp);
         }
     }
 

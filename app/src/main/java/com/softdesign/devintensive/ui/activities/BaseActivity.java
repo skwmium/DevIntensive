@@ -5,6 +5,7 @@ import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.support.design.widget.Snackbar;
@@ -14,6 +15,8 @@ import android.view.ViewGroup;
 
 import com.softdesign.devintensive.R;
 import com.softdesign.devintensive.utils.InflaterFactory;
+
+import butterknife.ButterKnife;
 
 /**
  * Created by skwmium on 22.06.16.
@@ -30,6 +33,18 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         getLayoutInflater().setFactory(new InflaterFactory(this));
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    public void setContentView(@LayoutRes int layoutResID) {
+        super.setContentView(layoutResID);
+        ButterKnife.bind(this);
+    }
+
+    @Override
+    public void setContentView(View view) {
+        super.setContentView(view);
+        ButterKnife.bind(this);
     }
 
     @Nullable

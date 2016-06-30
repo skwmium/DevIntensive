@@ -19,6 +19,7 @@ import com.softdesign.devintensive.data.network.restmodels.BaseResponse;
 import com.softdesign.devintensive.utils.Const;
 import com.softdesign.devintensive.utils.L;
 
+import butterknife.BindView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -32,10 +33,17 @@ public class ActivityAuth extends BaseActivity {
         context.startActivity(intent);
     }
 
-    private EditText mEditEmail;
-    private EditText mEditPassword;
-    private Button mButtonLogin;
-    private Button mButtonTryDemo;
+    @BindView(R.id.edit_email)
+    EditText editEmail;
+
+    @BindView(R.id.edit_password)
+    EditText editPassword;
+
+    @BindView(R.id.button_login)
+    Button buttonLogin;
+
+    @BindView(R.id.button_try_demo)
+    Button buttonTryDemo;
 
     private View.OnClickListener mClickTryDemo = view -> {
         ActivityProfile.start(ActivityAuth.this);
@@ -50,18 +58,13 @@ public class ActivityAuth extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_auth);
 
-        mEditEmail = $(R.id.edit_email);
-        mEditPassword = $(R.id.edit_password);
-        mButtonLogin = $(R.id.button_login);
-        mButtonTryDemo = $(R.id.button_try_demo);
-
-        mButtonLogin.setOnClickListener(mClickLogin);
-        mButtonTryDemo.setOnClickListener(mClickTryDemo);
+        buttonLogin.setOnClickListener(mClickLogin);
+        buttonTryDemo.setOnClickListener(mClickTryDemo);
     }
 
     private void processLogin() {
-        String email = mEditEmail.getText().toString();
-        String password = mEditPassword.getText().toString();
+        String email = editEmail.getText().toString();
+        String password = editPassword.getText().toString();
 
         if (!checkAuthData(email, password)) return;
         authObServer(email, password);
