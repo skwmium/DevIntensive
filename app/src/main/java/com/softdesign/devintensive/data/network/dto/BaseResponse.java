@@ -1,4 +1,4 @@
-package com.softdesign.devintensive.data.network.restmodels;
+package com.softdesign.devintensive.data.network.dto;
 
 import android.support.annotation.Nullable;
 

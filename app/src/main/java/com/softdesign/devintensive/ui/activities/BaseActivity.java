@@ -14,7 +14,8 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.softdesign.devintensive.R;
-import com.softdesign.devintensive.utils.InflaterFactory;
+import com.softdesign.devintensive.common.InflaterFactory;
+import com.softdesign.devintensive.presenter.BasePresenter;
 
 import butterknife.ButterKnife;
 
@@ -33,6 +34,14 @@ public abstract class BaseActivity extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         getLayoutInflater().setFactory(new InflaterFactory(this));
         super.onCreate(savedInstanceState);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (getPresenter() != null) {
+            getPresenter().onStop();
+        }
     }
 
     @Override
@@ -68,17 +77,20 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (mProgressDialog == null || !mProgressDialog.isShowing()) {
             return;
         }
-        mProgressDialog.hide();
+        mProgressDialog.dismiss();
     }
 
-    protected void showSnackbar(@StringRes int res) {
+    public void showSnackbar(@StringRes int res) {
         showSnackbar(getString(res));
     }
 
-    protected void showSnackbar(@Nullable String s) {
+    public void showSnackbar(@Nullable String s) {
         if (s == null || s.isEmpty()) return;
         View rootView = getRootView();
         if (rootView == null) return;
         Snackbar.make(rootView, s, Snackbar.LENGTH_SHORT).show();
     }
+
+    @Nullable
+    protected abstract BasePresenter getPresenter();
 }

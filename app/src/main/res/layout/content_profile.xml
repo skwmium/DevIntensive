@@ -5,7 +5,7 @@
 
         <variable
             name="profile"
-            type="com.softdesign.devintensive.data.viewmodel.ProfileViewModel"/>
+            type="com.softdesign.devintensive.ui.viewmodel.ProfileViewModel"/>
     </data>
 
     <LinearLayout
@@ -27,6 +27,8 @@
                 <EditText
                     style="@style/profile_item_text_input_edit"
                     android:enabled="@{profile.editable}"
+                    android:focusable="@{profile.editable}"
+                    android:focusableInTouchMode="@{profile.editable}"
                     android:hint="@string/profile_label_mobile_phone"
                     android:text="@={profile.mobilePhoneNumber}"/>
             </android.support.design.widget.TextInputLayout>
@@ -50,10 +52,16 @@
             <android.support.design.widget.TextInputLayout style="@style/profile_item_text_input">
 
                 <EditText
+                    android:id="@+id/edit_email"
                     style="@style/profile_item_text_input_edit"
                     android:enabled="@{profile.editable}"
+                    android:focusable="@{profile.editable}"
+                    android:focusableInTouchMode="@{profile.editable}"
                     android:hint="@string/profile_label_email"
-                    android:text="@={profile.email}"/>
+                    android:text="@={profile.email}">
+
+                    <requestFocus/>
+                </EditText>
             </android.support.design.widget.TextInputLayout>
 
             <ImageView
@@ -77,6 +85,8 @@
                 <EditText
                     style="@style/profile_item_text_input_edit"
                     android:enabled="@{profile.editable}"
+                    android:focusable="@{profile.editable}"
+                    android:focusableInTouchMode="@{profile.editable}"
                     android:hint="@string/profile_label_profile_vk"
                     android:text="@={profile.vkProfile}"/>
             </android.support.design.widget.TextInputLayout>
@@ -102,6 +112,8 @@
                 <EditText
                     style="@style/profile_item_text_input_edit"
                     android:enabled="@{profile.editable}"
+                    android:focusable="@{profile.editable}"
+                    android:focusableInTouchMode="@{profile.editable}"
                     android:hint="@string/profile_label_repository"
                     android:text="@={profile.repository}"/>
             </android.support.design.widget.TextInputLayout>
@@ -127,6 +139,8 @@
                 <EditText
                     style="@style/profile_item_text_input_edit"
                     android:enabled="@{profile.editable}"
+                    android:focusable="@{profile.editable}"
+                    android:focusableInTouchMode="@{profile.editable}"
                     android:hint="@string/profile_label_about_me"
                     android:text="@={profile.about}"/>
             </android.support.design.widget.TextInputLayout>

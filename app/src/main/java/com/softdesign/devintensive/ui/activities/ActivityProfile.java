@@ -6,6 +6,7 @@ import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.annotation.StringRes;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -14,31 +15,24 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.softdesign.devintensive.R;
-import com.softdesign.devintensive.data.managers.PreferencesManager;
-import com.softdesign.devintensive.data.network.restmodels.User;
-import com.softdesign.devintensive.data.viewmodel.ProfileViewModel;
 import com.softdesign.devintensive.databinding.AppBarProfileBinding;
-import com.softdesign.devintensive.utils.Const;
-import com.softdesign.devintensive.utils.JsonUtils;
-import com.squareup.picasso.Picasso;
+import com.softdesign.devintensive.di.DaggerComponentProfile;
+import com.softdesign.devintensive.di.ModuleViewProfile;
+import com.softdesign.devintensive.presenter.BasePresenter;
+import com.softdesign.devintensive.presenter.PresenterProfile;
+import com.softdesign.devintensive.ui.viewmodel.ProfileViewModel;
+import com.softdesign.devintensive.view.ViewProfile;
+
+import javax.inject.Inject;
 
 import butterknife.BindView;
 
-//FIXME dont load and store object on disk in ui thread
-public class ActivityProfile extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener
+public class ActivityProfile extends BaseActivity implements ViewProfile, NavigationView.OnNavigationItemSelectedListener
         , View.OnClickListener {
     public static void start(@NonNull Context context) {
         Intent intent = new Intent(context, ActivityProfile.class);
-        context.startActivity(intent);
-    }
-
-    public static void start(@NonNull Context context, @Nullable User user) {
-        Intent intent = new Intent(context, ActivityProfile.class);
-        intent.putExtra(Const.KEY_API_USER, user);
         context.startActivity(intent);
     }
 
@@ -54,24 +48,42 @@ public class ActivityProfile extends BaseActivity implements NavigationView.OnNa
     @BindView(R.id.fab_edit_profile)
     FloatingActionButton floatingActionEdit;
 
-    private ProfileViewModel mProfile;
+    @BindView(R.id.app_bar_profile)
+    View viewProfileBinding;
+
+    @Inject
+    PresenterProfile mPresenter;
+
+    private AppBarProfileBinding mProfileBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        floatingActionEdit.setOnClickListener(this);
+        DaggerComponentProfile
+                .builder()
+                .moduleViewProfile(new ModuleViewProfile(this))
+                .build()
+                .inject(this);
 
         initToolbar();
-        initProfile(savedInstanceState);
-        syncUi();
+        mProfileBinding = DataBindingUtil.bind(viewProfileBinding);
+        floatingActionEdit.setOnClickListener(this);
+
+        mPresenter.onCreate(savedInstanceState);
+    }
+
+    @Nullable
+    @Override
+    protected BasePresenter getPresenter() {
+        return mPresenter;
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putSerializable(Const.KEY_PROFILE, mProfile);
+        mPresenter.onSaveInstanceState(outState);
     }
 
     @Override
@@ -84,7 +96,7 @@ public class ActivityProfile extends BaseActivity implements NavigationView.OnNa
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.fab_edit_profile:
-                fabEditClicked();
+                mPresenter.editProfileClicked();
                 break;
         }
     }
@@ -107,59 +119,18 @@ public class ActivityProfile extends BaseActivity implements NavigationView.OnNa
         toggle.syncState();
     }
 
-    private void syncUi() {
-        if (mProfile == null) return;
-        View headerView = navigationView.getHeaderView(0);
-        ImageView imageAvatar = (ImageView) headerView.findViewById(R.id.image_avatar);
-        TextView textName = (TextView) headerView.findViewById(R.id.text_name);
-        TextView textEmail = (TextView) headerView.findViewById(R.id.text_email);
-
-        textName.setText(mProfile.getName());
-        textEmail.setText(mProfile.getEmail());
-        Picasso.with(this)
-                .load(mProfile.getAvatarUrl())
-                .placeholder(R.drawable.nav_avatar_default)
-                .into(imageAvatar);
+    @Override
+    public void showMessage(@StringRes int res) {
+        showSnackbar(res);
     }
 
-    private void initProfile(@Nullable Bundle savedInstanceState) {
-        if (savedInstanceState != null) {
-            mProfile = (ProfileViewModel) savedInstanceState.getSerializable(Const.KEY_PROFILE);
-        }
-        if (mProfile == null) {
-            User apiUser = (User) getIntent().getSerializableExtra(Const.KEY_API_USER);
-            mProfile = ProfileViewModel.from(apiUser);
-            storeData();
-        }
-        if (mProfile == null) {
-            String profileJsonSerialized = PreferencesManager.getInst().get(Const.PREF_PROFILE, null);
-            mProfile = JsonUtils.jsonToObject(profileJsonSerialized, ProfileViewModel.class);
-        }
-        if (mProfile == null) {
-            mProfile = ProfileViewModel.createTestProfile();
-        }
-        //data binding
-        View bindingProfileView = $(R.id.app_bar_profile);
-        AppBarProfileBinding binding = DataBindingUtil.bind(bindingProfileView);
-        binding.setProfile(mProfile);
+    @Override
+    public Context getContext() {
+        return this;
     }
 
-    private void fabEditClicked() {
-        if (mProfile == null) return;
-        if (mProfile.isEditable()) {
-            mProfile.setEditable(false);
-            floatingActionEdit.setImageResource(R.drawable.ic_edit_24dp);
-            storeData();
-            showSnackbar(R.string.profile_data_saved);
-        } else {
-            mProfile.setEditable(true);
-            floatingActionEdit.setImageResource(R.drawable.ic_done_24dp);
-        }
-    }
-
-    private void storeData() {
-        if (mProfile == null) return;
-        String profileJsonSerialized = JsonUtils.objectToJson(mProfile);
-        PreferencesManager.getInst().put(Const.PREF_PROFILE, profileJsonSerialized);
+    @Override
+    public void setProfileViewModel(ProfileViewModel profileViewModel) {
+        mProfileBinding.setProfile(profileViewModel);
     }
 }

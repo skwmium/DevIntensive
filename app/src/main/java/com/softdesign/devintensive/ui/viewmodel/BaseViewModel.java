@@ -1,4 +1,4 @@
-package com.softdesign.devintensive.data.viewmodel;
+package com.softdesign.devintensive.ui.viewmodel;
 
 import android.databinding.BaseObservable;
 

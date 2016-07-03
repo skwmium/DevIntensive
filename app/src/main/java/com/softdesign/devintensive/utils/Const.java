@@ -11,5 +11,10 @@ public final class Const {
 
     // ---------- KEYS ----------
     public static final String KEY_PROFILE = "_key_profile";
-    public static final String KEY_API_USER = "_key_api_user";
+
+    public static final String UI_THREAD = "UI_THREAD";
+    public static final String IO_THREAD = "IO_THREAD";
+
+    private Const() {
+    }
 }

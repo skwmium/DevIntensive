@@ -7,7 +7,7 @@
 
         <variable
             name="profile"
-            type="com.softdesign.devintensive.data.viewmodel.ProfileViewModel"/>
+            type="com.softdesign.devintensive.ui.viewmodel.ProfileViewModel"/>
     </data>
 
     <android.support.design.widget.CoordinatorLayout
@@ -56,6 +56,7 @@
             app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <include
+                android:id="@+id/content_profile"
                 layout="@layout/content_profile"
                 bind:profile="@{profile}"/>
         </android.support.v4.widget.NestedScrollView>
@@ -79,7 +80,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_margin="@dimen/activity_horizontal_margin"
-            android:src="@drawable/ic_edit_24dp"
+            android:src="@{profile.editable ? @drawable/ic_done_24dp : @drawable/ic_edit_24dp}"
             app:layout_anchor="@id/app_bar"
             app:layout_anchorGravity="bottom|right|end"/>
     </android.support.design.widget.CoordinatorLayout>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/color_primary"
+              android:gravity="center"
+              android:orientation="vertical">
+
+    <android.support.design.widget.TextInputLayout style="@style/auth_text_input">
+
+        <EditText
+            android:id="@+id/edit_email"
+            style="@style/auth_text_input_edit"
+            android:hint="@string/auth_email"
+            android:inputType="textEmailAddress"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <android.support.design.widget.TextInputLayout style="@style/auth_text_input">
+
+        <EditText
+            android:id="@+id/edit_password"
+            style="@style/auth_text_input_edit"
+            android:hint="@string/auth_password"
+            android:inputType="textPassword"/>
+    </android.support.design.widget.TextInputLayout>
+
+    <Button
+        android:id="@+id/button_login"
+        style="@style/auth_button_login"
+        android:backgroundTint="@color/color_primary_dark"
+        android:text="@string/auth_button_login"
+        tools:ignore="UnusedAttribute"/>
+
+    <Button
+        android:id="@+id/button_try_demo"
+        style="@style/auth_button_login_demo"
+        android:text="@string/auth_button_try_demo"/>
+
+</LinearLayout>

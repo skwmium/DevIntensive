@@ -1,14 +1,15 @@
 package com.softdesign.devintensive.ui.fragments;
 
-import android.app.Activity;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.view.View;
 
+import com.softdesign.devintensive.presenter.BasePresenter;
 import com.softdesign.devintensive.ui.activities.BaseActivity;
 
 import butterknife.ButterKnife;
@@ -37,13 +38,12 @@ public abstract class BaseFragment extends Fragment {
         mUnbinder.unbind();
     }
 
-    @Nullable
-    protected BaseActivity getBaseActivity() {
-        Activity activity = getActivity();
-        if (activity != null && activity instanceof BaseActivity) {
-            return (BaseActivity) activity;
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (getPresenter() != null) {
+            getPresenter().onStop();
         }
-        return null;
     }
 
     @Override
@@ -53,4 +53,12 @@ public abstract class BaseFragment extends Fragment {
         else
             return getActivity();
     }
+
+    @NonNull
+    protected BaseActivity getBaseActivity() {
+        return (BaseActivity) getActivity();
+    }
+
+    @Nullable
+    protected abstract BasePresenter getPresenter();
 }

@@ -1,4 +1,4 @@
-package com.softdesign.devintensive.utils;
+package com.softdesign.devintensive.common;
 
 import android.content.Context;
 import android.util.AttributeSet;

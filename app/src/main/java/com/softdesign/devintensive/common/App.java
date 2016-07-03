@@ -7,6 +7,8 @@ import android.support.annotation.StringRes;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
+import com.softdesign.devintensive.di.ComponentApp;
+import com.softdesign.devintensive.di.DaggerComponentApp;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -15,6 +17,7 @@ import io.fabric.sdk.android.Fabric;
  */
 public class App extends Application {
     private static App sInstance;
+    private static ComponentApp sAppComponent;
 
     private Toast mToast;
 
@@ -24,12 +27,16 @@ public class App extends Application {
         super.onCreate();
         sInstance = this;
         mToast = Toast.makeText(this, null, Toast.LENGTH_SHORT);
-
+        sAppComponent = DaggerComponentApp.builder().build();
         initServices();
     }
 
     public static App getInst() {
         return sInstance;
+    }
+
+    public static ComponentApp getAppComponent() {
+        return sAppComponent;
     }
 
     public void showToast(@StringRes int res) {

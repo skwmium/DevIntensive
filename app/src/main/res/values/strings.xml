@@ -26,6 +26,9 @@
     <string name="profile_label_about_me">О себе</string>
     <string name="profile_data_saved">Данные сохранены</string>
 
+    <!--error-->
+    <string name="error_loading_data">Ошибка во время закгрузки данных</string>
+
     <!--other-->
     <string name="username">Куприн Сергей</string>
     <string name="email">skwmium@gmail.com</string>
