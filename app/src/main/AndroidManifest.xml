@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="com.softdesign.devintensive">
 
+    <uses-permission android:name="android.permission.INTERNET"/>
+
     <application
         android:name=".common.App"
         android:allowBackup="true"
@@ -10,14 +12,28 @@
         android:supportsRtl="false"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".ui.activities.ActivityProfile"
-            android:theme="@style/AppTheme.NoActionBar">
+            android:name=".ui.activities.ActivitySplash"
+            android:noHistory="true"
+            android:theme="@style/AppTheme.NoActionBar.Launcher">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
+        <activity
+            android:name=".ui.activities.ActivityAuth"
+            android:noHistory="true"
+            android:screenOrientation="userPortrait"
+            android:theme="@style/AppTheme.NoActionBar.Auth"/>
+        <activity
+            android:name=".ui.activities.ActivityProfile"
+            android:theme="@style/AppTheme.NoActionBar"/>
+
+        <!--Fabric-->
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="bc7a170c1bdddee85cfc36ee30460efc4d858c1a"/>
     </application>
 
 </manifest>

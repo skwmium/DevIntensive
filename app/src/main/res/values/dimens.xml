@@ -23,13 +23,14 @@
     <dimen name="font_larger_22">22sp</dimen>
 
     <!--nav drawer-->
-    <dimen name="drawer_header_padding_top">@dimen/activity_vertical_margin</dimen>
-    <dimen name="drawer_header_height">160dp</dimen>
-    <dimen name="drawer_header_avatar_size">64dp</dimen>
+    <dimen name="drawer_header_height">172dp</dimen>
+    <dimen name="drawer_header_avatar_size">60dp</dimen>
     <dimen name="drawer_header_text">14sp</dimen>
+    <dimen name="drawer_header_avatar_margin_top">@dimen/spacing_normal_16</dimen>
 
     <!--profile screen-->
     <dimen name="profile_app_bar_height">300dp</dimen>
     <dimen name="profile_subheader_height">112dp</dimen>
+    <dimen name="profile_subheader_height_min">56dp</dimen>
     <dimen name="profile_subheader_vertical_padding">28dp</dimen>
 </resources>

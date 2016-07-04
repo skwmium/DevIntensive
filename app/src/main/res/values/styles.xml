@@ -15,6 +15,16 @@
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar"/>
 
+    <style name="AppTheme.NoActionBar.Launcher">
+        <item name="android:windowBackground">@drawable/bg_launch_screen</item>
+    </style>
+
+    <style name="AppTheme.NoActionBar.Auth"/>
+
+    <style name="activity_base_progress_dialog">
+        <item name="android:fullDark">@android:color/transparent</item>
+    </style>
+
     <!--drawer-->
     <style name="drawer_header_text">
         <item name="android:layout_width">wrap_content</item>
@@ -27,13 +37,11 @@
     <style name="profile_subheader">
         <item name="android:background">@color/profile_subheader_bg</item>
         <item name="android:gravity">center_vertical</item>
-        <item name="android:paddingBottom">@dimen/profile_subheader_vertical_padding</item>
-        <item name="android:paddingTop">@dimen/profile_subheader_vertical_padding</item>
     </style>
 
     <style name="profile_subheader_item">
         <item name="android:layout_width">0dp</item>
-        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_height">@dimen/profile_subheader_height_min</item>
         <item name="android:gravity">center_horizontal</item>
         <item name="android:orientation">vertical</item>
     </style>
@@ -41,7 +49,7 @@
     <style name="profile_subheader_divider">
         <item name="android:background">@color/profile_subheader_divider</item>
         <item name="android:layout_width">1dp</item>
-        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_height">@dimen/profile_subheader_height_min</item>
     </style>
 
     <style name="profile_subheader_text">
@@ -85,8 +93,6 @@
         <item name="android:textColor">@color/profile_item_text</item>
         <item name="android:textColorHint">@color/profile_item_text_hint</item>
         <item name="android:fontFamily">sans-serif-condensed</item>
-        <item name="android:enabled">false</item>
-        <item name="android:focusable">false</item>
         <item name="android:inputType">textMultiLine</item>
         <item name="android:paddingTop">@dimen/spacing_small_8</item>
     </style>
@@ -102,5 +108,36 @@
         <item name="android:layout_height">1dp</item>
         <item name="android:layout_marginLeft">@dimen/spacing_larger_72</item>
         <item name="android:background">@color/profile_item_divider</item>
+    </style>
+
+
+    <!--auth screen-->
+    <style name="auth_text_input">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:padding">@dimen/spacing_medial_24</item>
+    </style>
+
+    <style name="auth_text_input_edit">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:textColorHint">@android:color/white</item>
+    </style>
+
+    <style name="auth_button_login">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_margin">@dimen/spacing_medial_24</item>
+    </style>
+
+    <style name="auth_button_login_demo">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginLeft">@dimen/spacing_medial_24</item>
+        <item name="android:layout_marginRight">@dimen/spacing_medial_24</item>
+        <item name="android:background">?android:attr/selectableItemBackground</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:fontFamily">sans-serif</item>
     </style>
 </resources>
