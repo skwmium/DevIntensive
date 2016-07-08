@@ -9,6 +9,7 @@ import com.softdesign.devintensive.presenter.mappers.MapperParamEdit;
 import com.softdesign.devintensive.presenter.mappers.MapperUser;
 import com.softdesign.devintensive.ui.viewmodel.ProfileViewModel;
 import com.softdesign.devintensive.utils.Const;
+import com.softdesign.devintensive.utils.Utils;
 import com.softdesign.devintensive.view.ViewProfile;
 
 import javax.inject.Inject;
@@ -66,6 +67,22 @@ public class PresenterProfile extends BasePresenter {
         } else {
             mProfileViewModel.setEditable(true);
         }
+    }
+
+    public void dialPhoneClicked() {
+        Utils.dialPhoneNumber(mView.getContext(), mProfileViewModel.getMobilePhoneNumber());
+    }
+
+    public void sendEmailClicked() {
+        Utils.sendEmail(mView.getContext(), null, mProfileViewModel.getEmail());
+    }
+
+    public void watchRepoClicked() {
+        Utils.openWebPage(mView.getContext(), mProfileViewModel.getRepository());
+    }
+
+    public void watchVkClicked() {
+        Utils.openWebPage(mView.getContext(), mProfileViewModel.getVkProfile());
     }
 
     private void loadProfile() {

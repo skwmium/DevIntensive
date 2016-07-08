@@ -70,8 +70,8 @@ public class ActivityProfile extends BaseActivity implements ViewProfile, Naviga
         initToolbar();
         mProfileBinding = DataBindingUtil.bind(viewProfileBinding);
         floatingActionEdit.setOnClickListener(this);
-
         mPresenter.onCreate(savedInstanceState);
+        initContentClickListeners();
     }
 
     @Nullable
@@ -117,6 +117,13 @@ public class ActivityProfile extends BaseActivity implements ViewProfile, Naviga
         //noinspection deprecation
         drawerLayout.setDrawerListener(toggle);
         toggle.syncState();
+    }
+
+    private void initContentClickListeners() {
+        mProfileBinding.contentProfile.imageActionPhone.setOnClickListener(view -> mPresenter.dialPhoneClicked());
+        mProfileBinding.contentProfile.imageActionEmail.setOnClickListener(view -> mPresenter.sendEmailClicked());
+        mProfileBinding.contentProfile.imageActionRepo.setOnClickListener(view -> mPresenter.watchRepoClicked());
+        mProfileBinding.contentProfile.imageActionVk.setOnClickListener(view -> mPresenter.watchVkClicked());
     }
 
     @Override
