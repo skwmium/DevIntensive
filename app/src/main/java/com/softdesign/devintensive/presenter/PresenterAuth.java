@@ -20,6 +20,7 @@ import rx.Subscription;
 /**
  * Created by skwmium on 01.07.16.
  */
+@SuppressWarnings("Convert2MethodRef")
 public class PresenterAuth extends BasePresenter {
     @Inject
     protected Model mModel;
@@ -76,8 +77,8 @@ public class PresenterAuth extends BasePresenter {
         addSubscription(subscription);
     }
 
-    public void demoModeClicked() {
-        ActivityProfile.start(mView.getContext());
+    public void forgotPasswordClicked() {
+        mView.startRestorePasswordFragment();
     }
 
     private boolean checkAuthData(@Nullable String email, @Nullable String password) {

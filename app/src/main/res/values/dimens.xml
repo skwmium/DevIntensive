@@ -5,6 +5,7 @@
 
     <!-- Sizes -->
     <dimen name="size_small_24">24dp</dimen>
+    <dimen name="size_normal_36">36dp</dimen>
     <dimen name="size_medium_56">56dp</dimen>
     <dimen name="size_large_72">72dp</dimen>
 
@@ -12,6 +13,7 @@
     <dimen name="spacing_small_8">8dp</dimen>
     <dimen name="spacing_normal_16">16dp</dimen>
     <dimen name="spacing_medial_24">24dp</dimen>
+    <dimen name="spacing_medial_28">28dp</dimen>
     <dimen name="spacing_medium_32">32dp</dimen>
     <dimen name="spacing_large_56">56dp</dimen>
     <dimen name="spacing_larger_72">72dp</dimen>
@@ -33,4 +35,7 @@
     <dimen name="profile_subheader_height">112dp</dimen>
     <dimen name="profile_subheader_height_min">56dp</dimen>
     <dimen name="profile_subheader_vertical_padding">28dp</dimen>
+
+    <!--auth screen-->
+    <dimen name="auth_card_width">240dp</dimen>
 </resources>

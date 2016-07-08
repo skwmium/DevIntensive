@@ -14,6 +14,8 @@ import rx.Observable;
 public interface Model {
     Observable<BaseResponse<AuthResult>> autUser(String email, String password);
 
+    Observable<BaseResponse> userRestorePassword(String email);
+
     Observable<BaseResponse<EditProfileResult>> userEditProfile(ParamEdit editParam);
 
     Observable<BaseResponse<Profile>> userGetProfile();

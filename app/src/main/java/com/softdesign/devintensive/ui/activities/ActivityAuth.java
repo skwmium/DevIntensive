@@ -43,10 +43,11 @@ public class ActivityAuth extends BaseActivity {
         return null;
     }
 
-    private void replaceFragment(BaseFragment fragment, boolean addBackStack) {
+    public void replaceFragment(BaseFragment fragment, boolean addBackStack) {
         FragmentTransaction transaction = mFragmentManager.beginTransaction();
         transaction.replace(R.id.content, fragment, TAG);
         if (addBackStack) transaction.addToBackStack(null);
+        transaction.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_FADE);
         transaction.commit();
     }
 }

@@ -7,4 +7,6 @@ public interface ViewAuth extends View {
     String getEmail();
 
     String getPassword();
+
+    void startRestorePasswordFragment();
 }

@@ -8,6 +8,7 @@ import com.softdesign.devintensive.data.network.dto.EditProfileResult;
 import com.softdesign.devintensive.data.network.dto.Profile;
 import com.softdesign.devintensive.data.network.params.ParamAuth;
 import com.softdesign.devintensive.data.network.params.ParamEdit;
+import com.softdesign.devintensive.data.network.params.ParamForgotPassword;
 import com.softdesign.devintensive.data.storage.LocalUser;
 import com.softdesign.devintensive.utils.Const;
 
@@ -46,6 +47,14 @@ public class ModelImpl implements Model {
         ParamAuth authParam = new ParamAuth(email, password);
         return mSoftdesignApiInterface
                 .userAuth(authParam)
+                .compose(applySchedulers());
+    }
+
+    @Override
+    public Observable<BaseResponse> userRestorePassword(String email) {
+        ParamForgotPassword paramForgotPassword = new ParamForgotPassword(email);
+        return mSoftdesignApiInterface
+                .userRestorePassword(paramForgotPassword)
                 .compose(applySchedulers());
     }
 

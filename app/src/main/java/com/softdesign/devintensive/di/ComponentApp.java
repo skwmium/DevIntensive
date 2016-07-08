@@ -4,6 +4,7 @@ import com.softdesign.devintensive.data.ModelImpl;
 import com.softdesign.devintensive.presenter.BasePresenter;
 import com.softdesign.devintensive.presenter.PresenterAuth;
 import com.softdesign.devintensive.presenter.PresenterProfile;
+import com.softdesign.devintensive.presenter.PresenterRestorePassword;
 
 import javax.inject.Singleton;
 
@@ -22,4 +23,6 @@ public interface ComponentApp {
     void inject(PresenterAuth authPresenter);
 
     void inject(PresenterProfile profilePresenter);
+
+    void inject(PresenterRestorePassword presenterRestorePassword);
 }

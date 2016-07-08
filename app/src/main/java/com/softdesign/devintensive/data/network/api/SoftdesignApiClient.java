@@ -8,6 +8,7 @@ import com.softdesign.devintensive.data.network.dto.EditProfileResult;
 import com.softdesign.devintensive.data.network.dto.Profile;
 import com.softdesign.devintensive.data.network.params.ParamAuth;
 import com.softdesign.devintensive.data.network.params.ParamEdit;
+import com.softdesign.devintensive.data.network.params.ParamForgotPassword;
 
 import retrofit2.http.Body;
 import retrofit2.http.POST;
@@ -23,6 +24,9 @@ public interface SoftdesignApiClient {
 
     @POST("login")
     Observable<BaseResponse<AuthResult>> userAuth(@NonNull @Body ParamAuth authParam);
+
+    @POST("sendforgot")
+    Observable<BaseResponse> userRestorePassword(@NonNull @Body ParamForgotPassword paramForgotPassword);
 
     @POST("profile/edit")
     Observable<BaseResponse<EditProfileResult>> userEdit(@NonNull @Query("token") String token,

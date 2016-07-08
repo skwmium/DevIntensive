@@ -93,4 +93,10 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     @Nullable
     protected abstract BasePresenter getPresenter();
+
+    @Nullable
+    public <T extends BaseActivity> T as(Class<T> clazz) {
+        //noinspection unchecked
+        return (T) this;
+    }
 }

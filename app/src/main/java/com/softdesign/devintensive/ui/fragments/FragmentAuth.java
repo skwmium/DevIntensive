@@ -2,18 +2,19 @@ package com.softdesign.devintensive.ui.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.annotation.StringRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import com.softdesign.devintensive.R;
 import com.softdesign.devintensive.di.DaggerComponentAuth;
 import com.softdesign.devintensive.di.ModuleViewAuth;
 import com.softdesign.devintensive.presenter.BasePresenter;
 import com.softdesign.devintensive.presenter.PresenterAuth;
+import com.softdesign.devintensive.ui.activities.ActivityAuth;
 import com.softdesign.devintensive.view.ViewAuth;
 
 import javax.inject.Inject;
@@ -33,8 +34,8 @@ public class FragmentAuth extends BaseFragment implements ViewAuth {
     @BindView(R.id.button_login)
     Button buttonLogin;
 
-    @BindView(R.id.button_try_demo)
-    Button buttonTryDemo;
+    @BindView(R.id.text_forgot_password)
+    TextView textForgotPassword;
 
     @Inject
     PresenterAuth mAuthPresenter;
@@ -60,7 +61,7 @@ public class FragmentAuth extends BaseFragment implements ViewAuth {
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         buttonLogin.setOnClickListener(view1 -> mAuthPresenter.loginClicked());
-        buttonTryDemo.setOnClickListener(view2 -> mAuthPresenter.demoModeClicked());
+        textForgotPassword.setOnClickListener(view2 -> mAuthPresenter.forgotPasswordClicked());
     }
 
     @Nullable
@@ -80,17 +81,9 @@ public class FragmentAuth extends BaseFragment implements ViewAuth {
     }
 
     @Override
-    public void showMessage(@StringRes int res) {
-        getBaseActivity().showSnackbar(res);
-    }
-
-    @Override
-    public void showProgress() {
-        getBaseActivity().showProgress();
-    }
-
-    @Override
-    public void hideProgress() {
-        getBaseActivity().hideProgress();
+    public void startRestorePasswordFragment() {
+        ActivityAuth activityAuth = getBaseActivity().as(ActivityAuth.class);
+        if (activityAuth == null) return;
+        activityAuth.replaceFragment(new FragmentRestorePassword(), true);
     }
 }
