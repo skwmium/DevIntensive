@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths>
-    <files-path
+    <external-path
         name="my_images"
         path="Android/data/com.softdesign.devintensive/files/Pictures"/>
 </paths>
