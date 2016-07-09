@@ -104,4 +104,10 @@ public class Utils {
         }
         return true;
     }
+
+
+    // ---------- COMMON ----------
+    public static boolean isNullOrEmpty(@Nullable CharSequence charSequence) {
+        return charSequence == null || charSequence.length() <= 0;
+    }
 }

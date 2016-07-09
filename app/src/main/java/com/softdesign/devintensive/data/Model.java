@@ -1,9 +1,11 @@
 package com.softdesign.devintensive.data;
 
+import android.support.annotation.NonNull;
+
 import com.softdesign.devintensive.data.network.dto.AuthResult;
 import com.softdesign.devintensive.data.network.dto.BaseResponse;
 import com.softdesign.devintensive.data.network.dto.EditProfileResult;
-import com.softdesign.devintensive.data.network.dto.Profile;
+import com.softdesign.devintensive.data.network.dto.User;
 import com.softdesign.devintensive.data.network.params.ParamEdit;
 
 import rx.Observable;
@@ -18,5 +20,7 @@ public interface Model {
 
     Observable<BaseResponse<EditProfileResult>> userEditProfile(ParamEdit editParam);
 
-    Observable<BaseResponse<Profile>> userGetProfile();
+    Observable<BaseResponse<User>> userGetProfile(@NonNull String userid);
+
+    Observable<BaseResponse<User>> userGetMe();
 }

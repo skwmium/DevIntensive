@@ -20,6 +20,7 @@ public final class ServiceGenerator {
         logging.setLevel(BuildConfiguration.HTTP_LOG_LEVEL);
 
         OkHttpClient httpClient = new OkHttpClient.Builder()
+                .addInterceptor(new SoftdesignAuthInterceptor())
                 .addInterceptor(logging)
                 .build();
 

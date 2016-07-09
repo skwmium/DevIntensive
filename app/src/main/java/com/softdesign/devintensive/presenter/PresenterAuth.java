@@ -49,6 +49,11 @@ public class PresenterAuth extends BasePresenter {
                     @Override
                     public void onCompleted() {
                         mView.hideProgress();
+                        if (!LocalUser.getInst().isLogined()) {
+                            mView.showMessage(R.string.auth_error_indefinite);
+                        } else {
+                            ActivityProfile.start(mView.getContext());
+                        }
                     }
 
                     @Override
@@ -66,12 +71,6 @@ public class PresenterAuth extends BasePresenter {
 
                     @Override
                     public void onNext(AuthResult authResult) {
-                        if (authResult == null) {
-                            mView.showMessage(R.string.auth_error_indefinite);
-                            return;
-                        }
-                        LocalUser.getInst().setAuthToken(authResult.getToken());
-                        ActivityProfile.start(mView.getContext());
                     }
                 });
         addSubscription(subscription);

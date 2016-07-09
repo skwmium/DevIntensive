@@ -1,11 +1,14 @@
 package com.softdesign.devintensive.data;
 
+import android.support.annotation.NonNull;
+
 import com.softdesign.devintensive.common.App;
+import com.softdesign.devintensive.data.managers.LocalUserAuthorizer;
 import com.softdesign.devintensive.data.network.api.SoftdesignApiClient;
 import com.softdesign.devintensive.data.network.dto.AuthResult;
 import com.softdesign.devintensive.data.network.dto.BaseResponse;
 import com.softdesign.devintensive.data.network.dto.EditProfileResult;
-import com.softdesign.devintensive.data.network.dto.Profile;
+import com.softdesign.devintensive.data.network.dto.User;
 import com.softdesign.devintensive.data.network.params.ParamAuth;
 import com.softdesign.devintensive.data.network.params.ParamEdit;
 import com.softdesign.devintensive.data.network.params.ParamForgotPassword;
@@ -35,6 +38,9 @@ public class ModelImpl implements Model {
     @Named(Const.IO_THREAD)
     Scheduler mSchedulerIo;
 
+    @Inject
+    LocalUserAuthorizer localUserAuthoriser;
+
     public ModelImpl() {
         App.getAppComponent().inject(this);
         mSchedulersTransformer = o -> ((Observable) o)
@@ -47,7 +53,8 @@ public class ModelImpl implements Model {
         ParamAuth authParam = new ParamAuth(email, password);
         return mSoftdesignApiInterface
                 .userAuth(authParam)
-                .compose(applySchedulers());
+                .compose(applySchedulers())
+                .doOnNext(localUserAuthoriser);//auth local user
     }
 
     @Override
@@ -64,9 +71,16 @@ public class ModelImpl implements Model {
     }
 
     @Override
-    public Observable<BaseResponse<Profile>> userGetProfile() {
+    public Observable<BaseResponse<User>> userGetProfile(@NonNull String userid) {
         return mSoftdesignApiInterface
-                .userGet(LocalUser.getInst().getAuthToken())
+                .userGet(userid)
+                .compose(applySchedulers());
+    }
+
+    @Override
+    public Observable<BaseResponse<User>> userGetMe() {
+        return mSoftdesignApiInterface
+                .userGet(LocalUser.getInst().getUserId())
                 .compose(applySchedulers());
     }
 

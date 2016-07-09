@@ -147,9 +147,8 @@ public class PresenterProfile extends BasePresenter {
 
     private void loadProfile() {
         mView.showProgress();
-        Subscription subscription = mModel.userGetProfile()
+        Subscription subscription = mModel.userGetMe()
                 .map(profileBaseResponse -> profileBaseResponse.getBody())
-                .map(profile -> profile.getUser())
                 .map(mMapperUser)
                 .subscribe(new Subscriber<ProfileViewModel>() {
                     @Override
