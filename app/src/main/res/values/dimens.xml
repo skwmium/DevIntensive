@@ -31,7 +31,7 @@
     <dimen name="drawer_header_avatar_margin_top">@dimen/spacing_normal_16</dimen>
 
     <!--profile screen-->
-    <dimen name="profile_app_bar_height">300dp</dimen>
+    <dimen name="profile_image_height">256dp</dimen>
     <dimen name="profile_subheader_height">112dp</dimen>
     <dimen name="profile_subheader_height_min">56dp</dimen>
     <dimen name="profile_subheader_vertical_padding">28dp</dimen>

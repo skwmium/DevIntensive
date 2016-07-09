@@ -3,10 +3,12 @@ package com.softdesign.devintensive.ui.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
+import android.support.design.widget.CollapsingToolbarLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -22,6 +24,7 @@ import com.softdesign.devintensive.di.DaggerComponentProfile;
 import com.softdesign.devintensive.di.ModuleViewProfile;
 import com.softdesign.devintensive.presenter.BasePresenter;
 import com.softdesign.devintensive.presenter.PresenterProfile;
+import com.softdesign.devintensive.ui.dialogs.DialogChooseProfilePhoto;
 import com.softdesign.devintensive.ui.viewmodel.ProfileViewModel;
 import com.softdesign.devintensive.view.ViewProfile;
 
@@ -51,6 +54,9 @@ public class ActivityProfile extends BaseActivity implements ViewProfile, Naviga
     @BindView(R.id.app_bar_profile)
     View viewProfileBinding;
 
+    @BindView(R.id.collapsing_toolbar)
+    CollapsingToolbarLayout collapsingToolbarLayout;
+
     @Inject
     PresenterProfile mPresenter;
 
@@ -68,10 +74,27 @@ public class ActivityProfile extends BaseActivity implements ViewProfile, Naviga
                 .inject(this);
 
         initToolbar();
+
         mProfileBinding = DataBindingUtil.bind(viewProfileBinding);
+        mProfileBinding.contentProfile.imageActionPhone.setOnClickListener(this);
+        mProfileBinding.contentProfile.imageActionEmail.setOnClickListener(this);
+        mProfileBinding.contentProfile.imageActionRepo.setOnClickListener(this);
+        mProfileBinding.contentProfile.imageActionVk.setOnClickListener(this);
+        mProfileBinding.relativeProfilePlaceholder.setOnClickListener(this);
         floatingActionEdit.setOnClickListener(this);
         mPresenter.onCreate(savedInstanceState);
-        initContentClickListeners();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        mPresenter.onActivityResult(requestCode, resultCode, data);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        mPresenter.onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Nullable
@@ -98,6 +121,21 @@ public class ActivityProfile extends BaseActivity implements ViewProfile, Naviga
             case R.id.fab_edit_profile:
                 mPresenter.editProfileClicked();
                 break;
+            case R.id.image_action_phone:
+                mPresenter.dialPhoneClicked();
+                break;
+            case R.id.image_action_email:
+                mPresenter.sendEmailClicked();
+                break;
+            case R.id.image_action_repo:
+                mPresenter.watchRepoClicked();
+                break;
+            case R.id.image_action_vk:
+                mPresenter.watchVkClicked();
+                break;
+            case R.id.relative_profile_placeholder:
+                mPresenter.changeProfilePhotoClicked();
+                break;
         }
     }
 
@@ -119,13 +157,6 @@ public class ActivityProfile extends BaseActivity implements ViewProfile, Naviga
         toggle.syncState();
     }
 
-    private void initContentClickListeners() {
-        mProfileBinding.contentProfile.imageActionPhone.setOnClickListener(view -> mPresenter.dialPhoneClicked());
-        mProfileBinding.contentProfile.imageActionEmail.setOnClickListener(view -> mPresenter.sendEmailClicked());
-        mProfileBinding.contentProfile.imageActionRepo.setOnClickListener(view -> mPresenter.watchRepoClicked());
-        mProfileBinding.contentProfile.imageActionVk.setOnClickListener(view -> mPresenter.watchVkClicked());
-    }
-
     @Override
     public void showMessage(@StringRes int res) {
         showSnackbar(res);
@@ -137,7 +168,34 @@ public class ActivityProfile extends BaseActivity implements ViewProfile, Naviga
     }
 
     @Override
+    public ActivityProfile getActivity() {
+        return this;
+    }
+
+    @Override
+    public void setEditMode(boolean editMode) {
+        collapsingToolbarLayout.setExpandedTitleColor(editMode ? Color.TRANSPARENT : Color.WHITE);
+    }
+
+    @Override
     public void setProfileViewModel(ProfileViewModel profileViewModel) {
         mProfileBinding.setProfile(profileViewModel);
+    }
+
+    @Override
+    public void showTakePhotoChooser() {
+        new DialogChooseProfilePhoto()
+                .setListener(new DialogChooseProfilePhoto.OnChooseItemListener() {
+                    @Override
+                    public void chooseCamera() {
+                        mPresenter.takePhotoClicked();
+                    }
+
+                    @Override
+                    public void chooseGallery() {
+                        mPresenter.openGalleryClicked();
+                    }
+                })
+                .show(getFragmentManager(), null);
     }
 }

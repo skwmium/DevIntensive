@@ -2,6 +2,7 @@ package com.softdesign.devintensive.view;
 
 import android.content.Intent;
 
+import com.softdesign.devintensive.ui.activities.ActivityProfile;
 import com.softdesign.devintensive.ui.viewmodel.ProfileViewModel;
 
 /**
@@ -11,4 +12,10 @@ public interface ViewProfile extends View {
     Intent getIntent();
 
     void setProfileViewModel(ProfileViewModel profileViewModel);
+
+    void showTakePhotoChooser();
+
+    ActivityProfile getActivity();
+
+    void setEditMode(boolean editMode);
 }

@@ -1,6 +1,13 @@
 package com.softdesign.devintensive.presenter;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.softdesign.devintensive.R;
 import com.softdesign.devintensive.common.App;
@@ -11,6 +18,8 @@ import com.softdesign.devintensive.ui.viewmodel.ProfileViewModel;
 import com.softdesign.devintensive.utils.Const;
 import com.softdesign.devintensive.utils.Utils;
 import com.softdesign.devintensive.view.ViewProfile;
+
+import java.io.File;
 
 import javax.inject.Inject;
 
@@ -34,6 +43,9 @@ public class PresenterProfile extends BasePresenter {
 
     private ViewProfile mView;
     private ProfileViewModel mProfileViewModel;
+
+    @Nullable
+    private File mPhotoFile;
 
     @Inject
     public PresenterProfile() {
@@ -59,6 +71,38 @@ public class PresenterProfile extends BasePresenter {
         outState.putSerializable(Const.KEY_PROFILE, mProfileViewModel);
     }
 
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case Const.REQUEST_PHOTO_PICKER:
+                if (resultCode == Activity.RESULT_OK && data != null) {
+                    mProfileViewModel.setPhotoUrl(data.getData().toString());
+                }
+                break;
+            case Const.REQUEST_PHOTO_CAMERA:
+                if (resultCode == Activity.RESULT_OK && mPhotoFile != null) {
+                    mProfileViewModel.setPhotoUrl(Uri.fromFile(mPhotoFile).toString());
+                }
+                break;
+        }
+    }
+
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        switch (requestCode) {
+            case Const.REQUEST_PERMISSION_READ_EXTERNAL_STORAGE:
+                if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    Utils.showPhotoPickerDialog(mView.getActivity(), Const.REQUEST_PHOTO_PICKER);
+                }
+                break;
+            case Const.REQUEST_PERMISSION_CAMERA:
+                if (grantResults.length == 2
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                        && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    takePhotoClicked();
+                }
+                break;
+        }
+    }
+
     public void editProfileClicked() {
         if (mProfileViewModel == null) return;
         if (mProfileViewModel.isEditable()) {
@@ -67,6 +111,7 @@ public class PresenterProfile extends BasePresenter {
         } else {
             mProfileViewModel.setEditable(true);
         }
+        mView.setEditMode(mProfileViewModel.isEditable());
     }
 
     public void dialPhoneClicked() {
@@ -83,6 +128,21 @@ public class PresenterProfile extends BasePresenter {
 
     public void watchVkClicked() {
         Utils.openWebPage(mView.getContext(), mProfileViewModel.getVkProfile());
+    }
+
+    public void changeProfilePhotoClicked() {
+        mView.showTakePhotoChooser();
+    }
+
+    public void takePhotoClicked() {
+        if (Utils.checkPermissionAndRequestIfNotGranted(mView.getActivity(), new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, Const.REQUEST_PERMISSION_CAMERA)) {
+            mPhotoFile = Utils.takePhoto(mView.getActivity());
+        }
+    }
+
+    public void openGalleryClicked() {
+        if (Utils.checkPermissionAndRequestIfNotGranted(mView.getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE, Const.REQUEST_PERMISSION_READ_EXTERNAL_STORAGE))
+            Utils.showPhotoPickerDialog(mView.getActivity(), Const.REQUEST_PHOTO_PICKER);
     }
 
     private void loadProfile() {

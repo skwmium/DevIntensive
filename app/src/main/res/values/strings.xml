@@ -30,6 +30,12 @@
     <string name="profile_label_repository">Репозиторий</string>
     <string name="profile_label_about_me">О себе</string>
     <string name="profile_data_saved">Данные сохранены</string>
+    <string name="profile_choose_photo_dialog_title">Изменить фотографию профиля</string>
+    <string-array name="profile_choose_photo_dialog_array">
+        <item>Сделать фото</item>
+        <item>Из галереи</item>
+        <item>Отмена</item>
+    </string-array>
 
     <!--error-->
     <string name="error_loading_data">Ошибка во время закгрузки данных</string>

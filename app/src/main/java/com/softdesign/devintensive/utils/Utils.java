@@ -3,9 +3,19 @@ package com.softdesign.devintensive.utils;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.net.Uri;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.content.FileProvider;
+
+import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by skwmium on 08.07.16.
@@ -35,6 +45,35 @@ public class Utils {
         startActivity(context, intent);
     }
 
+    public static void showPhotoPickerDialog(@NonNull Activity activity, int resultCode) {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+        Intent chooserIntent = Intent.createChooser(intent, null);
+        activity.startActivityForResult(chooserIntent, resultCode);
+    }
+
+    @Nullable
+    public static File takePhoto(@NonNull Activity activity) {
+        try {
+            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+            String imageFileName = "JPEG_" + timeStamp + "_";
+            File storageDir = activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+            File image = File.createTempFile(imageFileName, ".jpg", storageDir);
+            if (image == null) return null;
+            Uri photoURI = FileProvider.getUriForFile(activity, "com.softdesign.devintensive.fileprovider", image);
+
+            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+            activity.startActivityForResult(takePictureIntent, Const.REQUEST_PHOTO_CAMERA);
+            return image;
+        } catch (Exception e) {
+            L.e(e);
+            return null;
+        }
+    }
+
     private static void startActivity(@NonNull Context context, @NonNull Intent intent) {
         if (!(context instanceof Activity)) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -42,5 +81,27 @@ public class Utils {
         if (intent.resolveActivity(context.getPackageManager()) != null) {
             context.startActivity(intent);
         }
+    }
+
+
+    // ---------- PERMISSIONS ----------
+    public static boolean checkPermissionAndRequestIfNotGranted(@NonNull Activity activity, @NonNull String permission, int requestCode) {
+        return checkPermissionAndRequestIfNotGranted(activity, new String[]{permission}, requestCode);
+    }
+
+    public static boolean checkPermissionAndRequestIfNotGranted(@NonNull Activity activity, @NonNull String[] permissions, int requestCode) {
+        boolean allGranted = true;
+        for (String permission : permissions) {
+            int selfPermission = ContextCompat.checkSelfPermission(activity, permission);
+            if (selfPermission != PackageManager.PERMISSION_GRANTED) {
+                allGranted = false;
+                break;
+            }
+        }
+        if (!allGranted) {
+            ActivityCompat.requestPermissions(activity, permissions, requestCode);
+            return false;
+        }
+        return true;
     }
 }
