@@ -60,7 +60,7 @@
                     android:inputType="textPassword"/>
             </android.support.design.widget.TextInputLayout>
 
-            <Button
+            <android.support.v7.widget.AppCompatButton
                 android:id="@+id/button_login"
                 style="@style/auth_button_login"
                 android:layout_marginLeft="@dimen/spacing_large_56"
