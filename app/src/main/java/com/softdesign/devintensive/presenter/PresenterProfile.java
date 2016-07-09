@@ -194,6 +194,7 @@ public class PresenterProfile extends BasePresenter {
 
                     @Override
                     public void onNext(ProfileViewModel profileViewModel) {
+                        mView.setProfileViewModel(profileViewModel);
                     }
                 });
         addSubscription(subscription);
