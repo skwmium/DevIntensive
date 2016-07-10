@@ -20,6 +20,7 @@ import android.view.View;
 
 import com.softdesign.devintensive.R;
 import com.softdesign.devintensive.databinding.AppBarProfileBinding;
+import com.softdesign.devintensive.databinding.NavHeaderMainBinding;
 import com.softdesign.devintensive.di.DaggerComponentProfile;
 import com.softdesign.devintensive.di.ModuleViewProfile;
 import com.softdesign.devintensive.presenter.BasePresenter;
@@ -61,6 +62,7 @@ public class ActivityProfile extends BaseActivity implements ViewProfile, Naviga
     PresenterProfile mPresenter;
 
     private AppBarProfileBinding mProfileBinding;
+    private NavHeaderMainBinding mNavHeaderMainBinding;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -76,6 +78,7 @@ public class ActivityProfile extends BaseActivity implements ViewProfile, Naviga
         initToolbar();
 
         mProfileBinding = DataBindingUtil.bind(viewProfileBinding);
+        mNavHeaderMainBinding = DataBindingUtil.bind(navigationView.getHeaderView(0));
         mProfileBinding.contentProfile.imageActionPhone.setOnClickListener(this);
         mProfileBinding.contentProfile.imageActionEmail.setOnClickListener(this);
         mProfileBinding.contentProfile.imageActionRepo.setOnClickListener(this);
@@ -180,6 +183,7 @@ public class ActivityProfile extends BaseActivity implements ViewProfile, Naviga
     @Override
     public void setProfileViewModel(ProfileViewModel profileViewModel) {
         mProfileBinding.setProfile(profileViewModel);
+        mNavHeaderMainBinding.setProfile(profileViewModel);
     }
 
     @Override
