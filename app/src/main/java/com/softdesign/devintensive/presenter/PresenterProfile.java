@@ -22,8 +22,10 @@ import com.softdesign.devintensive.view.ViewProfile;
 import java.io.File;
 
 import javax.inject.Inject;
+import javax.inject.Named;
 
 import rx.Observable;
+import rx.Scheduler;
 import rx.Subscriber;
 import rx.Subscription;
 
@@ -40,6 +42,10 @@ public class PresenterProfile extends BasePresenter {
 
     @Inject
     MapperParamEdit mMapperParamEdit;
+
+    @Inject
+    @Named(Const.IO_THREAD)
+    Scheduler schedulerIo;
 
     private ViewProfile mView;
     private ProfileViewModel mProfileViewModel;
@@ -173,6 +179,7 @@ public class PresenterProfile extends BasePresenter {
     private void saveProfile() {
         mView.showProgress();
         Subscription subscription = Observable.just(mProfileViewModel)
+                .subscribeOn(schedulerIo)
                 .map(mMapperParamEdit)
                 .flatMap(paramEdit -> mModel.userEditProfile(paramEdit))
                 .map(editProfileResult -> editProfileResult.getUser())
@@ -192,7 +199,7 @@ public class PresenterProfile extends BasePresenter {
 
                     @Override
                     public void onNext(ProfileViewModel profileViewModel) {
-                        mView.setProfileViewModel(profileViewModel);
+                        mProfileViewModel.updateValues(profileViewModel);
                     }
                 });
         addSubscription(subscription);

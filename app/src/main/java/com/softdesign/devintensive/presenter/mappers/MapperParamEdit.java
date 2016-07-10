@@ -1,8 +1,12 @@
 package com.softdesign.devintensive.presenter.mappers;
 
 import android.net.Uri;
+import android.support.annotation.Nullable;
 
+import com.softdesign.devintensive.data.network.dto.PublicInfo;
+import com.softdesign.devintensive.data.network.dto.User;
 import com.softdesign.devintensive.data.network.params.ParamEdit;
+import com.softdesign.devintensive.data.storage.PreferenceCache;
 import com.softdesign.devintensive.ui.viewmodel.ProfileViewModel;
 
 import javax.inject.Inject;
@@ -24,15 +28,30 @@ public class MapperParamEdit implements Func1<ProfileViewModel, ParamEdit> {
         return Observable.just(profileViewModel)
                 .map(model -> {
                     ParamEdit paramEdit = new ParamEdit();
+
+                    PublicInfo publicInfo = getCachedUserPublicInfo();
+                    if (publicInfo == null || !publicInfo.getAvatarUrl()
+                            .equalsIgnoreCase(model.getAvatarUrl())) {
+                        paramEdit.setAvatarUri(Uri.parse(model.getAvatarUrl()));
+                    }
+                    if (publicInfo == null || !publicInfo.getPhotoUrl()
+                            .equalsIgnoreCase(model.getPhotoUrl())) {
+                        paramEdit.setPhotoUri(Uri.parse(model.getPhotoUrl()));
+                    }
+
                     paramEdit.setPhoneNumber(model.getMobilePhoneNumber());
                     paramEdit.setVkUrl(model.getVkProfile());
                     paramEdit.setGithubUrl(model.getRepository());
                     paramEdit.setBiography(model.getAbout());
-                    paramEdit.setAvatarUri(Uri.parse(model.getAvatarUrl()));
-                    paramEdit.setPhotoUri(Uri.parse(model.getPhotoUrl()));
                     return paramEdit;
                 })
                 .toBlocking()
                 .first();
+    }
+
+    @Nullable
+    private PublicInfo getCachedUserPublicInfo() {
+        User userFromCache = PreferenceCache.getUserFromCache();
+        return userFromCache == null ? null : userFromCache.getPublicInfo();
     }
 }

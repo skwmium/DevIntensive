@@ -3,6 +3,7 @@ package com.softdesign.devintensive.ui.viewmodel;
 import android.databinding.Bindable;
 import android.databinding.BindingAdapter;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
 import com.softdesign.devintensive.BR;
@@ -16,39 +17,6 @@ import com.squareup.picasso.Picasso;
  * не будут тормозить ui
  */
 public class ProfileViewModel extends BaseViewModel implements EditableModel {
-
-    public static ProfileViewModel createTestProfile() {
-        ProfileViewModel model = new ProfileViewModel();
-        model.setName("Куприн Сергей");
-        model.setRating(5);
-        model.setLinesCount(25000);
-        model.setProjectCount(5);
-        model.setMobilePhoneNumber("+7 (###) ###-##-##");
-        model.setEmail("skwmium@gmail.com");
-        model.setVkProfile("vk.com/skwmium");
-        model.setRepository("https://github.com/skwmium/DevIntensive");
-        model.setAvatarUrl("http://");
-        model.setAbout("So close no matter how far\n" +
-                "Couldn't be much more from the heart\n" +
-                "Forever trusting who we are\n" +
-                "And nothing else matters\n" +
-                "\n" +
-                "Never opened myself this way\n" +
-                "Life is ours, we live it our way\n" +
-                "All these words I don't just say\n" +
-                "And nothing else matters\n" +
-                "\n" +
-                "Trust I seek and I find in you\n" +
-                "Every day for us something new\n" +
-                "Open mind for a different view\n" +
-                "And nothing else matters\n" +
-                "\n" +
-                "Never cared for what they do\n" +
-                "Never cared for what they know\n" +
-                "But I know");
-        return model;
-    }
-
     private String mName;
     private String mRating;
     private String mLinesCount;
@@ -68,6 +36,54 @@ public class ProfileViewModel extends BaseViewModel implements EditableModel {
                 .load(url)
                 .placeholder(placeholder)
                 .into(view);
+    }
+
+    public void updateValues(@Nullable ProfileViewModel profileViewModel) {
+        if (profileViewModel == null) return;
+        if (mName != null && !mName.equals(profileViewModel.mName)) {
+            mName = profileViewModel.mName;
+            notifyPropertyChanged(BR.name);
+        }
+        if (mRating != null && !mRating.equals(profileViewModel.mRating)) {
+            mRating = profileViewModel.mRating;
+            notifyPropertyChanged(BR.rating);
+        }
+        if (mLinesCount != null && !mLinesCount.equals(profileViewModel.mLinesCount)) {
+            mLinesCount = profileViewModel.mLinesCount;
+            notifyPropertyChanged(BR.linesCount);
+        }
+        if (mProjectCount != null && !mProjectCount.equals(profileViewModel.mProjectCount)) {
+            mProjectCount = profileViewModel.mProjectCount;
+            notifyPropertyChanged(BR.projectCount);
+        }
+        if (mMobilePhoneNumber != null && !mMobilePhoneNumber.equals(profileViewModel.mMobilePhoneNumber)) {
+            mMobilePhoneNumber = profileViewModel.mMobilePhoneNumber;
+            notifyPropertyChanged(BR.mobilePhoneNumber);
+        }
+        if (mEmail != null && !mEmail.equals(profileViewModel.mEmail)) {
+            mEmail = profileViewModel.mEmail;
+            notifyPropertyChanged(BR.email);
+        }
+        if (mVkProfile != null && !mVkProfile.equals(profileViewModel.mVkProfile)) {
+            mVkProfile = profileViewModel.mVkProfile;
+            notifyPropertyChanged(BR.vkProfile);
+        }
+        if (mRepository != null && !mRepository.equals(profileViewModel.mRepository)) {
+            mRepository = profileViewModel.mRepository;
+            notifyPropertyChanged(BR.repository);
+        }
+        if (mAbout != null && !mAbout.equals(profileViewModel.mAbout)) {
+            mAbout = profileViewModel.mAbout;
+            notifyPropertyChanged(BR.about);
+        }
+        if (mAvatarUrl != null && !mAvatarUrl.equals(profileViewModel.mAvatarUrl)) {
+            mAvatarUrl = profileViewModel.mAvatarUrl;
+            notifyPropertyChanged(BR.avatarUrl);
+        }
+        if (mPhotoUrl != null && !mPhotoUrl.equals(profileViewModel.mPhotoUrl)) {
+            mPhotoUrl = profileViewModel.mPhotoUrl;
+            notifyPropertyChanged(BR.photoUrl);
+        }
     }
 
     @Bindable
