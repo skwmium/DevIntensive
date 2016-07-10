@@ -27,15 +27,31 @@ public class Contacts extends BaseValueObject {
         return mVk;
     }
 
+    public void setVk(String vk) {
+        mVk = vk;
+    }
+
     public String getPhone() {
         return mPhone;
+    }
+
+    public void setPhone(String phone) {
+        mPhone = phone;
     }
 
     public String getEmail() {
         return mEmail;
     }
 
+    public void setEmail(String email) {
+        mEmail = email;
+    }
+
     public Date getUpdated() {
         return mUpdated;
+    }
+
+    public void setUpdated(Date updated) {
+        mUpdated = updated;
     }
 }

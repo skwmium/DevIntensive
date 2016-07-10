@@ -16,8 +16,9 @@ public class SoftdesignAuthInterceptor implements Interceptor {
     public Response intercept(Chain chain) throws IOException {
         Request original = chain.request();
 
-        Request.Builder builder = original.newBuilder()
-                .addHeader("X-Access-Token", LocalUser.getInst().getAuthToken());
+        Request.Builder builder = original.newBuilder();
+        String authToken = LocalUser.getInst().getAuthToken();
+        if (authToken != null) builder.addHeader("X-Access-Token", authToken);
 
         Request request = builder.build();
         return chain.proceed(request);

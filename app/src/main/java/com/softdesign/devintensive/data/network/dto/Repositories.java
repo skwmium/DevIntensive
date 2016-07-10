@@ -23,7 +23,15 @@ public class Repositories extends BaseValueObject {
         return mRepositories;
     }
 
+    public void setRepositories(List<Repo> repositories) {
+        mRepositories = repositories;
+    }
+
     public Date getUpdated() {
         return mUpdated;
+    }
+
+    public void setUpdated(Date updated) {
+        mUpdated = updated;
     }
 }

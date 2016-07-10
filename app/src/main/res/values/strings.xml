@@ -38,7 +38,7 @@
     </string-array>
 
     <!--error-->
-    <string name="error_loading_data">Ошибка во время закгрузки данных</string>
+    <string name="error_loading_data">Ошибка во время загрузки данных</string>
     <string name="error_indefinite">Произошла ошшибка, повторите действие позже</string>
 
     <!--other-->

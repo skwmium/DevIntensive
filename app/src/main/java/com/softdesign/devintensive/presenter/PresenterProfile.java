@@ -148,7 +148,6 @@ public class PresenterProfile extends BasePresenter {
     private void loadProfile() {
         mView.showProgress();
         Subscription subscription = mModel.userGetMe()
-                .map(profileBaseResponse -> profileBaseResponse.getBody())
                 .map(mMapperUser)
                 .subscribe(new Subscriber<ProfileViewModel>() {
                     @Override
@@ -176,7 +175,6 @@ public class PresenterProfile extends BasePresenter {
         Subscription subscription = Observable.just(mProfileViewModel)
                 .map(mMapperParamEdit)
                 .flatMap(paramEdit -> mModel.userEditProfile(paramEdit))
-                .map(editProfileResponse -> editProfileResponse.getBody())
                 .map(editProfileResult -> editProfileResult.getUser())
                 .map(mMapperUser)
                 .subscribe(new Subscriber<ProfileViewModel>() {

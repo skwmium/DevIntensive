@@ -15,6 +15,7 @@ import com.softdesign.devintensive.data.network.params.ParamEdit;
 import com.softdesign.devintensive.data.network.params.ParamForgotPassword;
 import com.softdesign.devintensive.data.network.params.UploadPhotoType;
 import com.softdesign.devintensive.data.storage.LocalUser;
+import com.softdesign.devintensive.data.storage.PreferenceCache;
 import com.softdesign.devintensive.utils.Const;
 import com.softdesign.devintensive.utils.ContentUriUtils;
 
@@ -34,6 +35,7 @@ import rx.Scheduler;
 /**
  * Created by skwmium on 01.07.16.
  */
+@SuppressWarnings("Convert2MethodRef")
 public class ModelImpl implements Model {
     private final Observable.Transformer mSchedulersTransformer;
 
@@ -59,12 +61,13 @@ public class ModelImpl implements Model {
     }
 
     @Override
-    public Observable<BaseResponse<AuthResult>> autUser(String email, String password) {
+    public Observable<AuthResult> autUser(String email, String password) {
         ParamAuth authParam = new ParamAuth(email, password);
         return mSoftdesignApiInterface
                 .userAuth(authParam)
-                .compose(applySchedulers())
-                .doOnNext(localUserAuthoriser);//auth local user
+                .map(authResultBaseResponse -> authResultBaseResponse.getBody())
+                .doOnNext(localUserAuthoriser)//auth local user
+                .compose(applySchedulers());
     }
 
     @Override
@@ -76,7 +79,7 @@ public class ModelImpl implements Model {
     }
 
     @Override
-    public Observable<BaseResponse<EditProfileResult>> userEditProfile(ParamEdit editParam) {
+    public Observable<EditProfileResult> userEditProfile(ParamEdit editParam) {
         String photoPath = ContentUriUtils.uriToPath(App.getInst(), editParam.getPhotoUri());
         String avatarPath = ContentUriUtils.uriToPath(App.getInst(), editParam.getAvatarUri());
 
@@ -93,20 +96,25 @@ public class ModelImpl implements Model {
         }
         return mSoftdesignApiInterface
                 .userEdit(photoPart, avatarPart, requestBodyMap)
+                .map(editProfileResultBaseResponse -> editProfileResultBaseResponse.getBody())
                 .compose(applySchedulers());
     }
 
     @Override
-    public Observable<BaseResponse<User>> userGetProfile(@NonNull String userid) {
+    public Observable<User> userGetProfile(@NonNull String userid) {
         return mSoftdesignApiInterface
                 .userGet(userid)
+                .map(userBaseResponse -> userBaseResponse.getBody())
                 .compose(applySchedulers());
     }
 
     @Override
-    public Observable<BaseResponse<User>> userGetMe() {
+    public Observable<User> userGetMe() {
         return mSoftdesignApiInterface
                 .userGet(LocalUser.getInst().getUserId())
+                .map(userBaseResponse -> userBaseResponse.getBody())
+                .doOnNext(user -> PreferenceCache.cacheUser(user))
+                .onErrorReturn(throwable -> PreferenceCache.getUserFromCache())
                 .compose(applySchedulers());
     }
 

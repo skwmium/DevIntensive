@@ -9,6 +9,7 @@ public final class Const {
     public static final String PREF_AUTH_TOKEN = "_pref_auth_token";
     public static final String PREF_USER_ID = "_pref_user_id";
     public static final String PREF_PROFILE = "_pref_profile";
+    public static final String PREF_USER = "_pref_user";
 
 
     // ---------- KEYS ----------

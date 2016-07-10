@@ -45,39 +45,79 @@ public class User extends BaseValueObject {
         return mId;
     }
 
+    public void setId(String id) {
+        mId = id;
+    }
+
     public String getFirstName() {
         return mFirstName;
+    }
+
+    public void setFirstName(String firstName) {
+        mFirstName = firstName;
     }
 
     public String getSecondName() {
         return mSecondName;
     }
 
+    public void setSecondName(String secondName) {
+        mSecondName = secondName;
+    }
+
     public Repositories getRepositories() {
         return mRepositories;
+    }
+
+    public void setRepositories(Repositories repositories) {
+        mRepositories = repositories;
     }
 
     public Contacts getContacts() {
         return mContacts;
     }
 
+    public void setContacts(Contacts contacts) {
+        mContacts = contacts;
+    }
+
     public ProfileValues getProfileValues() {
         return mProfileValues;
+    }
+
+    public void setProfileValues(ProfileValues profileValues) {
+        mProfileValues = profileValues;
     }
 
     public PublicInfo getPublicInfo() {
         return mPublicInfo;
     }
 
+    public void setPublicInfo(PublicInfo publicInfo) {
+        mPublicInfo = publicInfo;
+    }
+
     public String getSpecialization() {
         return mSpecialization;
+    }
+
+    public void setSpecialization(String specialization) {
+        mSpecialization = specialization;
     }
 
     public String getRole() {
         return mRole;
     }
 
+    public void setRole(String role) {
+        mRole = role;
+    }
+
     public Date getUpdated() {
         return mUpdated;
+    }
+
+    public void setUpdated(Date updated) {
+        mUpdated = updated;
     }
 }

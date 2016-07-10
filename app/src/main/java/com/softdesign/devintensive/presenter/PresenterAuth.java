@@ -44,7 +44,6 @@ public class PresenterAuth extends BasePresenter {
         mView.showProgress();
         Subscription subscription = mModel
                 .autUser(email, password)
-                .map(authResultBaseResponse -> authResultBaseResponse.getBody())
                 .subscribe(new Subscriber<AuthResult>() {
                     @Override
                     public void onCompleted() {
