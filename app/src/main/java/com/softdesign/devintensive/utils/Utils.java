@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -12,6 +13,10 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
+import android.util.DisplayMetrics;
+import android.util.TypedValue;
+
+import com.softdesign.devintensive.common.App;
 
 import java.io.File;
 import java.text.SimpleDateFormat;
@@ -109,5 +114,28 @@ public class Utils {
     // ---------- COMMON ----------
     public static boolean isNullOrEmpty(@Nullable CharSequence charSequence) {
         return charSequence == null || charSequence.length() <= 0;
+    }
+
+    public static int getStatusBarHeight() {
+        Resources resources = App.getInst().getResources();
+        int identifier = resources.getIdentifier("status_bar_height", "dimen", "android");
+        return identifier > 0 ? resources.getDimensionPixelSize(identifier) : 0;
+    }
+
+    public static int getActionBarHeight() {
+        TypedValue typedValue = new TypedValue();
+        if (App.getInst().getTheme().resolveAttribute(android.R.attr.actionBarSize, typedValue, true)) {
+            DisplayMetrics displayMetrics = App.getInst().getResources().getDisplayMetrics();
+            return TypedValue.complexToDimensionPixelSize(typedValue.data, displayMetrics);
+        }
+        return 0;
+    }
+
+    public static int lerp(int start, int end, float friction) {
+        return (int) (start + (end - start) * friction);
+    }
+
+    public static float currentFriction(int start, int end, int current) {
+        return (float) (current - start) / (end - start);
     }
 }
