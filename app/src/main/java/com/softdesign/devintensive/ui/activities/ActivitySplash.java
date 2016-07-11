@@ -4,8 +4,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.Nullable;
 
-import com.softdesign.devintensive.data.managers.PreferencesManager;
-import com.softdesign.devintensive.utils.Const;
+import com.softdesign.devintensive.data.storage.LocalUser;
+import com.softdesign.devintensive.presenter.BasePresenter;
 
 /**
  * Created by skwmium on 28.06.16.
@@ -19,10 +19,17 @@ public class ActivitySplash extends BaseActivity {
         new Handler().postDelayed(this::startMainActivity, SPLASH_DELAY);
     }
 
+    @Nullable
+    @Override
+    protected BasePresenter getPresenter() {
+        return null;
+    }
+
     private void startMainActivity() {
-        boolean isUserLogined = PreferencesManager.getInst()
-                .get(Const.PREF_AUTH_TOKEN, null) != null;
-        if (isUserLogined) ActivityProfile.start(this);
-        else ActivityAuth.start(this);
+        if (LocalUser.getInst().isLogined()) {
+            ActivityProfile.start(this);
+        } else {
+            ActivityAuth.start(this);
+        }
     }
 }

@@ -5,7 +5,7 @@
 
         <variable
             name="profile"
-            type="com.softdesign.devintensive.data.viewmodel.ProfileViewModel"/>
+            type="com.softdesign.devintensive.ui.viewmodel.ProfileViewModel"/>
     </data>
 
     <merge>

@@ -5,7 +5,7 @@
 
         <variable
             name="profile"
-            type="com.softdesign.devintensive.data.viewmodel.ProfileViewModel"/>
+            type="com.softdesign.devintensive.ui.viewmodel.ProfileViewModel"/>
     </data>
 
     <LinearLayout
@@ -27,11 +27,14 @@
                 <EditText
                     style="@style/profile_item_text_input_edit"
                     android:enabled="@{profile.editable}"
+                    android:focusable="@{profile.editable}"
+                    android:focusableInTouchMode="@{profile.editable}"
                     android:hint="@string/profile_label_mobile_phone"
                     android:text="@={profile.mobilePhoneNumber}"/>
             </android.support.design.widget.TextInputLayout>
 
             <ImageView
+                android:id="@+id/image_action_phone"
                 style="@style/profile_item_icon"
                 android:src="@drawable/ic_phone_msg_24dp"/>
         </LinearLayout>
@@ -50,13 +53,20 @@
             <android.support.design.widget.TextInputLayout style="@style/profile_item_text_input">
 
                 <EditText
+                    android:id="@+id/edit_email"
                     style="@style/profile_item_text_input_edit"
                     android:enabled="@{profile.editable}"
+                    android:focusable="@{profile.editable}"
+                    android:focusableInTouchMode="@{profile.editable}"
                     android:hint="@string/profile_label_email"
-                    android:text="@={profile.email}"/>
+                    android:text="@={profile.email}">
+
+                    <requestFocus/>
+                </EditText>
             </android.support.design.widget.TextInputLayout>
 
             <ImageView
+                android:id="@+id/image_action_email"
                 style="@style/profile_item_icon"
                 android:src="@drawable/ic_send_24dp"/>
         </LinearLayout>
@@ -77,11 +87,14 @@
                 <EditText
                     style="@style/profile_item_text_input_edit"
                     android:enabled="@{profile.editable}"
+                    android:focusable="@{profile.editable}"
+                    android:focusableInTouchMode="@{profile.editable}"
                     android:hint="@string/profile_label_profile_vk"
                     android:text="@={profile.vkProfile}"/>
             </android.support.design.widget.TextInputLayout>
 
             <ImageView
+                android:id="@+id/image_action_vk"
                 style="@style/profile_item_icon"
                 android:src="@drawable/ic_visibility_24dp"/>
         </LinearLayout>
@@ -102,11 +115,14 @@
                 <EditText
                     style="@style/profile_item_text_input_edit"
                     android:enabled="@{profile.editable}"
+                    android:focusable="@{profile.editable}"
+                    android:focusableInTouchMode="@{profile.editable}"
                     android:hint="@string/profile_label_repository"
                     android:text="@={profile.repository}"/>
             </android.support.design.widget.TextInputLayout>
 
             <ImageView
+                android:id="@+id/image_action_repo"
                 style="@style/profile_item_icon"
                 android:src="@drawable/ic_visibility_24dp"/>
         </LinearLayout>
@@ -127,6 +143,8 @@
                 <EditText
                     style="@style/profile_item_text_input_edit"
                     android:enabled="@{profile.editable}"
+                    android:focusable="@{profile.editable}"
+                    android:focusableInTouchMode="@{profile.editable}"
                     android:hint="@string/profile_label_about_me"
                     android:text="@={profile.about}"/>
             </android.support.design.widget.TextInputLayout>

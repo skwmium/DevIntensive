@@ -6,14 +6,19 @@
     <string name="nav_item_contacts">Контакты</string>
 
     <!--auth screen-->
+    <string name="auth_screen_title">Войти</string>
+    <string name="auth_screen_title_forgot">Восстановить</string>
     <string name="auth_email">@string/profile_label_email</string>
     <string name="auth_password">Пароль</string>
-    <string name="auth_button_login">Авторизоваться</string>
-    <string name="auth_button_try_demo">Демо-режим</string>
+    <string name="auth_button_login">@string/auth_screen_title</string>
+    <string name="auth_button_forgot_restore">@string/auth_screen_title_forgot</string>
+    <string name="auth_button_forgot_password">Забыли пароль?</string>
+    <string name="auth_password_was_restored">Инструкции по восстановлению отправлены вам на почту</string>
     <string name="auth_error_empty_email">Введите e-mail!</string>
     <string name="auth_error_empty_password">Введите пароль!</string>
     <string name="auth_error_invalid_pass_or_email">Ошибка в логине или пароле!</string>
     <string name="auth_error_indefinite">Ошибка авторизации!</string>
+    <string name="auth_error_restore_password">Ошибка, проверьте правильность введенных данных!</string>
 
     <!--profile screen-->
     <string name="profile_label_rating">Рейтинг</string>
@@ -25,6 +30,16 @@
     <string name="profile_label_repository">Репозиторий</string>
     <string name="profile_label_about_me">О себе</string>
     <string name="profile_data_saved">Данные сохранены</string>
+    <string name="profile_choose_photo_dialog_title">Изменить фотографию профиля</string>
+    <string-array name="profile_choose_photo_dialog_array">
+        <item>Сделать фото</item>
+        <item>Из галереи</item>
+        <item>Отмена</item>
+    </string-array>
+
+    <!--error-->
+    <string name="error_loading_data">Ошибка во время закгрузки данных</string>
+    <string name="error_indefinite">Произошла ошшибка, повторите действие позже</string>
 
     <!--other-->
     <string name="username">Куприн Сергей</string>

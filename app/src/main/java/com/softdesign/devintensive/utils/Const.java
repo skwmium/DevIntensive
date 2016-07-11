@@ -11,5 +11,15 @@ public final class Const {
 
     // ---------- KEYS ----------
     public static final String KEY_PROFILE = "_key_profile";
-    public static final String KEY_API_USER = "_key_api_user";
+
+    public static final String UI_THREAD = "UI_THREAD";
+    public static final String IO_THREAD = "IO_THREAD";
+
+    public static final int REQUEST_PHOTO_PICKER = 1001;
+    public static final int REQUEST_PHOTO_CAMERA = 1002;
+    public static final int REQUEST_PERMISSION_CAMERA = 1003;
+    public static final int REQUEST_PERMISSION_READ_EXTERNAL_STORAGE = 1004;
+
+    private Const() {
+    }
 }
