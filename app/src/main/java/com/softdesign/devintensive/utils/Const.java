@@ -1,5 +1,7 @@
 package com.softdesign.devintensive.utils;
 
+import okhttp3.MediaType;
+
 /**
  * Created by skwmium on 28.06.16.
  */
@@ -24,9 +26,10 @@ public final class Const {
 
 
     // ---------- OTHER ----------
-    public static final String MULTIPART_FORM_DATA = "multipart/form-data";
+    public static final MediaType MEDIA_TYPE_MULTIPART_FORM_DATA = MediaType.parse("multipart/form-data");
     public static final String UI_THREAD = "UI_THREAD";
     public static final String IO_THREAD = "IO_THREAD";
+
 
     private Const() {
     }

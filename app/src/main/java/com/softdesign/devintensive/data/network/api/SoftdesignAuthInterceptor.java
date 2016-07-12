@@ -18,7 +18,9 @@ public class SoftdesignAuthInterceptor implements Interceptor {
 
         Request.Builder builder = original.newBuilder();
         String authToken = LocalUser.getInst().getAuthToken();
+        String userId = LocalUser.getInst().getUserId();
         if (authToken != null) builder.addHeader("X-Access-Token", authToken);
+        if (userId != null) builder.addHeader("Request-User-Id", userId);
 
         Request request = builder.build();
         return chain.proceed(request);

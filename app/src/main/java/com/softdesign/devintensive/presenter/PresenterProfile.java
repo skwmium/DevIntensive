@@ -16,6 +16,7 @@ import com.softdesign.devintensive.presenter.mappers.MapperParamEdit;
 import com.softdesign.devintensive.presenter.mappers.MapperUser;
 import com.softdesign.devintensive.ui.viewmodel.ProfileViewModel;
 import com.softdesign.devintensive.utils.Const;
+import com.softdesign.devintensive.utils.L;
 import com.softdesign.devintensive.utils.Utils;
 import com.softdesign.devintensive.view.ViewProfile;
 
@@ -34,6 +35,12 @@ import rx.Subscription;
  */
 @SuppressWarnings("Convert2MethodRef")
 public class PresenterProfile extends BasePresenter {
+    private enum State {
+        IDLE,
+        UPLOADING_AVATAR,
+        UPLOADING_PHOTO
+    }
+
     @Inject
     Model mModel;
 
@@ -52,6 +59,8 @@ public class PresenterProfile extends BasePresenter {
 
     @Nullable
     private File mPhotoFile;
+    @NonNull
+    private State mCurrentState = State.IDLE;
 
     @Inject
     public PresenterProfile() {
@@ -81,13 +90,15 @@ public class PresenterProfile extends BasePresenter {
         switch (requestCode) {
             case Const.REQUEST_PHOTO_PICKER:
                 if (resultCode == Activity.RESULT_OK && data != null) {
-                    mProfileViewModel.setPhotoUrl(data.getData().toString());
+                    updateImageByState(data.getData().toString());
                 }
+                changeState(State.IDLE);
                 break;
             case Const.REQUEST_PHOTO_CAMERA:
                 if (resultCode == Activity.RESULT_OK && mPhotoFile != null) {
-                    mProfileViewModel.setPhotoUrl(Uri.fromFile(mPhotoFile).toString());
+                    updateImageByState(Uri.fromFile(mPhotoFile).toString());
                 }
+                changeState(State.IDLE);
                 break;
         }
     }
@@ -137,6 +148,12 @@ public class PresenterProfile extends BasePresenter {
     }
 
     public void changeProfilePhotoClicked() {
+        changeState(State.UPLOADING_PHOTO);
+        mView.showTakePhotoChooser();
+    }
+
+    public void changeProfileAvatarClicked() {
+        changeState(State.UPLOADING_AVATAR);
         mView.showTakePhotoChooser();
     }
 
@@ -203,5 +220,39 @@ public class PresenterProfile extends BasePresenter {
                     }
                 });
         addSubscription(subscription);
+    }
+
+    private void updateImageByState(String imageUrl) {
+        if (isState(State.UPLOADING_AVATAR)) {
+            updateProfileAvatar(imageUrl);
+            mProfileViewModel.setAvatarUrl(imageUrl);
+        } else if (isState(State.UPLOADING_PHOTO)) {
+            updateProfilePhoto(imageUrl);
+            mProfileViewModel.setPhotoUrl(imageUrl);
+        }
+    }
+
+    private void updateProfileAvatar(String imageUrl) {
+        mModel.updateProfileAvatar(imageUrl)
+                .doOnError(throwable -> mView.showMessage(R.string.error_upload_avatar))
+                .doOnNext(uploadImageResult -> mView.showMessage(R.string.profile_avatar_was_changed))
+                .subscribe();
+    }
+
+    private void updateProfilePhoto(String imageUrl) {
+        mModel.updateProfilePhoto(imageUrl)
+                .doOnError(throwable -> mView.showMessage(R.string.error_upload_photo))
+                .doOnNext(uploadImageResult -> mView.showMessage(R.string.profile_photo_was_changed))
+                .subscribe();
+    }
+
+
+    // ---------- STATE ----------
+    private boolean isState(@NonNull State state) {
+        return mCurrentState == state;
+    }
+
+    private void changeState(@NonNull State state) {
+        mCurrentState = state;
     }
 }

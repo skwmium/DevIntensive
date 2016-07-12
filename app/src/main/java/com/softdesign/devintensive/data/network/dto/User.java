@@ -20,7 +20,7 @@ public class User extends BaseValueObject {
     @JsonProperty("second_name")
     private String mSecondName;
 
-    @JsonProperty("repositiries")
+    @JsonProperty("repositories")
     private Repositories mRepositories;
 
     @JsonProperty("contacts")

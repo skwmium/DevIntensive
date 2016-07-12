@@ -1,5 +1,6 @@
 package com.softdesign.devintensive.data;
 
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
@@ -9,6 +10,8 @@ import com.softdesign.devintensive.data.network.api.SoftdesignApiClient;
 import com.softdesign.devintensive.data.network.dto.AuthResult;
 import com.softdesign.devintensive.data.network.dto.BaseResponse;
 import com.softdesign.devintensive.data.network.dto.EditProfileResult;
+import com.softdesign.devintensive.data.network.dto.PublicInfo;
+import com.softdesign.devintensive.data.network.dto.UploadImageResult;
 import com.softdesign.devintensive.data.network.dto.User;
 import com.softdesign.devintensive.data.network.params.ParamAuth;
 import com.softdesign.devintensive.data.network.params.ParamEdit;
@@ -18,6 +21,7 @@ import com.softdesign.devintensive.data.storage.LocalUser;
 import com.softdesign.devintensive.data.storage.PreferenceCache;
 import com.softdesign.devintensive.utils.Const;
 import com.softdesign.devintensive.utils.ContentUriUtils;
+import com.softdesign.devintensive.utils.Utils;
 
 import java.io.File;
 import java.util.HashMap;
@@ -26,11 +30,13 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.inject.Named;
 
-import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import rx.Observable;
 import rx.Scheduler;
+
+import static com.softdesign.devintensive.data.network.params.UploadPhotoType.AVATAR;
+import static com.softdesign.devintensive.data.network.params.UploadPhotoType.PHOTO;
 
 /**
  * Created by skwmium on 01.07.16.
@@ -80,23 +86,54 @@ public class ModelImpl implements Model {
 
     @Override
     public Observable<EditProfileResult> userEditProfile(ParamEdit editParam) {
-        String photoPath = ContentUriUtils.uriToPath(App.getInst(), editParam.getPhotoUri());
-        String avatarPath = ContentUriUtils.uriToPath(App.getInst(), editParam.getAvatarUri());
-
-        MultipartBody.Part photoPart = getMultipartFromPath(photoPath);
-        MultipartBody.Part avatarPart = getMultipartFromPath(avatarPath);
-
-        MediaType mediaType = MediaType.parse(Const.MULTIPART_FORM_DATA);
-
         Map<String, RequestBody> requestBodyMap = new HashMap<>();
         for (Map.Entry<String, String> entry : editParam.getParamsMap().entrySet()) {
             String value = entry.getValue();
             if (value == null) continue;
-            requestBodyMap.put(entry.getKey(), RequestBody.create(mediaType, value));
+            requestBodyMap.put(entry.getKey(),
+                    RequestBody.create(Const.MEDIA_TYPE_MULTIPART_FORM_DATA, value));
         }
         return mSoftdesignApiInterface
-                .userEdit(photoPart, avatarPart, requestBodyMap)
+                .userEdit(requestBodyMap)
                 .map(editProfileResultBaseResponse -> editProfileResultBaseResponse.getBody())
+                .compose(applySchedulers());
+    }
+
+    @Override
+    public Observable<UploadImageResult> updateProfilePhoto(String path) {
+        String userId = LocalUser.getInst().getUserId();
+        PublicInfo publicInfo = getCachedUserPublicInfo();
+        if (Utils.isNullOrEmpty(userId) || Utils.isNullOrEmpty(path) ||
+                publicInfo == null || publicInfo.getPhotoUrl().equalsIgnoreCase(path)) {
+            return Observable.empty();
+        }
+
+        MultipartBody.Part part = getMultipartFromPath(PHOTO, path);
+        if (part == null) {
+            return Observable.error(new NullPointerException());
+        }
+        return mSoftdesignApiInterface
+                .userUploadPhoto(userId, part)
+                .map(response -> response.getBody())
+                .compose(applySchedulers());
+    }
+
+    @Override
+    public Observable<UploadImageResult> updateProfileAvatar(String path) {
+        String userId = LocalUser.getInst().getUserId();
+        PublicInfo publicInfo = getCachedUserPublicInfo();
+        if (Utils.isNullOrEmpty(userId) || Utils.isNullOrEmpty(path) ||
+                publicInfo == null || publicInfo.getAvatarUrl().equalsIgnoreCase(path)) {
+            return Observable.empty();
+        }
+
+        MultipartBody.Part part = getMultipartFromPath(AVATAR, path);
+        if (part == null) {
+            return Observable.error(new NullPointerException());
+        }
+        return mSoftdesignApiInterface
+                .userUploadAvatar(userId, part)
+                .map(response -> response.getBody())
                 .compose(applySchedulers());
     }
 
@@ -110,8 +147,12 @@ public class ModelImpl implements Model {
 
     @Override
     public Observable<User> userGetMe() {
+        String userId = LocalUser.getInst().getUserId();
+        if (Utils.isNullOrEmpty(userId)) {
+            return Observable.empty();
+        }
         return mSoftdesignApiInterface
-                .userGet(LocalUser.getInst().getUserId())
+                .userGet(userId)
                 .map(userBaseResponse -> userBaseResponse.getBody())
                 .doOnNext(user -> PreferenceCache.cacheUser(user))
                 .onErrorReturn(throwable -> PreferenceCache.getUserFromCache())
@@ -119,19 +160,22 @@ public class ModelImpl implements Model {
     }
 
     @Nullable
-    private MultipartBody.Part getMultipartFromPath(@Nullable String path) {
+    private MultipartBody.Part getMultipartFromPath(@NonNull UploadPhotoType type, @Nullable String path) {
+        path = ContentUriUtils.uriToPath(App.getInst(), Uri.parse(path));
         if (path == null) return null;
-
         File file = new File(path);
         if (!file.exists() || !file.isFile())
             return null;
 
         RequestBody requestFile = RequestBody
-                .create(MediaType.parse(Const.MULTIPART_FORM_DATA), file);
+                .create(Const.MEDIA_TYPE_MULTIPART_FORM_DATA, file);
+        return MultipartBody.Part.createFormData(type.toString(), file.getName(), requestFile);
+    }
 
-        MultipartBody.Part filePart = MultipartBody.Part
-                .createFormData(UploadPhotoType.PHOTO.toString(), file.getName(), requestFile);
-        return filePart;
+    @Nullable
+    private PublicInfo getCachedUserPublicInfo() {
+        User userFromCache = PreferenceCache.getUserFromCache();
+        return userFromCache == null ? null : userFromCache.getPublicInfo();
     }
 
     @SuppressWarnings("unchecked")

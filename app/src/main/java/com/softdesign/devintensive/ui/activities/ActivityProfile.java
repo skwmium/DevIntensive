@@ -33,6 +33,9 @@ import javax.inject.Inject;
 
 import butterknife.BindView;
 
+import static com.softdesign.devintensive.ui.dialogs.DialogChooseProfilePhoto.OnChooseItemListener.Type.CAMERA;
+import static com.softdesign.devintensive.ui.dialogs.DialogChooseProfilePhoto.OnChooseItemListener.Type.GALLERY;
+
 public class ActivityProfile extends BaseActivity implements ViewProfile, NavigationView.OnNavigationItemSelectedListener
         , View.OnClickListener {
     public static void start(@NonNull Context context) {
@@ -75,17 +78,22 @@ public class ActivityProfile extends BaseActivity implements ViewProfile, Naviga
                 .build()
                 .inject(this);
 
-        initToolbar();
+        init();
+        mPresenter.onCreate(savedInstanceState);
+    }
 
+    private void init() {
+        initToolbar();
         mProfileBinding = DataBindingUtil.bind(viewProfileBinding);
         mNavHeaderMainBinding = DataBindingUtil.bind(navigationView.getHeaderView(0));
+        mNavHeaderMainBinding.imageAvatar.setOnClickListener(this);
+
         mProfileBinding.contentProfile.imageActionPhone.setOnClickListener(this);
         mProfileBinding.contentProfile.imageActionEmail.setOnClickListener(this);
         mProfileBinding.contentProfile.imageActionRepo.setOnClickListener(this);
         mProfileBinding.contentProfile.imageActionVk.setOnClickListener(this);
         mProfileBinding.relativeProfilePlaceholder.setOnClickListener(this);
         floatingActionEdit.setOnClickListener(this);
-        mPresenter.onCreate(savedInstanceState);
     }
 
     @Override
@@ -139,6 +147,9 @@ public class ActivityProfile extends BaseActivity implements ViewProfile, Naviga
             case R.id.relative_profile_placeholder:
                 mPresenter.changeProfilePhotoClicked();
                 break;
+            case R.id.image_avatar:
+                mPresenter.changeProfileAvatarClicked();
+                break;
         }
     }
 
@@ -189,16 +200,11 @@ public class ActivityProfile extends BaseActivity implements ViewProfile, Naviga
     @Override
     public void showTakePhotoChooser() {
         new DialogChooseProfilePhoto()
-                .setListener(new DialogChooseProfilePhoto.OnChooseItemListener() {
-                    @Override
-                    public void chooseCamera() {
-                        mPresenter.takePhotoClicked();
-                    }
-
-                    @Override
-                    public void chooseGallery() {
+                .setListener(type -> {
+                    if (type == GALLERY)
                         mPresenter.openGalleryClicked();
-                    }
+                    else if (type == CAMERA)
+                        mPresenter.takePhotoClicked();
                 })
                 .show(getFragmentManager(), null);
     }

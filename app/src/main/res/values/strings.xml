@@ -30,6 +30,8 @@
     <string name="profile_label_repository">Репозиторий</string>
     <string name="profile_label_about_me">О себе</string>
     <string name="profile_data_saved">Данные сохранены</string>
+    <string name="profile_avatar_was_changed">Аватар успешно загружен</string>
+    <string name="profile_photo_was_changed">Фото успешно загружено</string>
     <string name="profile_choose_photo_dialog_title">Изменить фотографию профиля</string>
     <string-array name="profile_choose_photo_dialog_array">
         <item>Сделать фото</item>
@@ -40,6 +42,8 @@
     <!--error-->
     <string name="error_loading_data">Ошибка во время загрузки данных</string>
     <string name="error_indefinite">Произошла ошшибка, повторите действие позже</string>
+    <string name="error_upload_avatar">Ошибка во время загрузки аватара</string>
+    <string name="error_upload_photo">Ошибка во время загрузки фото</string>
 
     <!--other-->
     <string name="username">Куприн Сергей</string>

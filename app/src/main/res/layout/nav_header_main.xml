@@ -5,8 +5,6 @@
 
     <data>
 
-        <import type="android.view.View"/>
-
         <variable
             name="profile"
             type="com.softdesign.devintensive.ui.viewmodel.ProfileViewModel"/>
@@ -30,7 +28,7 @@
             app:circular="true"
             app:imageUrl="@{profile.avatarUrl}"
             app:layout_collapseMode="parallax"
-            app:placeholder="@{@drawable/bg_user}"
+            app:placeholder="@{@drawable/nav_avatar_default}"
             tools:ignore="MissingPrefix"/>
 
         <LinearLayout

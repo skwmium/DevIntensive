@@ -4,6 +4,7 @@ import android.app.AlertDialog;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 
 import com.softdesign.devintensive.R;
 
@@ -12,9 +13,12 @@ import com.softdesign.devintensive.R;
  */
 public class DialogChooseProfilePhoto extends DialogFragment {
     public interface OnChooseItemListener {
-        void chooseCamera();
+        enum Type {
+            CAMERA,
+            GALLERY
+        }
 
-        void chooseGallery();
+        void onChoosed(@NonNull Type type);
     }
 
     private OnChooseItemListener mListener;
@@ -33,10 +37,10 @@ public class DialogChooseProfilePhoto extends DialogFragment {
                             if (mListener == null) return;
                             switch (i) {
                                 case 0:
-                                    mListener.chooseCamera();
+                                    mListener.onChoosed(OnChooseItemListener.Type.CAMERA);
                                     break;
                                 case 1:
-                                    mListener.chooseGallery();
+                                    mListener.onChoosed(OnChooseItemListener.Type.GALLERY);
                                     break;
                                 case 2:
                                     dialogInterface.cancel();

@@ -6,6 +6,7 @@ import android.support.annotation.Nullable;
 import com.softdesign.devintensive.data.network.dto.AuthResult;
 import com.softdesign.devintensive.data.network.dto.BaseResponse;
 import com.softdesign.devintensive.data.network.dto.EditProfileResult;
+import com.softdesign.devintensive.data.network.dto.UploadImageResult;
 import com.softdesign.devintensive.data.network.dto.User;
 import com.softdesign.devintensive.data.network.params.ParamAuth;
 import com.softdesign.devintensive.data.network.params.ParamForgotPassword;
@@ -38,9 +39,17 @@ public interface SoftdesignApiClient {
 
     @Multipart
     @POST("profile/edit")
-    Observable<BaseResponse<EditProfileResult>> userEdit(@Nullable @Part MultipartBody.Part filePhoto,
-                                                         @Nullable @Part MultipartBody.Part fileAvatar,
-                                                         @NonNull @PartMap Map<String, RequestBody> bodyMap);
+    Observable<BaseResponse<EditProfileResult>> userEdit(@NonNull @PartMap Map<String, RequestBody> bodyMap);
+
+    @Multipart
+    @POST("user/{userId}/publicValues/profilePhoto")
+    Observable<BaseResponse<UploadImageResult>> userUploadPhoto(@NonNull @Path("userId") String userId,
+                                                                @NonNull @Part MultipartBody.Part filePhoto);
+
+    @Multipart
+    @POST("user/{userId}/publicValues/profileAvatar")
+    Observable<BaseResponse<UploadImageResult>> userUploadAvatar(@NonNull @Path("userId") String userId,
+                                                                 @NonNull @Part MultipartBody.Part fileAvatar);
 
     @GET("user/{userId}")
     Observable<BaseResponse<User>> userGet(@NonNull @Path("userId") String userId);
