@@ -19,7 +19,15 @@ public class AuthResult extends BaseValueObject {
         return mUser;
     }
 
+    public void setUser(User user) {
+        mUser = user;
+    }
+
     public String getToken() {
         return mToken;
+    }
+
+    public void setToken(String token) {
+        mToken = token;
     }
 }

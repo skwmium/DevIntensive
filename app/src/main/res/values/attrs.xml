@@ -1,6 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    //uses for ImageView, makes CircleImageView instead
+    <!--uses for ImageView, makes CircleImageView instead-->
     <attr name="circular" format="boolean"/>
+
+    <!-- uses for profile subheader behavior-->
+    <declare-styleable name="ProfileSubheaderBehavior">
+        <attr name="behavior_min_height" format="dimension"/>
+    </declare-styleable>
 </resources>

@@ -22,11 +22,23 @@ public class Repo extends BaseValueObject {
         return mId;
     }
 
+    public void setId(String id) {
+        mId = id;
+    }
+
     public String getGitUrl() {
         return mGitUrl;
     }
 
+    public void setGitUrl(String gitUrl) {
+        mGitUrl = gitUrl;
+    }
+
     public String getTitle() {
         return mTitle;
+    }
+
+    public void setTitle(String title) {
+        mTitle = title;
     }
 }

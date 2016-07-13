@@ -1,18 +1,27 @@
 package com.softdesign.devintensive.data.network.api;
 
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
 import com.softdesign.devintensive.data.network.dto.AuthResult;
 import com.softdesign.devintensive.data.network.dto.BaseResponse;
 import com.softdesign.devintensive.data.network.dto.EditProfileResult;
-import com.softdesign.devintensive.data.network.dto.Profile;
+import com.softdesign.devintensive.data.network.dto.UploadImageResult;
+import com.softdesign.devintensive.data.network.dto.User;
 import com.softdesign.devintensive.data.network.params.ParamAuth;
-import com.softdesign.devintensive.data.network.params.ParamEdit;
 import com.softdesign.devintensive.data.network.params.ParamForgotPassword;
 
+import java.util.Map;
+
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 import retrofit2.http.Body;
+import retrofit2.http.GET;
+import retrofit2.http.Multipart;
 import retrofit2.http.POST;
-import retrofit2.http.Query;
+import retrofit2.http.Part;
+import retrofit2.http.PartMap;
+import retrofit2.http.Path;
 import rx.Observable;
 
 /**
@@ -28,12 +37,20 @@ public interface SoftdesignApiClient {
     @POST("sendforgot")
     Observable<BaseResponse> userRestorePassword(@NonNull @Body ParamForgotPassword paramForgotPassword);
 
+    @Multipart
     @POST("profile/edit")
-    Observable<BaseResponse<EditProfileResult>> userEdit(@NonNull @Query("token") String token,
-                                                         @NonNull @Body ParamEdit editParam);
+    Observable<BaseResponse<EditProfileResult>> userEdit(@NonNull @PartMap Map<String, RequestBody> bodyMap);
 
-    //TODO change this method when api
-    //This method is like hack, I use it because I didn't find method GET /profile
-    @POST("profile/edit")
-    Observable<BaseResponse<Profile>> userGet(@NonNull @Query("token") String token);
+    @Multipart
+    @POST("user/{userId}/publicValues/profilePhoto")
+    Observable<BaseResponse<UploadImageResult>> userUploadPhoto(@NonNull @Path("userId") String userId,
+                                                                @NonNull @Part MultipartBody.Part filePhoto);
+
+    @Multipart
+    @POST("user/{userId}/publicValues/profileAvatar")
+    Observable<BaseResponse<UploadImageResult>> userUploadAvatar(@NonNull @Path("userId") String userId,
+                                                                 @NonNull @Part MultipartBody.Part fileAvatar);
+
+    @GET("user/{userId}")
+    Observable<BaseResponse<User>> userGet(@NonNull @Path("userId") String userId);
 }

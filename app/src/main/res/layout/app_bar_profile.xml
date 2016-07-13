@@ -37,16 +37,16 @@
 
                 <FrameLayout
                     android:layout_width="match_parent"
-                    android:layout_height="@dimen/profile_image_height">
+                    android:layout_height="@dimen/profile_image_height"
+                    android:fitsSystemWindows="true">
 
                     <ImageView
                         android:layout_width="match_parent"
                         android:layout_height="@dimen/profile_image_height"
-                        android:fitsSystemWindows="true"
                         android:scaleType="centerCrop"
                         app:imageUrl="@{profile.photoUrl}"
                         app:layout_collapseMode="parallax"
-                        app:placeholder="@{@drawable/img_profile_heder_default}"/>
+                        app:placeholder="@{@drawable/bg_user}"/>
 
                     <LinearLayout
                         android:id="@+id/relative_profile_placeholder"
@@ -85,7 +85,7 @@
         <android.support.v4.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
+            app:layout_behavior=".ui.view.behaviors.CustomNestedScrollBehavior">
 
             <include
                 android:id="@+id/content_profile"
@@ -98,8 +98,8 @@
             style="@style/profile_subheader"
             android:layout_width="match_parent"
             android:layout_height="@dimen/profile_subheader_height"
-            android:minHeight="@dimen/profile_subheader_height_min"
             android:orientation="horizontal"
+            app:behavior_min_height="@dimen/profile_subheader_height_min"
             app:layout_behavior=".ui.view.behaviors.ProfileSubheaderBehavior">
 
             <include

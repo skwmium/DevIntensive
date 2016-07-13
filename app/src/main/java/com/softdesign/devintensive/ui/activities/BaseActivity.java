@@ -14,7 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.softdesign.devintensive.R;
-import com.softdesign.devintensive.common.InflaterFactory;
+import com.softdesign.devintensive.ui.view.InflaterFactory;
 import com.softdesign.devintensive.presenter.BasePresenter;
 
 import butterknife.ButterKnife;

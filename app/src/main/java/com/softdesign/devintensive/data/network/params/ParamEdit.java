@@ -1,76 +1,43 @@
 package com.softdesign.devintensive.data.network.params;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.fasterxml.jackson.annotation.JsonProperty;
+import android.support.annotation.NonNull;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by skwmium on 27.06.16.
  */
-@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ParamEdit {
-    @JsonProperty("phone")
-    private String mPhoneNumber;
-
-    @JsonProperty("vk")
-    private String mVkUrl;
-
-    @JsonProperty("name")
-    private String mFirstname;
-
-    @JsonProperty("surname")
-    private String mLastName;
-
-    @JsonProperty("github")
-    private String mGithubUrl;
-
-    @JsonProperty("bio")
-    private String mBiography;
-
-    public String getPhoneNumber() {
-        return mPhoneNumber;
-    }
+    @NonNull
+    private Map<String, String> mParamsMap = new HashMap<>();
 
     public void setPhoneNumber(String phoneNumber) {
-        mPhoneNumber = phoneNumber;
-    }
-
-    public String getVkUrl() {
-        return mVkUrl;
+        mParamsMap.put("phone", phoneNumber);
     }
 
     public void setVkUrl(String vkUrl) {
-        mVkUrl = vkUrl;
-    }
-
-    public String getFirstname() {
-        return mFirstname;
+        mParamsMap.put("vk", vkUrl);
     }
 
     public void setFirstname(String firstname) {
-        mFirstname = firstname;
-    }
-
-    public String getLastName() {
-        return mLastName;
+        mParamsMap.put("name", firstname);
     }
 
     public void setLastName(String lastName) {
-        mLastName = lastName;
-    }
-
-    public String getGithubUrl() {
-        return mGithubUrl;
+        mParamsMap.put("surname", lastName);
     }
 
     public void setGithubUrl(String githubUrl) {
-        mGithubUrl = githubUrl;
-    }
-
-    public String getBiography() {
-        return mBiography;
+        mParamsMap.put("github", githubUrl);
     }
 
     public void setBiography(String biography) {
-        mBiography = biography;
+        mParamsMap.put("bio", biography);
+    }
+
+    @NonNull
+    public Map<String, String> getParamsMap() {
+        return mParamsMap;
     }
 }

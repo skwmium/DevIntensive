@@ -15,4 +15,8 @@ public class EditProfileResult extends BaseValueObject {
     public User getUser() {
         return mUser;
     }
+
+    public void setUser(User user) {
+        mUser = user;
+    }
 }

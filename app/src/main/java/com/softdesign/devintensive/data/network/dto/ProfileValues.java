@@ -27,15 +27,31 @@ public class ProfileValues extends BaseValueObject {
         return mProjectCount;
     }
 
+    public void setProjectCount(Integer projectCount) {
+        mProjectCount = projectCount;
+    }
+
     public Integer getCodeLineCount() {
         return mCodeLineCount;
+    }
+
+    public void setCodeLineCount(Integer codeLineCount) {
+        mCodeLineCount = codeLineCount;
     }
 
     public Integer getRating() {
         return mRating;
     }
 
+    public void setRating(Integer rating) {
+        mRating = rating;
+    }
+
     public Date getUpdated() {
         return mUpdated;
+    }
+
+    public void setUpdated(Date updated) {
+        mUpdated = updated;
     }
 }

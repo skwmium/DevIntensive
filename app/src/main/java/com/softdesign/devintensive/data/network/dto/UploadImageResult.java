@@ -6,38 +6,16 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Date;
 
 /**
- * Created by skwmium on 27.06.16.
+ * Created by skwmium on 12.07.16.
  */
 @SuppressWarnings("unused")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class PublicInfo extends BaseValueObject {
-    @JsonProperty("bio")
-    private String mBio;
-
-    @JsonProperty("avatar")
-    private String mAvatarUrl;
-
+public class UploadImageResult extends BaseValueObject {
     @JsonProperty("photo")
     private String mPhotoUrl;
 
     @JsonProperty("updated")
     private Date mUpdated;
-
-    public String getBio() {
-        return mBio;
-    }
-
-    public void setBio(String bio) {
-        mBio = bio;
-    }
-
-    public String getAvatarUrl() {
-        return mAvatarUrl;
-    }
-
-    public void setAvatarUrl(String avatarUrl) {
-        mAvatarUrl = avatarUrl;
-    }
 
     public String getPhotoUrl() {
         return mPhotoUrl;
