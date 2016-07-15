@@ -1,6 +1,6 @@
 package com.softdesign.devintensive.di;
 
-import com.softdesign.devintensive.ui.fragments.FragmentProfileList;
+import com.softdesign.devintensive.ui.activities.ActivityProfileList;
 
 import javax.inject.Singleton;
 
@@ -12,5 +12,5 @@ import dagger.Component;
 @Singleton
 @Component(modules = {ModuleProfileList.class})
 public interface ComponentProfileList {
-    void inject(FragmentProfileList fragmentProfileList);
+    void inject(ActivityProfileList activityProfileList);
 }

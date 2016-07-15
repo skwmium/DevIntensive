@@ -2,7 +2,6 @@ package com.softdesign.devintensive.presenter;
 
 import android.os.Bundle;
 import android.os.Parcelable;
-import android.support.annotation.Nullable;
 
 import com.softdesign.devintensive.R;
 import com.softdesign.devintensive.common.App;
@@ -42,7 +41,7 @@ public class PresenterProfileList extends BasePresenter {
         mView = view;
     }
 
-    public void onViewCreated(@Nullable Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             ArrayList<ProfileViewModel> savedList = savedInstanceState.getParcelableArrayList(Const.KEY_PROFILE_LIST);
             if (savedList != null) {

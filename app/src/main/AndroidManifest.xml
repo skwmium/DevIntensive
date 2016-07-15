@@ -38,6 +38,11 @@
             android:theme="@style/AppTheme.NoActionBar.Auth"/>
         <activity
             android:name=".ui.activities.ActivityProfile"
+            android:launchMode="singleTask"
+            android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".ui.activities.ActivityProfileList"
+            android:launchMode="singleInstance"
             android:theme="@style/AppTheme.NoActionBar"/>
 
         <provider
