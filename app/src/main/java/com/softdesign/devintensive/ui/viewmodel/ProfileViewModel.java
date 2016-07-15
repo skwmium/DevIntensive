@@ -3,10 +3,13 @@ package com.softdesign.devintensive.ui.viewmodel;
 import android.databinding.Bindable;
 import android.databinding.BindingAdapter;
 import android.graphics.drawable.Drawable;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
 import com.softdesign.devintensive.BR;
+import com.softdesign.devintensive.utils.Utils;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -30,8 +33,62 @@ public class ProfileViewModel extends BaseViewModel implements EditableModel {
     private String mPhotoUrl;
     private boolean mIsEditable;
 
+    public ProfileViewModel() {
+    }
+
+    protected ProfileViewModel(Parcel in) {
+        mName = in.readString();
+        mRating = in.readString();
+        mLinesCount = in.readString();
+        mProjectCount = in.readString();
+        mMobilePhoneNumber = in.readString();
+        mEmail = in.readString();
+        mVkProfile = in.readString();
+        mRepository = in.readString();
+        mAbout = in.readString();
+        mAvatarUrl = in.readString();
+        mPhotoUrl = in.readString();
+        mIsEditable = in.readByte() != 0x00;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(mName);
+        dest.writeString(mRating);
+        dest.writeString(mLinesCount);
+        dest.writeString(mProjectCount);
+        dest.writeString(mMobilePhoneNumber);
+        dest.writeString(mEmail);
+        dest.writeString(mVkProfile);
+        dest.writeString(mRepository);
+        dest.writeString(mAbout);
+        dest.writeString(mAvatarUrl);
+        dest.writeString(mPhotoUrl);
+        dest.writeByte((byte) (mIsEditable ? 0x01 : 0x00));
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<ProfileViewModel> CREATOR = new Parcelable.Creator<ProfileViewModel>() {
+        @Override
+        public ProfileViewModel createFromParcel(Parcel in) {
+            return new ProfileViewModel(in);
+        }
+
+        @Override
+        public ProfileViewModel[] newArray(int size) {
+            return new ProfileViewModel[size];
+        }
+    };
+
     @BindingAdapter({"bind:imageUrl", "bind:placeholder"})
     public static void loadImage(ImageView view, String url, Drawable placeholder) {
+        if (Utils.isNullOrEmpty(url))
+            return;
         Picasso.with(view.getContext())
                 .load(url)
                 .placeholder(placeholder)

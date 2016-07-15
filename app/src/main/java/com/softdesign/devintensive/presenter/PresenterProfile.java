@@ -16,7 +16,6 @@ import com.softdesign.devintensive.presenter.mappers.MapperParamEdit;
 import com.softdesign.devintensive.presenter.mappers.MapperUser;
 import com.softdesign.devintensive.ui.viewmodel.ProfileViewModel;
 import com.softdesign.devintensive.utils.Const;
-import com.softdesign.devintensive.utils.L;
 import com.softdesign.devintensive.utils.Utils;
 import com.softdesign.devintensive.view.ViewProfile;
 
@@ -73,7 +72,7 @@ public class PresenterProfile extends BasePresenter {
 
     public void onCreate(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
-            mProfileViewModel = (ProfileViewModel) savedInstanceState.getSerializable(Const.KEY_PROFILE);
+            mProfileViewModel = savedInstanceState.getParcelable(Const.KEY_PROFILE);
         }
         if (mProfileViewModel == null) {
             loadProfile();
@@ -83,7 +82,7 @@ public class PresenterProfile extends BasePresenter {
     }
 
     public void onSaveInstanceState(Bundle outState) {
-        outState.putSerializable(Const.KEY_PROFILE, mProfileViewModel);
+        outState.putParcelable(Const.KEY_PROFILE, mProfileViewModel);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {

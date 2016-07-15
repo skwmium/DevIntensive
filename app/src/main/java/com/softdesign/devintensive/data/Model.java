@@ -9,6 +9,8 @@ import com.softdesign.devintensive.data.network.dto.UploadImageResult;
 import com.softdesign.devintensive.data.network.dto.User;
 import com.softdesign.devintensive.data.network.params.ParamEdit;
 
+import java.util.List;
+
 import rx.Observable;
 
 /**
@@ -28,4 +30,6 @@ public interface Model {
     Observable<User> userGetProfile(@NonNull String userid);
 
     Observable<User> userGetMe();
+
+    Observable<List<User>> getUserList();
 }

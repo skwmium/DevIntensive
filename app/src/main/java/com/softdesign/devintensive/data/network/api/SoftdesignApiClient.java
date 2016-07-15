@@ -1,7 +1,6 @@
 package com.softdesign.devintensive.data.network.api;
 
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.softdesign.devintensive.data.network.dto.AuthResult;
 import com.softdesign.devintensive.data.network.dto.BaseResponse;
@@ -11,6 +10,7 @@ import com.softdesign.devintensive.data.network.dto.User;
 import com.softdesign.devintensive.data.network.params.ParamAuth;
 import com.softdesign.devintensive.data.network.params.ParamForgotPassword;
 
+import java.util.List;
 import java.util.Map;
 
 import okhttp3.MultipartBody;
@@ -53,4 +53,7 @@ public interface SoftdesignApiClient {
 
     @GET("user/{userId}")
     Observable<BaseResponse<User>> userGet(@NonNull @Path("userId") String userId);
+
+    @GET("user/list?orderBy=rating")
+    Observable<BaseResponse<List<User>>> userGetList();
 }

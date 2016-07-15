@@ -39,6 +39,9 @@
         <item>Отмена</item>
     </string-array>
 
+    <!--profile list-->
+    <string name="profile_list_open_item">Просмотр</string>
+
     <!--error-->
     <string name="error_loading_data">Ошибка во время загрузки данных</string>
     <string name="error_indefinite">Произошла ошшибка, повторите действие позже</string>

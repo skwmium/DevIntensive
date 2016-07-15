@@ -25,6 +25,7 @@ import com.softdesign.devintensive.utils.Utils;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -156,6 +157,14 @@ public class ModelImpl implements Model {
                 .map(userBaseResponse -> userBaseResponse.getBody())
                 .doOnNext(user -> PreferenceCache.cacheUser(user))
                 .onErrorReturn(throwable -> PreferenceCache.getUserFromCache())
+                .compose(applySchedulers());
+    }
+
+    @Override
+    public Observable<List<User>> getUserList() {
+        return mSoftdesignApiInterface
+                .userGetList()
+                .map(listBaseResponse -> listBaseResponse.getBody())
                 .compose(applySchedulers());
     }
 

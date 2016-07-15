@@ -102,8 +102,10 @@
             app:behavior_min_height="@dimen/profile_subheader_height_min"
             app:layout_behavior=".ui.view.behaviors.ProfileSubheaderBehavior">
 
-            <include
-                layout="@layout/profile_subheader"
+            <com.softdesign.devintensive.ui.view.ProfilePublicInfoView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:theme="@style/profile_public_info_dark"
                 bind:profile="@{profile}"/>
         </LinearLayout>
 
