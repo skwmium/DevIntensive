@@ -5,9 +5,13 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
+import android.view.Menu;
+import android.view.MenuItem;
 
 import com.softdesign.devintensive.R;
 import com.softdesign.devintensive.di.DaggerComponentProfileList;
@@ -29,7 +33,8 @@ import butterknife.BindView;
 /**
  * Created by skwmium on 15.07.16.
  */
-public class ActivityProfileList extends BaseActivity implements ViewProfileList, OnItemCLickListener {
+public class ActivityProfileList extends BaseActivity implements ViewProfileList, OnItemCLickListener,
+        SearchView.OnQueryTextListener {
     public static void start(@NonNull Context context) {
         Intent intent = new Intent(context, ActivityProfileList.class);
         context.startActivity(intent);
@@ -62,6 +67,10 @@ public class ActivityProfileList extends BaseActivity implements ViewProfileList
         if (actionBar != null) {
             actionBar.setTitle(R.string.nav_item_contacts);
         }
+        if (toolbar != null) {
+            toolbar.setOnClickListener(view -> recyclerView.scrollToPosition(0));
+        }
+
         mAdapterProfileList = new AdapterProfileList();
         mAdapterProfileList.setItemCLickListener(this);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
@@ -72,6 +81,16 @@ public class ActivityProfileList extends BaseActivity implements ViewProfileList
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         mPresenter.onSaveInstanceState(outState);
+    }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.toolbar_profile_list, menu);
+
+        MenuItem searchItem = menu.findItem(R.id.nav_search);
+        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+        searchView.setOnQueryTextListener(this);
+        return true;
     }
 
     @Nullable
@@ -89,5 +108,16 @@ public class ActivityProfileList extends BaseActivity implements ViewProfileList
     public void onItemClick(BaseViewModel viewModel) {
         ProfileViewModel profileViewModel = (ProfileViewModel) viewModel;
         ActivityProfile.start(this, profileViewModel);
+    }
+
+    @Override
+    public boolean onQueryTextSubmit(String query) {
+        return false;
+    }
+
+    @Override
+    public boolean onQueryTextChange(String newText) {
+        mPresenter.filterProfiles(newText);
+        return false;
     }
 }
