@@ -73,6 +73,7 @@
                 android:background="@color/profile_item_divider"/>
 
             <Button
+                android:id="@+id/button_open"
                 style="@style/profile_list_item_button"
                 android:text="@string/profile_list_open_item"/>
         </LinearLayout>

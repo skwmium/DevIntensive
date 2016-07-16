@@ -3,6 +3,8 @@
 
     <data>
 
+        <import type="android.view.View"/>
+
         <variable
             name="profile"
             type="com.softdesign.devintensive.ui.viewmodel.ProfileViewModel"/>
@@ -15,7 +17,9 @@
 
 
         <!--mobile-->
-        <LinearLayout style="@style/profile_item">
+        <LinearLayout
+            style="@style/profile_item"
+            android:visibility="@{profile.canBeEditable ? View.VISIBLE : View.GONE}">
 
             <ImageView
                 style="@style/profile_item_icon"
@@ -39,11 +43,15 @@
         </LinearLayout>
 
 
-        <View style="@style/profile_item_divider"/>
+        <View
+            style="@style/profile_item_divider"
+            android:visibility="@{profile.canBeEditable ? View.VISIBLE : View.GONE}"/>
 
 
         <!--email-->
-        <LinearLayout style="@style/profile_item">
+        <LinearLayout
+            style="@style/profile_item"
+            android:visibility="@{profile.canBeEditable ? View.VISIBLE : View.GONE}">
 
             <ImageView
                 style="@style/profile_item_icon"
@@ -71,11 +79,15 @@
         </LinearLayout>
 
 
-        <View style="@style/profile_item_divider"/>
+        <View
+            style="@style/profile_item_divider"
+            android:visibility="@{profile.canBeEditable ? View.VISIBLE : View.GONE}"/>
 
 
         <!--vkontakte-->
-        <LinearLayout style="@style/profile_item">
+        <LinearLayout
+            style="@style/profile_item"
+            android:visibility="@{profile.canBeEditable ? View.VISIBLE : View.GONE}">
 
             <ImageView
                 style="@style/profile_item_icon"
@@ -99,7 +111,9 @@
         </LinearLayout>
 
 
-        <View style="@style/profile_item_divider"/>
+        <View
+            style="@style/profile_item_divider"
+            android:visibility="@{profile.canBeEditable ? View.VISIBLE : View.GONE}"/>
 
 
         <!--repo-->

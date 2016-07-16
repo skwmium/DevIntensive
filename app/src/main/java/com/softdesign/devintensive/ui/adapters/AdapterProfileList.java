@@ -2,6 +2,7 @@ package com.softdesign.devintensive.ui.adapters;
 
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.ViewGroup;
@@ -19,6 +20,12 @@ import java.util.List;
 public class AdapterProfileList extends RecyclerView.Adapter<AdapterProfileList.ViewHolder> {
     @NonNull
     private List<ProfileViewModel> mProfileViewModels = new ArrayList<>();
+    @Nullable
+    private OnItemCLickListener mItemCLickListener;
+
+    public void setItemCLickListener(@Nullable OnItemCLickListener itemCLickListener) {
+        mItemCLickListener = itemCLickListener;
+    }
 
     public void setItems(List<ProfileViewModel> profileViewModels) {
         if (profileViewModels == null) {
@@ -29,18 +36,22 @@ public class AdapterProfileList extends RecyclerView.Adapter<AdapterProfileList.
         notifyDataSetChanged();
     }
 
+    private ProfileViewModel getItem(int position) {
+        return mProfileViewModels.get(position);
+    }
+
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         ItemListProfileBinding profileBinding = DataBindingUtil.inflate(
                 LayoutInflater.from(parent.getContext()),
                 R.layout.item_list_profile,
                 parent, false);
-        return new ViewHolder(profileBinding);
+        return new ViewHolder(profileBinding, mItemCLickListener);
     }
 
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
-        holder.getProfileBinding().setProfile(mProfileViewModels.get(position));
+        holder.getProfileBinding().setProfile(getItem(position));
     }
 
     @Override
@@ -52,9 +63,14 @@ public class AdapterProfileList extends RecyclerView.Adapter<AdapterProfileList.
     public static class ViewHolder extends RecyclerView.ViewHolder {
         private ItemListProfileBinding mProfileBinding;
 
-        public ViewHolder(ItemListProfileBinding profileBinding) {
+        public ViewHolder(ItemListProfileBinding profileBinding, OnItemCLickListener listener) {
             super(profileBinding.getRoot());
             mProfileBinding = profileBinding;
+            mProfileBinding.buttonOpen.setOnClickListener(view -> {
+                if (listener != null) {
+                    listener.onItemClick(mProfileBinding.getProfile());
+                }
+            });
         }
 
         public ItemListProfileBinding getProfileBinding() {

@@ -20,6 +20,7 @@ import com.softdesign.devintensive.presenter.BasePresenter;
 import com.softdesign.devintensive.presenter.PresenterProfile;
 import com.softdesign.devintensive.ui.dialogs.DialogChooseProfilePhoto;
 import com.softdesign.devintensive.ui.viewmodel.ProfileViewModel;
+import com.softdesign.devintensive.utils.Const;
 import com.softdesign.devintensive.view.ViewProfile;
 
 import javax.inject.Inject;
@@ -32,7 +33,12 @@ import static com.softdesign.devintensive.ui.dialogs.DialogChooseProfilePhoto.On
 public class ActivityProfile extends BaseActivity implements ViewProfile, NavigationView.OnNavigationItemSelectedListener
         , View.OnClickListener {
     public static void start(@NonNull Context context) {
+        start(context, null);
+    }
+
+    public static void start(@NonNull Context context, @Nullable ProfileViewModel viewModel) {
         Intent intent = new Intent(context, ActivityProfile.class);
+        intent.putExtra(Const.KEY_PROFILE, viewModel);
         context.startActivity(intent);
     }
 

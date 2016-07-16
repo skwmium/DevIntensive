@@ -75,6 +75,9 @@ public class PresenterProfile extends BasePresenter {
             mProfileViewModel = savedInstanceState.getParcelable(Const.KEY_PROFILE);
         }
         if (mProfileViewModel == null) {
+            mProfileViewModel = mView.getIntent().getParcelableExtra(Const.KEY_PROFILE);
+        }
+        if (mProfileViewModel == null) {
             loadProfile();
         } else {
             mView.setProfileViewModel(mProfileViewModel);

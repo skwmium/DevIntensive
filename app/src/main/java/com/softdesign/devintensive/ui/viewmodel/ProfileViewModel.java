@@ -32,6 +32,7 @@ public class ProfileViewModel extends BaseViewModel implements EditableModel {
     private String mAvatarUrl;
     private String mPhotoUrl;
     private boolean mIsEditable;
+    private boolean mIsCanBeEditable;
 
     public ProfileViewModel() {
     }
@@ -49,6 +50,7 @@ public class ProfileViewModel extends BaseViewModel implements EditableModel {
         mAvatarUrl = in.readString();
         mPhotoUrl = in.readString();
         mIsEditable = in.readByte() != 0x00;
+        mIsCanBeEditable = in.readByte() != 0x00;
     }
 
     @Override
@@ -70,6 +72,7 @@ public class ProfileViewModel extends BaseViewModel implements EditableModel {
         dest.writeString(mAvatarUrl);
         dest.writeString(mPhotoUrl);
         dest.writeByte((byte) (mIsEditable ? 0x01 : 0x00));
+        dest.writeByte((byte) (mIsCanBeEditable ? 0x01 : 0x00));
     }
 
     @SuppressWarnings("unused")
@@ -205,6 +208,12 @@ public class ProfileViewModel extends BaseViewModel implements EditableModel {
         return mIsEditable;
     }
 
+    @Override
+    @Bindable
+    public boolean isCanBeEditable() {
+        return mIsCanBeEditable;
+    }
+
     // ---------- SETTERS ----------
 
 
@@ -266,5 +275,10 @@ public class ProfileViewModel extends BaseViewModel implements EditableModel {
     public void setEditable(boolean editable) {
         mIsEditable = editable;
         notifyPropertyChanged(BR.editable);
+    }
+
+    public void setCanBeEditable(boolean canBeEditable) {
+        mIsCanBeEditable = canBeEditable;
+        notifyPropertyChanged(BR.canBeEditable);
     }
 }
