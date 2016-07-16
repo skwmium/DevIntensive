@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Point;
 import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
@@ -15,6 +16,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
+import android.view.Display;
+import android.view.WindowManager;
 
 import com.softdesign.devintensive.common.App;
 
@@ -26,6 +29,8 @@ import java.util.Date;
  * Created by skwmium on 08.07.16.
  */
 public class Utils {
+    @Nullable
+    static Point sFullScreenWidthRatio16;
 
     // ---------- INTENTS ----------
     public static void dialPhoneNumber(@NonNull Context context, @Nullable String phoneNumber) {
@@ -129,6 +134,18 @@ public class Utils {
             return TypedValue.complexToDimensionPixelSize(typedValue.data, displayMetrics);
         }
         return 0;
+    }
+
+    public static Point getFullScreenWidthRatio16() {
+        if (sFullScreenWidthRatio16 == null) {
+            WindowManager wm = (WindowManager) App.getInst().getSystemService(Context.WINDOW_SERVICE);
+            Display display = wm.getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+
+            sFullScreenWidthRatio16 = new Point(size.x, (int) (size.x / 1.78));
+        }
+        return sFullScreenWidthRatio16;
     }
 
     public static int lerp(int start, int end, float friction) {

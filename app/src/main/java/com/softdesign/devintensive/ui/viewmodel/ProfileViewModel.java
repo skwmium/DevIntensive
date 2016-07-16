@@ -95,7 +95,8 @@ public class ProfileViewModel extends BaseViewModel implements EditableModel {
         Picasso.with(view.getContext())
                 .load(url)
                 .placeholder(placeholder)
-                .resize(view.getWidth(), view.getHeight())
+                .resize(Utils.getFullScreenWidthRatio16().x,
+                        Utils.getFullScreenWidthRatio16().y)
                 .into(view);
     }
 
