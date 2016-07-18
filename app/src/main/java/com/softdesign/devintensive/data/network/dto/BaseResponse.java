@@ -10,7 +10,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
  */
 @SuppressWarnings("unused")
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class BaseResponse<T extends BaseValueObject> {
+public class BaseResponse<T> {
     @JsonProperty("success")
     private boolean mSuccess;
 

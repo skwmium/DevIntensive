@@ -1,10 +1,13 @@
 package com.softdesign.devintensive.presenter.mappers;
 
+import android.support.annotation.Nullable;
+
 import com.softdesign.devintensive.data.network.dto.Contacts;
 import com.softdesign.devintensive.data.network.dto.ProfileValues;
 import com.softdesign.devintensive.data.network.dto.PublicInfo;
 import com.softdesign.devintensive.data.network.dto.Repositories;
 import com.softdesign.devintensive.data.network.dto.User;
+import com.softdesign.devintensive.data.storage.LocalUser;
 import com.softdesign.devintensive.ui.viewmodel.ProfileViewModel;
 
 import javax.inject.Inject;
@@ -16,9 +19,16 @@ import rx.functions.Func1;
  * Created by skwmium on 08.07.16.
  */
 public class MapperUser implements Func1<User, ProfileViewModel> {
+    @Nullable
+    private String mLocalUserid;
 
     @Inject
     public MapperUser() {
+        mLocalUserid = LocalUser.getInst().getUserId();
+    }
+
+    private boolean isLocalUser(String id) {
+        return mLocalUserid != null && id != null && mLocalUserid.equals(id);
     }
 
     @Override
@@ -26,6 +36,7 @@ public class MapperUser implements Func1<User, ProfileViewModel> {
         return Observable.just(userDto)
                 .map(user -> {
                     ProfileViewModel profileViewModel = new ProfileViewModel();
+                    profileViewModel.setCanBeEditable(isLocalUser(user.getId()));
                     profileViewModel.setName(user.getFirstName() + " " + user.getSecondName());
 
                     ProfileValues profileValues = user.getProfileValues();

@@ -5,13 +5,13 @@ import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.IdRes;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.annotation.StringRes;
 import android.view.View;
 
 import com.softdesign.devintensive.presenter.BasePresenter;
 import com.softdesign.devintensive.ui.activities.BaseActivity;
+import com.softdesign.devintensive.utils.L;
 
 import butterknife.ButterKnife;
 import butterknife.Unbinder;
@@ -55,7 +55,7 @@ public abstract class BaseFragment extends Fragment {
             return getActivity();
     }
 
-    @NonNull
+    @Nullable
     protected BaseActivity getBaseActivity() {
         return (BaseActivity) getActivity();
     }
@@ -64,14 +64,21 @@ public abstract class BaseFragment extends Fragment {
     protected abstract BasePresenter getPresenter();
 
     public void showMessage(@StringRes int res) {
-        getBaseActivity().showSnackbar(res);
+        BaseActivity baseActivity = getBaseActivity();
+        if (baseActivity != null)
+            baseActivity.showSnackbar(res);
     }
 
     public void showProgress() {
-        getBaseActivity().showProgress();
+        BaseActivity baseActivity = getBaseActivity();
+        if (baseActivity != null)
+            getBaseActivity().showProgress();
     }
 
     public void hideProgress() {
-        getBaseActivity().hideProgress();
+        L.e("hide progress ", this);
+        BaseActivity baseActivity = getBaseActivity();
+        if (baseActivity != null)
+            getBaseActivity().hideProgress();
     }
 }

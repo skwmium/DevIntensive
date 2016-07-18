@@ -3,7 +3,7 @@
 
     <!--nav drawer-->
     <string name="nav_item_profile">Профиль</string>
-    <string name="nav_item_contacts">Контакты</string>
+    <string name="nav_item_contacts">Команда</string>
 
     <!--auth screen-->
     <string name="auth_screen_title">Войти</string>
@@ -38,6 +38,9 @@
         <item>Из галереи</item>
         <item>Отмена</item>
     </string-array>
+
+    <!--profile list-->
+    <string name="profile_list_open_item">Просмотр</string>
 
     <!--error-->
     <string name="error_loading_data">Ошибка во время загрузки данных</string>

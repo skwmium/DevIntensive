@@ -47,7 +47,6 @@
     </style>
 
     <style name="profile_subheader_divider">
-        <item name="android:background">@color/profile_subheader_divider</item>
         <item name="android:layout_width">1dp</item>
         <item name="android:layout_height">@dimen/profile_subheader_height_min</item>
     </style>
@@ -56,7 +55,6 @@
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">@dimen/font_larger_22</item>
-        <item name="android:textColor">@android:color/primary_text_dark</item>
         <item name="android:fontFamily">sans-serif</item>
     </style>
 
@@ -111,6 +109,28 @@
     </style>
 
 
+    <!--profile public info-->
+    <style name="profile_public_info_dark" parent="AppTheme">
+        <item name="android:textColor">@android:color/primary_text_dark</item>
+        <item name="dividerColor">@color/profile_subheader_divider</item>
+    </style>
+
+    <style name="profile_public_info_lite" parent="AppTheme">
+        <item name="android:textColor">@android:color/primary_text_light</item>
+        <item name="android:background">@android:color/white</item>
+        <item name="dividerColor">@android:color/transparent</item>
+    </style>
+
+    <!--profile list-->
+    <style name="profile_list_item_button" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">@dimen/spacing_small_8</item>
+        <item name="android:paddingLeft">@dimen/spacing_normal_16</item>
+        <item name="android:paddingRight">@dimen/spacing_normal_16</item>
+        <item name="android:textColor">@color/color_accent</item>
+    </style>
+
     <!--auth screen-->
     <style name="auth_button_login">
         <item name="android:layout_width">match_parent</item>
@@ -148,5 +168,4 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
     </style>
-
 </resources>

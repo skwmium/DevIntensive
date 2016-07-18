@@ -16,6 +16,7 @@ public final class Const {
 
     // ---------- KEYS ----------
     public static final String KEY_PROFILE = "_key_profile";
+    public static final String KEY_PROFILE_LIST = "_key_profile_list";
 
 
     // ---------- REQUESTS ----------

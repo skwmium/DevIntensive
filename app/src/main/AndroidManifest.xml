@@ -39,6 +39,10 @@
         <activity
             android:name=".ui.activities.ActivityProfile"
             android:theme="@style/AppTheme.NoActionBar"/>
+        <activity
+            android:name=".ui.activities.ActivityProfileList"
+            android:launchMode="singleInstance"
+            android:theme="@style/AppTheme.NoActionBar"/>
 
         <provider
             android:name="android.support.v4.content.FileProvider"

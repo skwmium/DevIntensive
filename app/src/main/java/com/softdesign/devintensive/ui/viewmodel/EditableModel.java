@@ -5,4 +5,6 @@ package com.softdesign.devintensive.ui.viewmodel;
  */
 public interface EditableModel {
     boolean isEditable();
+
+    boolean isCanBeEditable();
 }
