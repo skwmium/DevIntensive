@@ -9,6 +9,8 @@ import com.softdesign.devintensive.R;
 import com.softdesign.devintensive.common.App;
 import com.softdesign.devintensive.data.Model;
 import com.softdesign.devintensive.presenter.mappers.MapperUserList;
+import com.softdesign.devintensive.ui.adapters.OnItemCLickListener;
+import com.softdesign.devintensive.ui.viewmodel.BaseViewModel;
 import com.softdesign.devintensive.ui.viewmodel.ProfileViewModel;
 import com.softdesign.devintensive.utils.Const;
 import com.softdesign.devintensive.utils.L;
@@ -29,12 +31,12 @@ import rx.schedulers.Schedulers;
 /**
  * Created by skwmium on 14.07.16.
  */
-public class PresenterProfileList extends BasePresenter {
+public class PresenterProfileList extends BasePresenter implements OnItemCLickListener {
     @Inject
-    Model mModel;
+    Model model;
 
     @Inject
-    MapperUserList mMapperUserList;
+    MapperUserList mapperUserList;
 
     @Nullable
     private Subscription mPrevSubscriptionFilter;
@@ -49,6 +51,14 @@ public class PresenterProfileList extends BasePresenter {
     public PresenterProfileList(ViewProfileList view) {
         App.getAppComponent().inject(this);
         mView = view;
+    }
+
+    @Override
+    public void onItemClick(BaseViewModel viewModel) {
+        ProfileViewModel profileViewModel = (ProfileViewModel) viewModel;
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(Const.KEY_PROFILE, profileViewModel);
+        mView.startProfileView(bundle);
     }
 
     public void onCreate(Bundle savedInstanceState) {
@@ -91,8 +101,8 @@ public class PresenterProfileList extends BasePresenter {
 
     private void loadProfileList() {
         mView.showProgress();
-        Subscription subscription = mModel.getUserList()
-                .map(mMapperUserList)
+        Subscription subscription = model.getUserList()
+                .map(mapperUserList)
                 .subscribe(new Subscriber<List<ProfileViewModel>>() {
                     @Override
                     public void onCompleted() {

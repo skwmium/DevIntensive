@@ -17,7 +17,7 @@ import rx.Subscription;
  */
 public class PresenterRestorePassword extends BasePresenter {
     @Inject
-    protected Model mModel;
+    protected Model model;
 
     private ViewRestorePassword mView;
 
@@ -32,11 +32,12 @@ public class PresenterRestorePassword extends BasePresenter {
 
     public void restoreClicked() {
         mView.showProgress();
-        Subscription subscription = mModel
+        Subscription subscription = model
                 .userRestorePassword(mView.getEmail())
                 .subscribe(new Subscriber<BaseResponse>() {
                     @Override
                     public void onCompleted() {
+                        mView.hideProgress();
                     }
 
                     @Override
@@ -54,7 +55,6 @@ public class PresenterRestorePassword extends BasePresenter {
                     @Override
                     public void onNext(BaseResponse baseResponse) {
                         mView.showMessage(R.string.auth_password_was_restored);
-                        mView.hideProgress();
                         mView.goBack();
                     }
                 });

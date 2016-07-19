@@ -27,9 +27,11 @@ public final class Const {
 
 
     // ---------- OTHER ----------
+    public static final String FILE_PROVIDER_AUTHORITY = "com.softdesign.devintensive.fileprovider";
     public static final MediaType MEDIA_TYPE_MULTIPART_FORM_DATA = MediaType.parse("multipart/form-data");
     public static final String UI_THREAD = "UI_THREAD";
     public static final String IO_THREAD = "IO_THREAD";
+    public static final String PHOTO_FILE_PREFIX = "IMG_";
 
 
     private Const() {

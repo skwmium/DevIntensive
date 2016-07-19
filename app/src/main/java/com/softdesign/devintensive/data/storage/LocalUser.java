@@ -4,7 +4,10 @@ import android.support.annotation.Nullable;
 
 import com.softdesign.devintensive.data.managers.PreferencesManager;
 import com.softdesign.devintensive.utils.Const;
+import com.softdesign.devintensive.utils.LogoutEvent;
 import com.softdesign.devintensive.utils.Utils;
+
+import org.greenrobot.eventbus.EventBus;
 
 /**
  * Created by skwmium on 07.07.16.
@@ -30,6 +33,7 @@ public final class LocalUser {
     public boolean logout() {
         setAuthToken(null);
         setUserId(null);
+        EventBus.getDefault().post(new LogoutEvent());
         return true;
     }
 

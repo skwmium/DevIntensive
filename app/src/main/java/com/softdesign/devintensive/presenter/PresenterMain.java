@@ -11,18 +11,14 @@ import android.support.annotation.Nullable;
 import com.softdesign.devintensive.R;
 import com.softdesign.devintensive.common.App;
 import com.softdesign.devintensive.data.Model;
-import com.softdesign.devintensive.presenter.mappers.MapperParamEdit;
 import com.softdesign.devintensive.presenter.mappers.MapperUser;
 import com.softdesign.devintensive.ui.viewmodel.ProfileViewModel;
 import com.softdesign.devintensive.utils.Const;
 import com.softdesign.devintensive.utils.Utils;
-import com.softdesign.devintensive.view.ViewProfile;
+import com.softdesign.devintensive.view.ViewMain;
 
 import javax.inject.Inject;
-import javax.inject.Named;
 
-import rx.Observable;
-import rx.Scheduler;
 import rx.Subscriber;
 import rx.Subscription;
 
@@ -33,49 +29,38 @@ import static com.softdesign.devintensive.utils.Const.REQUEST_PERMISSION_CAMERA;
 import static com.softdesign.devintensive.utils.Const.REQUEST_PERMISSION_READ_EXTERNAL_STORAGE;
 
 /**
- * Created by skwmium on 05.07.16.
+ * Created by skwmium on 20.07.16.
  */
-@SuppressWarnings("Convert2MethodRef")
-public class PresenterProfile extends BasePresenter {
+public class PresenterMain extends BasePresenter {
     @Inject
     Model model;
 
     @Inject
     MapperUser mapperUser;
 
-    @Inject
-    MapperParamEdit mapperParamEdit;
-
-    @Inject
-    @Named(Const.IO_THREAD)
-    Scheduler schedulerIo;
-
-    private ViewProfile mView;
-    private ProfileViewModel mProfileViewModel;
+    private ViewMain mView;
 
     @Nullable
     private Uri mPhotoUri;
+    private ProfileViewModel mProfileViewModel;
 
     @Inject
-    public PresenterProfile() {
+    public PresenterMain() {
     }
 
-    public PresenterProfile(ViewProfile profileView) {
+    public PresenterMain(ViewMain view) {
         App.getAppComponent().inject(this);
-        mView = profileView;
+        mView = view;
     }
 
     public void onCreate(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
             mProfileViewModel = savedInstanceState.getParcelable(Const.KEY_PROFILE);
         }
-        if (mProfileViewModel == null && mView.getArguments() != null) {
-            mProfileViewModel = mView.getArguments().getParcelable(Const.KEY_PROFILE);
-        }
         if (mProfileViewModel == null) {
             loadProfile();
         } else {
-            mView.setProfileViewModel(mProfileViewModel);
+            mView.setLocalUserProfileViewModel(mProfileViewModel);
         }
     }
 
@@ -87,12 +72,12 @@ public class PresenterProfile extends BasePresenter {
         switch (requestCode) {
             case Const.REQUEST_PHOTO_PICKER:
                 if (resultCode == Activity.RESULT_OK && data != null) {
-                    updateProfilePhoto(data.getData());
+                    updateProfileAvatar(data.getData());
                 }
                 break;
             case Const.REQUEST_PHOTO_CAMERA:
                 if (resultCode == Activity.RESULT_OK && mPhotoUri != null) {
-                    updateProfilePhoto(mPhotoUri);
+                    updateProfileAvatar(mPhotoUri);
                 }
                 break;
         }
@@ -116,34 +101,7 @@ public class PresenterProfile extends BasePresenter {
         }
     }
 
-    public void editProfileClicked() {
-        if (mProfileViewModel == null) return;
-        if (mProfileViewModel.isEditable()) {
-            mProfileViewModel.setEditable(false);
-            saveProfile();
-        } else {
-            mProfileViewModel.setEditable(true);
-        }
-        mView.setEditMode(mProfileViewModel.isEditable());
-    }
-
-    public void dialPhoneClicked() {
-        Utils.dialPhoneNumber(mView.getContext(), mProfileViewModel.getMobilePhoneNumber());
-    }
-
-    public void sendEmailClicked() {
-        Utils.sendEmail(mView.getContext(), null, mProfileViewModel.getEmail());
-    }
-
-    public void watchRepoClicked() {
-        Utils.openWebPage(mView.getContext(), mProfileViewModel.getRepository());
-    }
-
-    public void watchVkClicked() {
-        Utils.openWebPage(mView.getContext(), mProfileViewModel.getVkProfile());
-    }
-
-    public void changeProfilePhotoClicked() {
+    public void changeProfileAvatarClicked() {
         mView.showTakePhotoChooser();
     }
 
@@ -186,46 +144,17 @@ public class PresenterProfile extends BasePresenter {
                     @Override
                     public void onNext(ProfileViewModel profileViewModel) {
                         mProfileViewModel = profileViewModel;
-                        mView.setProfileViewModel(profileViewModel);
+                        mView.setLocalUserProfileViewModel(profileViewModel);
                     }
                 });
         addSubscription(subscription);
     }
 
-    private void saveProfile() {
-        mView.showProgress();
-        Subscription subscription = Observable.just(mProfileViewModel)
-                .subscribeOn(schedulerIo)
-                .map(mapperParamEdit)
-                .flatMap(paramEdit -> model.userEditProfile(paramEdit))
-                .map(editProfileResult -> editProfileResult.getUser())
-                .map(mapperUser)
-                .subscribe(new Subscriber<ProfileViewModel>() {
-                    @Override
-                    public void onCompleted() {
-                        mView.hideProgress();
-                        mView.showMessage(R.string.profile_data_saved);
-                    }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        mView.hideProgress();
-                        mView.showMessage(R.string.error_loading_data);
-                    }
-
-                    @Override
-                    public void onNext(ProfileViewModel profileViewModel) {
-                        mProfileViewModel.updateValues(profileViewModel);
-                    }
-                });
-        addSubscription(subscription);
-    }
-
-    private void updateProfilePhoto(Uri imageUri) {
-        mProfileViewModel.setPhotoUrl(imageUri.toString());
-        model.updateProfilePhoto(imageUri)
-                .doOnError(throwable -> mView.showMessage(R.string.error_upload_photo))
-                .doOnNext(uploadImageResult -> mView.showMessage(R.string.profile_photo_was_changed))
+    private void updateProfileAvatar(Uri imageUri) {
+        model.updateProfileAvatar(imageUri)
+                .doOnError(throwable -> mView.showMessage(R.string.error_upload_avatar))
+                .doOnNext(uploadImageResult -> mView.showMessage(R.string.profile_avatar_was_changed))
                 .subscribe();
     }
 }

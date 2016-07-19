@@ -101,15 +101,16 @@ public class ModelImpl implements Model {
     }
 
     @Override
-    public Observable<UploadImageResult> updateProfilePhoto(String path) {
+    public Observable<UploadImageResult> updateProfilePhoto(Uri imageUri) {
         String userId = LocalUser.getInst().getUserId();
         PublicInfo publicInfo = getCachedUserPublicInfo();
-        if (Utils.isNullOrEmpty(userId) || Utils.isNullOrEmpty(path) ||
-                publicInfo == null || publicInfo.getPhotoUrl().equalsIgnoreCase(path)) {
+
+        if (imageUri == null || publicInfo == null || Utils.isNullOrEmpty(userId) ||
+                publicInfo.getPhotoUrl().equalsIgnoreCase(imageUri.toString())) {
             return Observable.empty();
         }
 
-        MultipartBody.Part part = getMultipartFromPath(PHOTO, path);
+        MultipartBody.Part part = getMultipartFromPath(PHOTO, imageUri);
         if (part == null) {
             return Observable.error(new NullPointerException());
         }
@@ -120,15 +121,15 @@ public class ModelImpl implements Model {
     }
 
     @Override
-    public Observable<UploadImageResult> updateProfileAvatar(String path) {
+    public Observable<UploadImageResult> updateProfileAvatar(Uri imageUri) {
         String userId = LocalUser.getInst().getUserId();
         PublicInfo publicInfo = getCachedUserPublicInfo();
-        if (Utils.isNullOrEmpty(userId) || Utils.isNullOrEmpty(path) ||
-                publicInfo == null || publicInfo.getAvatarUrl().equalsIgnoreCase(path)) {
+        if (imageUri == null || publicInfo == null || Utils.isNullOrEmpty(userId) ||
+                publicInfo.getPhotoUrl().equalsIgnoreCase(imageUri.toString())) {
             return Observable.empty();
         }
 
-        MultipartBody.Part part = getMultipartFromPath(AVATAR, path);
+        MultipartBody.Part part = getMultipartFromPath(AVATAR, imageUri);
         if (part == null) {
             return Observable.error(new NullPointerException());
         }
@@ -169,8 +170,8 @@ public class ModelImpl implements Model {
     }
 
     @Nullable
-    private MultipartBody.Part getMultipartFromPath(@NonNull UploadPhotoType type, @Nullable String path) {
-        path = ContentUriUtils.uriToPath(App.getInst(), Uri.parse(path));
+    private MultipartBody.Part getMultipartFromPath(@NonNull UploadPhotoType type, @NonNull Uri uri) {
+        String path = ContentUriUtils.uriToPath(App.getInst(), uri);
         if (path == null) return null;
         File file = new File(path);
         if (!file.exists() || !file.isFile())

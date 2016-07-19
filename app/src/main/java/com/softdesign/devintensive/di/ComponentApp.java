@@ -3,6 +3,7 @@ package com.softdesign.devintensive.di;
 import com.softdesign.devintensive.data.ModelImpl;
 import com.softdesign.devintensive.presenter.BasePresenter;
 import com.softdesign.devintensive.presenter.PresenterAuth;
+import com.softdesign.devintensive.presenter.PresenterMain;
 import com.softdesign.devintensive.presenter.PresenterProfile;
 import com.softdesign.devintensive.presenter.PresenterProfileList;
 import com.softdesign.devintensive.presenter.PresenterRestorePassword;
@@ -21,9 +22,11 @@ public interface ComponentApp {
 
     void inject(BasePresenter basePresenter);
 
-    void inject(PresenterAuth authPresenter);
+    void inject(PresenterMain presenterMain);
 
-    void inject(PresenterProfile profilePresenter);
+    void inject(PresenterAuth presenterAuth);
+
+    void inject(PresenterProfile presenterProfile);
 
     void inject(PresenterRestorePassword presenterRestorePassword);
 

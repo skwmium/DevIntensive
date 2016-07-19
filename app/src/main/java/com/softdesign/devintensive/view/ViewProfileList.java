@@ -1,5 +1,7 @@
 package com.softdesign.devintensive.view;
 
+import android.os.Bundle;
+
 import com.softdesign.devintensive.ui.viewmodel.ProfileViewModel;
 
 import java.util.List;
@@ -9,4 +11,6 @@ import java.util.List;
  */
 public interface ViewProfileList extends View {
     void showProfileList(List<ProfileViewModel> profileViewModels);
+
+    void startProfileView(Bundle arg);
 }

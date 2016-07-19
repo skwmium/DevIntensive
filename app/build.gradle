@@ -82,6 +82,9 @@ dependencies {
     apt 'com.google.dagger:dagger-compiler:2.4'
     provided 'javax.annotation:jsr250-api:1.0'
 
+    //BusEvent
+    compile 'org.greenrobot:eventbus:3.0.0'
+
     //crashlytics
     compile('com.crashlytics.sdk.android:crashlytics:2.5.7@aar') {
         transitive = true;

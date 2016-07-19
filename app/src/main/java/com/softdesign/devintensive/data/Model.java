@@ -1,5 +1,6 @@
 package com.softdesign.devintensive.data;
 
+import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.softdesign.devintensive.data.network.dto.AuthResult;
@@ -23,9 +24,9 @@ public interface Model {
 
     Observable<EditProfileResult> userEditProfile(ParamEdit editParam);
 
-    Observable<UploadImageResult> updateProfilePhoto(String path);
+    Observable<UploadImageResult> updateProfilePhoto(Uri imageUri);
 
-    Observable<UploadImageResult> updateProfileAvatar(String path);
+    Observable<UploadImageResult> updateProfileAvatar(Uri imageUri);
 
     Observable<User> userGetProfile(@NonNull String userid);
 

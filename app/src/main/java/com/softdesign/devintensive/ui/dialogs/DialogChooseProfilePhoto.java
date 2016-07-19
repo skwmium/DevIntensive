@@ -2,9 +2,9 @@ package com.softdesign.devintensive.ui.dialogs;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
-import android.app.DialogFragment;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.v4.app.DialogFragment;
 
 import com.softdesign.devintensive.R;
 
@@ -28,6 +28,7 @@ public class DialogChooseProfilePhoto extends DialogFragment {
         return this;
     }
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         return new AlertDialog.Builder(getActivity())

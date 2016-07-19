@@ -1,26 +1,27 @@
-package com.softdesign.devintensive.ui.activities;
+package com.softdesign.devintensive.ui.fragments;
 
-import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
+import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
 
 import com.softdesign.devintensive.R;
-import com.softdesign.devintensive.di.DaggerComponentProfileList;
-import com.softdesign.devintensive.di.ModuleProfileList;
+import com.softdesign.devintensive.di.DaggerComponentView;
+import com.softdesign.devintensive.di.ModuleViewDynamically;
 import com.softdesign.devintensive.presenter.BasePresenter;
 import com.softdesign.devintensive.presenter.PresenterProfileList;
+import com.softdesign.devintensive.ui.activities.BaseActivity;
 import com.softdesign.devintensive.ui.adapters.AdapterProfileList;
-import com.softdesign.devintensive.ui.adapters.OnItemCLickListener;
-import com.softdesign.devintensive.ui.viewmodel.BaseViewModel;
 import com.softdesign.devintensive.ui.viewmodel.ProfileViewModel;
 import com.softdesign.devintensive.view.ViewProfileList;
 
@@ -31,48 +32,65 @@ import javax.inject.Inject;
 import butterknife.BindView;
 
 /**
- * Created by skwmium on 15.07.16.
+ * Created by skwmium on 19.07.16.
  */
-public class ActivityProfileList extends BaseActivity implements ViewProfileList, OnItemCLickListener,
+public class FragmentProfileList extends BaseFragment implements ViewProfileList,
         SearchView.OnQueryTextListener {
-    public static void start(@NonNull Context context) {
-        Intent intent = new Intent(context, ActivityProfileList.class);
-        context.startActivity(intent);
-    }
+    @BindView(R.id.toolbar)
+    Toolbar toolbar;
 
     @BindView(R.id.recycler)
     RecyclerView recyclerView;
 
     @Inject
-    PresenterProfileList mPresenter;
+    PresenterProfileList presenter;
     private AdapterProfileList mAdapterProfileList;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile_list);
 
-        DaggerComponentProfileList
+        DaggerComponentView
                 .builder()
-                .moduleProfileList(new ModuleProfileList(this))
+                .moduleViewDynamically(new ModuleViewDynamically(this))
                 .build()
                 .inject(this);
+    }
 
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_profile_list, container, false);
+    }
+
+    @Override
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
         init();
-        mPresenter.onCreate(savedInstanceState);
+        presenter.onCreate(savedInstanceState);
+    }
+
+    @Nullable
+    @Override
+    protected BasePresenter getPresenter() {
+        return presenter;
     }
 
     private void init() {
-        ActionBar actionBar = getSupportActionBar();
+        activityCallback.setActionBar(toolbar);
+
+        BaseActivity baseActivity = getBaseActivity();
+        ActionBar actionBar = null;
+        if (baseActivity != null) {
+            actionBar = baseActivity.getSupportActionBar();
+        }
         if (actionBar != null) {
             actionBar.setTitle(R.string.nav_item_contacts);
         }
-        if (toolbar != null) {
-            toolbar.setOnClickListener(view -> recyclerView.scrollToPosition(0));
-        }
+        toolbar.setOnClickListener(view -> recyclerView.scrollToPosition(0));
 
         mAdapterProfileList = new AdapterProfileList();
-        mAdapterProfileList.setItemCLickListener(this);
+        mAdapterProfileList.setItemCLickListener(presenter);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(mAdapterProfileList);
     }
@@ -80,23 +98,16 @@ public class ActivityProfileList extends BaseActivity implements ViewProfileList
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        mPresenter.onSaveInstanceState(outState);
+        presenter.onSaveInstanceState(outState);
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.toolbar_profile_list, menu);
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.toolbar_profile_list, menu);
 
         MenuItem searchItem = menu.findItem(R.id.nav_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setOnQueryTextListener(this);
-        return true;
-    }
-
-    @Nullable
-    @Override
-    protected BasePresenter getPresenter() {
-        return mPresenter;
     }
 
     @Override
@@ -105,9 +116,8 @@ public class ActivityProfileList extends BaseActivity implements ViewProfileList
     }
 
     @Override
-    public void onItemClick(BaseViewModel viewModel) {
-        ProfileViewModel profileViewModel = (ProfileViewModel) viewModel;
-        ActivityProfile.start(this, profileViewModel);
+    public void startProfileView(Bundle arg) {
+        activityCallback.startProfileFragment(arg);
     }
 
     @Override
@@ -117,7 +127,7 @@ public class ActivityProfileList extends BaseActivity implements ViewProfileList
 
     @Override
     public boolean onQueryTextChange(String newText) {
-        mPresenter.filterProfiles(newText);
+        presenter.filterProfiles(newText);
         return false;
     }
 }

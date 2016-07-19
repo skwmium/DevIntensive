@@ -1,24 +1,17 @@
 package com.softdesign.devintensive.view;
 
 import android.net.Uri;
-import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
 
 import com.softdesign.devintensive.ui.viewmodel.ProfileViewModel;
 
 /**
- * Created by skwmium on 05.07.16.
+ * Created by skwmium on 20.07.16.
  */
-public interface ViewProfile extends View {
-    @Nullable
-    Bundle getArguments();
-
-    void setProfileViewModel(ProfileViewModel profileViewModel);
+public interface ViewMain extends View {
+    void setLocalUserProfileViewModel(ProfileViewModel profileViewModel);
 
     void showTakePhotoChooser();
-
-    void setEditMode(boolean editMode);
 
     boolean checkPermissionsAndRequestIfNotGranted(@NonNull String[] permissons, int requestCode);
 
