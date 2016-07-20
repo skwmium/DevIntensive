@@ -19,6 +19,7 @@ import com.softdesign.devintensive.data.network.params.ParamForgotPassword;
 import com.softdesign.devintensive.data.network.params.UploadPhotoType;
 import com.softdesign.devintensive.data.storage.LocalUser;
 import com.softdesign.devintensive.data.storage.PreferenceCache;
+import com.softdesign.devintensive.data.storage.entities.DaoSession;
 import com.softdesign.devintensive.utils.Const;
 import com.softdesign.devintensive.utils.ContentUriUtils;
 import com.softdesign.devintensive.utils.Utils;
@@ -48,6 +49,9 @@ public class ModelImpl implements Model {
 
     @Inject
     SoftdesignApiClient mSoftdesignApiInterface;
+
+    @Inject
+    DaoSession daoSession;
 
     @Inject
     @Named(Const.UI_THREAD)

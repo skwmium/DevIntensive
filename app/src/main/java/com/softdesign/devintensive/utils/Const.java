@@ -26,6 +26,10 @@ public final class Const {
     public static final int REQUEST_PERMISSION_READ_EXTERNAL_STORAGE = 1004;
 
 
+    // ---------- STORAGE ----------
+    public static final String DATABASE_NAME = "devintensive-db";
+
+
     // ---------- OTHER ----------
     public static final String FILE_PROVIDER_AUTHORITY = "com.softdesign.devintensive.fileprovider";
     public static final MediaType MEDIA_TYPE_MULTIPART_FORM_DATA = MediaType.parse("multipart/form-data");

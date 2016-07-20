@@ -7,9 +7,11 @@ buildscript {
     dependencies {
         classpath 'io.fabric.tools:gradle:1.+'
         classpath 'me.tatarka:gradle-retrolambda:3.2.5'
+        classpath 'org.greenrobot:greendao-gradle-plugin:3.0.0'
     }
 }
 
+apply plugin: 'org.greenrobot.greendao'
 apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 apply plugin: 'me.tatarka.retrolambda'
@@ -47,6 +49,11 @@ android {
     dataBinding {
         enabled = true
     }
+}
+
+greendao {
+    schemaVersion 1
+    targetGenDir 'src/main/java'
 }
 
 dependencies {
@@ -92,6 +99,9 @@ dependencies {
     debugCompile 'com.squareup.leakcanary:leakcanary-android:1.4-beta2'
     releaseCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
     testCompile 'com.squareup.leakcanary:leakcanary-android-no-op:1.4-beta2'
+
+    //greendao
+    compile 'org.greenrobot:greendao:3.0.1'
 
     //crashlytics
     compile('com.crashlytics.sdk.android:crashlytics:2.5.7@aar') {
