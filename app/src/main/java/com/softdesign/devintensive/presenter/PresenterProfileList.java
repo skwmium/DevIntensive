@@ -7,8 +7,8 @@ import android.support.annotation.Nullable;
 
 import com.softdesign.devintensive.R;
 import com.softdesign.devintensive.common.App;
-import com.softdesign.devintensive.data.Model;
-import com.softdesign.devintensive.presenter.mappers.MapperUserList;
+import com.softdesign.devintensive.model.Model;
+import com.softdesign.devintensive.model.mappers.MapperListUserDtoViewModel;
 import com.softdesign.devintensive.ui.adapters.OnItemCLickListener;
 import com.softdesign.devintensive.ui.adapters.OnItemChangedListener;
 import com.softdesign.devintensive.ui.viewmodel.BaseViewModel;
@@ -19,6 +19,7 @@ import com.softdesign.devintensive.utils.Utils;
 import com.softdesign.devintensive.view.ViewProfileList;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -38,7 +39,7 @@ public class PresenterProfileList extends BasePresenter implements OnItemCLickLi
     Model model;
 
     @Inject
-    MapperUserList mapperUserList;
+    MapperListUserDtoViewModel mapperListUserDtoViewModel;
 
     @Nullable
     private Subscription mPrevSubscriptionFilter;
@@ -65,13 +66,24 @@ public class PresenterProfileList extends BasePresenter implements OnItemCLickLi
 
     @Override
     public boolean onItemMove(int fromPosition, int toPosition) {
-        L.e("onItemMove ", fromPosition, " ", toPosition);
+        if (fromPosition < toPosition) {
+            for (int i = fromPosition; i < toPosition; i++)
+                Collections.swap(mProfileList, i, i + 1);
+        } else {
+            for (int i = fromPosition; i > toPosition; i--)
+                Collections.swap(mProfileList, i, i - 1);
+        }
+        mView.onItemMove(fromPosition, toPosition);
+        model.changeUserOrder(fromPosition, toPosition).subscribe();
         return false;
     }
 
     @Override
     public void onItemDismiss(int position) {
-        L.e("onItemDismiss ", position);
+        ProfileViewModel viewModel = mProfileList.get(position);
+        model.setUserRemoved(viewModel.getId()).subscribe();
+        mProfileList.remove(position);
+        mView.onItemDismiss(position);
     }
 
     public void onCreate(Bundle savedInstanceState) {
@@ -87,7 +99,8 @@ public class PresenterProfileList extends BasePresenter implements OnItemCLickLi
     }
 
     public void onSaveInstanceState(Bundle outState) {
-        outState.putParcelableArrayList(Const.KEY_PROFILE_LIST, (ArrayList<? extends Parcelable>) mProfileList);
+        outState.putParcelableArrayList(Const.KEY_PROFILE_LIST,
+                (ArrayList<? extends Parcelable>) mProfileList);
     }
 
     public void filterProfiles(@NonNull String query) {
@@ -115,7 +128,7 @@ public class PresenterProfileList extends BasePresenter implements OnItemCLickLi
     private void loadProfileList() {
         mView.showProgress();
         Subscription subscription = model.getUserList()
-                .map(mapperUserList)
+                .map(mapperListUserDtoViewModel)
                 .subscribe(new Subscriber<List<ProfileViewModel>>() {
                     @Override
                     public void onCompleted() {

@@ -19,10 +19,10 @@ import android.view.MenuItem;
 import android.view.View;
 
 import com.softdesign.devintensive.R;
-import com.softdesign.devintensive.data.storage.LocalUser;
 import com.softdesign.devintensive.databinding.NavHeaderMainBinding;
 import com.softdesign.devintensive.di.DaggerComponentView;
 import com.softdesign.devintensive.di.ModuleViewDynamically;
+import com.softdesign.devintensive.model.storage.LocalUser;
 import com.softdesign.devintensive.presenter.PresenterMain;
 import com.softdesign.devintensive.ui.dialogs.DialogChooseProfilePhoto;
 import com.softdesign.devintensive.ui.fragments.FragmentAuth;
@@ -94,6 +94,7 @@ public class ActivityMain extends BaseActivity implements ViewMain, ActivityMain
     protected void onDestroy() {
         super.onDestroy();
         presenter.onStop();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override

@@ -13,4 +13,8 @@ public interface ViewProfileList extends View {
     void showProfileList(List<ProfileViewModel> profileViewModels);
 
     void startProfileView(Bundle arg);
+
+    boolean onItemMove(int fromPosition, int toPosition);
+
+    void onItemDismiss(int position);
 }

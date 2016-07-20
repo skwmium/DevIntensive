@@ -101,7 +101,7 @@
                     android:focusable="@{profile.editable}"
                     android:focusableInTouchMode="@{profile.editable}"
                     android:hint="@string/profile_label_profile_vk"
-                    android:text="@={profile.vkProfile}"/>
+                    android:text="@={profile.vkProfileUrl}"/>
             </android.support.design.widget.TextInputLayout>
 
             <ImageView

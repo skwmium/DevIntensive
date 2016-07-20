@@ -10,8 +10,8 @@ import android.support.annotation.Nullable;
 
 import com.softdesign.devintensive.R;
 import com.softdesign.devintensive.common.App;
-import com.softdesign.devintensive.data.Model;
-import com.softdesign.devintensive.presenter.mappers.MapperUser;
+import com.softdesign.devintensive.model.Model;
+import com.softdesign.devintensive.model.mappers.MapperUserDtoViewModel;
 import com.softdesign.devintensive.ui.viewmodel.ProfileViewModel;
 import com.softdesign.devintensive.utils.Const;
 import com.softdesign.devintensive.utils.Utils;
@@ -36,7 +36,7 @@ public class PresenterMain extends BasePresenter {
     Model model;
 
     @Inject
-    MapperUser mapperUser;
+    MapperUserDtoViewModel mapperUserDtoViewModel;
 
     private ViewMain mView;
 
@@ -128,7 +128,7 @@ public class PresenterMain extends BasePresenter {
     private void loadProfile() {
         mView.showProgress();
         Subscription subscription = model.userGetMe()
-                .map(mapperUser)
+                .map(mapperUserDtoViewModel)
                 .subscribe(new Subscriber<ProfileViewModel>() {
                     @Override
                     public void onCompleted() {

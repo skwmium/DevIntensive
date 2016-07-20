@@ -10,9 +10,9 @@ import android.support.annotation.Nullable;
 
 import com.softdesign.devintensive.R;
 import com.softdesign.devintensive.common.App;
-import com.softdesign.devintensive.data.Model;
-import com.softdesign.devintensive.presenter.mappers.MapperParamEdit;
-import com.softdesign.devintensive.presenter.mappers.MapperUser;
+import com.softdesign.devintensive.model.Model;
+import com.softdesign.devintensive.model.mappers.MapperParamEdit;
+import com.softdesign.devintensive.model.mappers.MapperUserDtoViewModel;
 import com.softdesign.devintensive.ui.viewmodel.ProfileViewModel;
 import com.softdesign.devintensive.utils.Const;
 import com.softdesign.devintensive.utils.Utils;
@@ -41,7 +41,7 @@ public class PresenterProfile extends BasePresenter {
     Model model;
 
     @Inject
-    MapperUser mapperUser;
+    MapperUserDtoViewModel mapperUserDtoViewModel;
 
     @Inject
     MapperParamEdit mapperParamEdit;
@@ -140,7 +140,7 @@ public class PresenterProfile extends BasePresenter {
     }
 
     public void watchVkClicked() {
-        Utils.openWebPage(mView.getContext(), mProfileViewModel.getVkProfile());
+        Utils.openWebPage(mView.getContext(), mProfileViewModel.getVkProfileUrl());
     }
 
     public void changeProfilePhotoClicked() {
@@ -170,7 +170,7 @@ public class PresenterProfile extends BasePresenter {
     private void loadProfile() {
         mView.showProgress();
         Subscription subscription = model.userGetMe()
-                .map(mapperUser)
+                .map(mapperUserDtoViewModel)
                 .subscribe(new Subscriber<ProfileViewModel>() {
                     @Override
                     public void onCompleted() {
@@ -198,8 +198,7 @@ public class PresenterProfile extends BasePresenter {
                 .subscribeOn(schedulerIo)
                 .map(mapperParamEdit)
                 .flatMap(paramEdit -> model.userEditProfile(paramEdit))
-                .map(editProfileResult -> editProfileResult.getUser())
-                .map(mapperUser)
+                .map(mapperUserDtoViewModel)
                 .subscribe(new Subscriber<ProfileViewModel>() {
                     @Override
                     public void onCompleted() {

@@ -4,11 +4,11 @@ import android.support.annotation.Nullable;
 
 import com.softdesign.devintensive.R;
 import com.softdesign.devintensive.common.App;
-import com.softdesign.devintensive.data.Model;
-import com.softdesign.devintensive.data.network.api.RetrofitException;
-import com.softdesign.devintensive.data.network.dto.AuthResult;
-import com.softdesign.devintensive.data.network.dto.BaseResponse;
-import com.softdesign.devintensive.data.storage.LocalUser;
+import com.softdesign.devintensive.model.Model;
+import com.softdesign.devintensive.model.network.api.RetrofitException;
+import com.softdesign.devintensive.model.network.dto.AuthResult;
+import com.softdesign.devintensive.model.network.dto.BaseResponse;
+import com.softdesign.devintensive.model.storage.LocalUser;
 import com.softdesign.devintensive.view.ViewAuth;
 
 import javax.inject.Inject;

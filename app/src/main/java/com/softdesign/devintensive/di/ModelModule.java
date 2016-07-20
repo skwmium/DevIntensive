@@ -1,11 +1,11 @@
 package com.softdesign.devintensive.di;
 
 import com.softdesign.devintensive.common.App;
-import com.softdesign.devintensive.data.network.api.ServiceGenerator;
-import com.softdesign.devintensive.data.network.api.SoftdesignApiClient;
-import com.softdesign.devintensive.data.storage.entities.DaoMaster;
-import com.softdesign.devintensive.data.storage.entities.DaoMaster.DevOpenHelper;
-import com.softdesign.devintensive.data.storage.entities.DaoSession;
+import com.softdesign.devintensive.model.network.api.ServiceGenerator;
+import com.softdesign.devintensive.model.network.api.SoftdesignApiClient;
+import com.softdesign.devintensive.model.storage.entities.DaoMaster;
+import com.softdesign.devintensive.model.storage.entities.DaoMaster.DevOpenHelper;
+import com.softdesign.devintensive.model.storage.entities.DaoSession;
 import com.softdesign.devintensive.utils.Const;
 
 import org.greenrobot.greendao.database.Database;

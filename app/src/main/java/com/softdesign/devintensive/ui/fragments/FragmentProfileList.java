@@ -24,7 +24,6 @@ import com.softdesign.devintensive.presenter.BasePresenter;
 import com.softdesign.devintensive.presenter.PresenterProfileList;
 import com.softdesign.devintensive.ui.activities.BaseActivity;
 import com.softdesign.devintensive.ui.adapters.AdapterProfileList;
-import com.softdesign.devintensive.ui.adapters.OnItemChangedListener;
 import com.softdesign.devintensive.ui.viewmodel.ProfileViewModel;
 import com.softdesign.devintensive.view.ViewProfileList;
 
@@ -98,12 +97,11 @@ public class FragmentProfileList extends BaseFragment implements ViewProfileList
     private void initRecycler() {
         mAdapterProfileList = new AdapterProfileList();
         mAdapterProfileList.setItemCLickListener(presenter);
-        mAdapterProfileList.setOnItemChangedListener(presenter);
 
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(mAdapterProfileList);
 
-        Callback callback = new MyTouchHelperCallback(mAdapterProfileList);
+        Callback callback = new MyTouchHelperCallback();
         ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
         touchHelper.attachToRecyclerView(recyclerView);
     }
@@ -137,6 +135,16 @@ public class FragmentProfileList extends BaseFragment implements ViewProfileList
     }
 
     @Override
+    public boolean onItemMove(int fromPosition, int toPosition) {
+        return mAdapterProfileList.onItemMove(fromPosition, toPosition);
+    }
+
+    @Override
+    public void onItemDismiss(int position) {
+        mAdapterProfileList.onItemDismiss(position);
+    }
+
+    @Override
     public boolean onQueryTextSubmit(String query) {
         return false;
     }
@@ -150,12 +158,6 @@ public class FragmentProfileList extends BaseFragment implements ViewProfileList
 
     // ---------- TOUCH HELPER CALLBACK----------
     class MyTouchHelperCallback extends Callback {
-        private final OnItemChangedListener mAdapter;
-
-        public MyTouchHelperCallback(OnItemChangedListener adapter) {
-            mAdapter = adapter;
-        }
-
         @Override
         public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
             int dragFlags = android.support.v7.widget.helper.ItemTouchHelper.UP | android.support.v7.widget.helper.ItemTouchHelper.DOWN;
@@ -165,13 +167,13 @@ public class FragmentProfileList extends BaseFragment implements ViewProfileList
 
         @Override
         public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-            mAdapter.onItemMove(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+            presenter.onItemMove(viewHolder.getAdapterPosition(), target.getAdapterPosition());
             return true;
         }
 
         @Override
         public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-            mAdapter.onItemDismiss(viewHolder.getAdapterPosition());
+            presenter.onItemDismiss(viewHolder.getAdapterPosition());
         }
 
         @Override

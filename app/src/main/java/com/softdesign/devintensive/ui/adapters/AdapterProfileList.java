@@ -12,7 +12,6 @@ import com.softdesign.devintensive.databinding.ItemListProfileBinding;
 import com.softdesign.devintensive.ui.viewmodel.ProfileViewModel;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -24,15 +23,9 @@ public class AdapterProfileList extends RecyclerView.Adapter<AdapterProfileList.
     private List<ProfileViewModel> mProfileViewModels = new ArrayList<>();
     @Nullable
     private OnItemCLickListener mItemCLickListener;
-    @Nullable
-    OnItemChangedListener mOnItemChangedListener;
 
     public void setItemCLickListener(@Nullable OnItemCLickListener itemCLickListener) {
         mItemCLickListener = itemCLickListener;
-    }
-
-    public void setOnItemChangedListener(@Nullable OnItemChangedListener onItemChangedListener) {
-        mOnItemChangedListener = onItemChangedListener;
     }
 
     public void setItems(List<ProfileViewModel> profileViewModels) {
@@ -71,29 +64,13 @@ public class AdapterProfileList extends RecyclerView.Adapter<AdapterProfileList.
     // ---------- ITEM CHANGE ----------
     @Override
     public boolean onItemMove(int fromPosition, int toPosition) {
-        if (fromPosition < toPosition) {
-            for (int i = fromPosition; i < toPosition; i++) {
-                Collections.swap(mProfileViewModels, i, i + 1);
-            }
-        } else {
-            for (int i = fromPosition; i > toPosition; i--) {
-                Collections.swap(mProfileViewModels, i, i - 1);
-            }
-        }
         notifyItemMoved(fromPosition, toPosition);
-        if (mOnItemChangedListener != null) {
-            mOnItemChangedListener.onItemMove(fromPosition, toPosition);
-        }
         return true;
     }
 
     @Override
     public void onItemDismiss(int position) {
-        mProfileViewModels.remove(position);
         notifyItemRemoved(position);
-        if (mOnItemChangedListener != null) {
-            mOnItemChangedListener.onItemDismiss(position);
-        }
     }
 
 
