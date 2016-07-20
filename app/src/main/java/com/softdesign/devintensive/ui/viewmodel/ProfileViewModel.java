@@ -12,6 +12,7 @@ import com.bumptech.glide.Glide;
 import com.softdesign.devintensive.BR;
 import com.softdesign.devintensive.utils.Utils;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -51,6 +52,7 @@ public class ProfileViewModel extends BaseViewModel implements EditableModel {
         mEmail = in.readString();
         mVkProfileUrl = in.readString();
         mRepository = in.readString();
+        mRepositories = new ArrayList<>();
         in.readStringList(mRepositories);
         mAbout = in.readString();
         mAvatarUrl = in.readString();
@@ -281,7 +283,7 @@ public class ProfileViewModel extends BaseViewModel implements EditableModel {
     }
 
     public void setAbout(String about) {
-        mAbout = about;
+        mAbout = about.trim();
         notifyPropertyChanged(BR.about);
     }
 

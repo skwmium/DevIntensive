@@ -1,7 +1,5 @@
 package com.softdesign.devintensive.model;
 
-import android.net.Uri;
-
 import com.softdesign.devintensive.model.dto.UserDto;
 import com.softdesign.devintensive.model.network.dto.AuthResult;
 import com.softdesign.devintensive.model.network.dto.BaseResponse;
@@ -22,9 +20,9 @@ public interface Model {
 
     Observable<UserDto> userEditProfile(ParamEdit editParam);
 
-    Observable<UploadImageResult> updateProfilePhoto(Uri imageUri);
+    Observable<UploadImageResult> updateProfilePhoto(String path);
 
-    Observable<UploadImageResult> updateProfileAvatar(Uri imageUri);
+    Observable<UploadImageResult> updateProfileAvatar(String path);
 
     Observable<UserDto> userGetMe();
 

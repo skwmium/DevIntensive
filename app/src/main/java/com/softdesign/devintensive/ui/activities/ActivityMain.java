@@ -3,7 +3,6 @@ package com.softdesign.devintensive.ui.activities;
 import android.content.Context;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -30,14 +29,15 @@ import com.softdesign.devintensive.ui.fragments.FragmentProfile;
 import com.softdesign.devintensive.ui.fragments.FragmentProfileList;
 import com.softdesign.devintensive.ui.fragments.FragmentRestorePassword;
 import com.softdesign.devintensive.ui.viewmodel.ProfileViewModel;
-import com.softdesign.devintensive.utils.L;
-import com.softdesign.devintensive.utils.LogoutEvent;
+import com.softdesign.devintensive.utils.LocalUserEvent;
 import com.softdesign.devintensive.utils.Utils;
 import com.softdesign.devintensive.view.ViewMain;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
+
+import java.io.File;
 
 import javax.inject.Inject;
 
@@ -189,8 +189,8 @@ public class ActivityMain extends BaseActivity implements ViewMain, ActivityMain
     }
 
     @Override
-    public void takePhoto(Uri photoFileUri) {
-        Utils.takePhoto(this, photoFileUri);
+    public void takePhoto(File file, int requestCode) {
+        Utils.takePhoto(this, file, requestCode);
     }
 
     @Override
@@ -208,10 +208,13 @@ public class ActivityMain extends BaseActivity implements ViewMain, ActivityMain
     // ---------- BUS EVENT ----------
     @SuppressWarnings("unused")
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onLogoutEvent(LogoutEvent event) {
-        L.e("onLogOut event received");
-        mFragmentManager.popBackStack();
-        replaceFragment(new FragmentAuth(), false);
+    public void onLocalUserEvent(LocalUserEvent event) {
+        if (event.getAction() == LocalUserEvent.Action.LOGOUT) {
+            mFragmentManager.popBackStack();
+            replaceFragment(new FragmentAuth(), false);
+        } else {
+            presenter.reloadProfile();
+        }
     }
 
 

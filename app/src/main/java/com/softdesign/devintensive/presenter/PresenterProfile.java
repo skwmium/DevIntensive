@@ -18,6 +18,8 @@ import com.softdesign.devintensive.utils.Const;
 import com.softdesign.devintensive.utils.Utils;
 import com.softdesign.devintensive.view.ViewProfile;
 
+import java.io.File;
+
 import javax.inject.Inject;
 import javax.inject.Named;
 
@@ -29,8 +31,8 @@ import rx.Subscription;
 import static android.Manifest.permission.CAMERA;
 import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
 import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
-import static com.softdesign.devintensive.utils.Const.REQUEST_PERMISSION_CAMERA;
-import static com.softdesign.devintensive.utils.Const.REQUEST_PERMISSION_READ_EXTERNAL_STORAGE;
+import static com.softdesign.devintensive.utils.Const.REQUEST_PROFILE_PERMISSION_CAMERA;
+import static com.softdesign.devintensive.utils.Const.REQUEST_PROFILE_PERMISSION_READ_EXTERNAL_STORAGE;
 
 /**
  * Created by skwmium on 05.07.16.
@@ -54,7 +56,7 @@ public class PresenterProfile extends BasePresenter {
     private ProfileViewModel mProfileViewModel;
 
     @Nullable
-    private Uri mPhotoUri;
+    private File mPhotoFile;
 
     @Inject
     public PresenterProfile() {
@@ -85,14 +87,14 @@ public class PresenterProfile extends BasePresenter {
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case Const.REQUEST_PHOTO_PICKER:
+            case Const.REQUEST_PROFILE_PHOTO_PICKER:
                 if (resultCode == Activity.RESULT_OK && data != null) {
-                    updateProfilePhoto(data.getData());
+                    updateProfilePhoto(data.getData().toString());
                 }
                 break;
-            case Const.REQUEST_PHOTO_CAMERA:
-                if (resultCode == Activity.RESULT_OK && mPhotoUri != null) {
-                    updateProfilePhoto(mPhotoUri);
+            case Const.REQUEST_PROFILE_PHOTO_CAMERA:
+                if (resultCode == Activity.RESULT_OK && mPhotoFile != null) {
+                    updateProfilePhoto(Uri.fromFile(mPhotoFile).toString());
                 }
                 break;
         }
@@ -101,12 +103,12 @@ public class PresenterProfile extends BasePresenter {
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
                                            @NonNull int[] grantResults) {
         switch (requestCode) {
-            case REQUEST_PERMISSION_READ_EXTERNAL_STORAGE:
+            case REQUEST_PROFILE_PERMISSION_READ_EXTERNAL_STORAGE:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    mView.showPhotoPicker(Const.REQUEST_PHOTO_PICKER);
+                    mView.showPhotoPicker(Const.REQUEST_PROFILE_PHOTO_PICKER);
                 }
                 break;
-            case REQUEST_PERMISSION_CAMERA:
+            case REQUEST_PROFILE_PERMISSION_CAMERA:
                 if (grantResults.length == 2
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED
                         && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
@@ -149,21 +151,21 @@ public class PresenterProfile extends BasePresenter {
 
     public void takePhotoClicked() {
         String[] permissions = new String[]{CAMERA, WRITE_EXTERNAL_STORAGE};
-        if (!mView.checkPermissionsAndRequestIfNotGranted(permissions, REQUEST_PERMISSION_CAMERA)) {
-            mPhotoUri = Utils.createFileForPhoto();
-            if (mPhotoUri == null) {
+        if (mView.checkPermissionsAndRequestIfNotGranted(permissions, REQUEST_PROFILE_PERMISSION_CAMERA)) {
+            mPhotoFile = Utils.createFileForPhoto();
+            if (mPhotoFile == null) {
                 mView.showMessage(R.string.error_photo_file_creation);
                 return;
             }
-            mView.takePhoto(mPhotoUri);
+            mView.takePhoto(mPhotoFile, Const.REQUEST_PROFILE_PHOTO_CAMERA);
         }
     }
 
     public void openGalleryClicked() {
         String[] permissions = new String[]{READ_EXTERNAL_STORAGE};
-        if (!mView.checkPermissionsAndRequestIfNotGranted(permissions,
-                REQUEST_PERMISSION_READ_EXTERNAL_STORAGE)) {
-            mView.showPhotoPicker(Const.REQUEST_PHOTO_PICKER);
+        if (mView.checkPermissionsAndRequestIfNotGranted(permissions,
+                REQUEST_PROFILE_PERMISSION_READ_EXTERNAL_STORAGE)) {
+            mView.showPhotoPicker(Const.REQUEST_PROFILE_PHOTO_PICKER);
         }
     }
 
@@ -220,9 +222,9 @@ public class PresenterProfile extends BasePresenter {
         addSubscription(subscription);
     }
 
-    private void updateProfilePhoto(Uri imageUri) {
-        mProfileViewModel.setPhotoUrl(imageUri.toString());
-        model.updateProfilePhoto(imageUri)
+    private void updateProfilePhoto(String path) {
+        mProfileViewModel.setPhotoUrl(path);
+        model.updateProfilePhoto(path)
                 .doOnError(throwable -> mView.showMessage(R.string.error_upload_photo))
                 .doOnNext(uploadImageResult -> mView.showMessage(R.string.profile_photo_was_changed))
                 .subscribe();

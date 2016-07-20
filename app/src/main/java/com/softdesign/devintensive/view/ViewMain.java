@@ -1,9 +1,10 @@
 package com.softdesign.devintensive.view;
 
-import android.net.Uri;
 import android.support.annotation.NonNull;
 
 import com.softdesign.devintensive.ui.viewmodel.ProfileViewModel;
+
+import java.io.File;
 
 /**
  * Created by skwmium on 20.07.16.
@@ -17,5 +18,5 @@ public interface ViewMain extends View {
 
     void showPhotoPicker(int requestCode);
 
-    void takePhoto(Uri photoFileUri);
+    void takePhoto(File file, int requestCode);
 }

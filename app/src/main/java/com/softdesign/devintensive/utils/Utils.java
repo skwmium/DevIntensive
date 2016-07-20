@@ -7,7 +7,6 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.graphics.Point;
 import android.net.Uri;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -73,14 +72,14 @@ public class Utils {
 
 
     // ---------- PHOTO PICKER ----------
-    public static void showPhotoPickerDialog(@NonNull Activity activity, int resultCode) {
+    public static void showPhotoPickerDialog(@NonNull Activity activity, int requestCode) {
         Intent intent = createPhotoPickerDialogIntent();
-        activity.startActivityForResult(intent, resultCode);
+        activity.startActivityForResult(intent, requestCode);
     }
 
-    public static void showPhotoPickerDialog(@NonNull Fragment fragment, int resultCode) {
+    public static void showPhotoPickerDialog(@NonNull Fragment fragment, int requestCode) {
         Intent intent = createPhotoPickerDialogIntent();
-        fragment.startActivityForResult(intent, resultCode);
+        fragment.startActivityForResult(intent, requestCode);
     }
 
     private static Intent createPhotoPickerDialogIntent() {
@@ -93,31 +92,33 @@ public class Utils {
 
 
     // ---------- TAKE PHOTO ----------
-    public static void takePhoto(@NonNull Activity activity, @Nullable Uri photoURI) {
+    public static void takePhoto(@NonNull Activity activity, @Nullable File file, int requestCode) {
+        Uri uriForFile = FileProvider.getUriForFile(App.getInst(), Const.FILE_PROVIDER_AUTHORITY, file);
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-        activity.startActivityForResult(takePictureIntent, Const.REQUEST_PHOTO_CAMERA);
+        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uriForFile);
+        activity.startActivityForResult(takePictureIntent, requestCode);
     }
 
-    public static void takePhoto(@NonNull Fragment fragment, @Nullable Uri photoURI) {
+    public static void takePhoto(@NonNull Fragment fragment, @Nullable File file, int requestCode) {
+        Uri uriForFile = FileProvider.getUriForFile(App.getInst(), Const.FILE_PROVIDER_AUTHORITY, file);
         Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-        fragment.startActivityForResult(takePictureIntent, Const.REQUEST_PHOTO_CAMERA);
+        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uriForFile);
+        fragment.startActivityForResult(takePictureIntent, requestCode);
     }
 
     @Nullable
-    public static Uri createFileForPhoto() {
-        DateFormat dateTimeInstance = SimpleDateFormat.getDateTimeInstance(MEDIUM, MEDIUM);
+    public static File createFileForPhoto() {
+        DateFormat dateTimeInstance = SimpleDateFormat.getTimeInstance(MEDIUM);
         String timeStamp = dateTimeInstance.format(new Date());
         String imageFileName = Const.PHOTO_FILE_PREFIX + timeStamp;
-        File storageDir = Environment.getExternalStoragePublicDirectory(DIRECTORY_PICTURES);
+        File storageDir = App.getInst().getExternalFilesDir(DIRECTORY_PICTURES);
         File fileImage;
         try {
             fileImage = File.createTempFile(imageFileName, ".jpg", storageDir);
         } catch (IOException e) {
             return null;
         }
-        return FileProvider.getUriForFile(App.getInst(), Const.FILE_PROVIDER_AUTHORITY, fileImage);
+        return fileImage;
     }
 
 

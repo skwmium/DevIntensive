@@ -3,7 +3,6 @@ package com.softdesign.devintensive.ui.fragments;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.Color;
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -24,6 +23,8 @@ import com.softdesign.devintensive.ui.dialogs.DialogChooseProfilePhoto;
 import com.softdesign.devintensive.ui.viewmodel.ProfileViewModel;
 import com.softdesign.devintensive.utils.Utils;
 import com.softdesign.devintensive.view.ViewProfile;
+
+import java.io.File;
 
 import javax.inject.Inject;
 
@@ -152,8 +153,8 @@ public class FragmentProfile extends BaseFragment implements ViewProfile, View.O
     }
 
     @Override
-    public void takePhoto(Uri photoFileUri) {
-        Utils.takePhoto(this, photoFileUri);
+    public void takePhoto(File file, int requestCode) {
+        Utils.takePhoto(this, file, requestCode);
     }
 
     @Override

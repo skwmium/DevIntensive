@@ -18,6 +18,7 @@ public class UserDto {
     private int mCodeLinesCount;
     private int mProjectCount;
     private List<RepositoryDto> mRepositories;
+    private long mOrder;
 
     public String getRemoteId() {
         return mRemoteId;
@@ -113,5 +114,13 @@ public class UserDto {
 
     public void setRepositories(List<RepositoryDto> repositories) {
         mRepositories = repositories;
+    }
+
+    public long getOrder() {
+        return mOrder;
+    }
+
+    public void setOrder(long order) {
+        mOrder = order;
     }
 }

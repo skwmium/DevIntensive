@@ -105,6 +105,7 @@ public class ModelImpl implements Model {
                 .userAuth(authParam)
                 .map(authResultBaseResponse -> authResultBaseResponse.getBody())
                 .doOnNext(localUserAuthoriser)//auth local user
+                .doOnNext(authResult -> PreferenceCache.cacheUser(authResult.getUser()))
                 .compose(applySchedulers());
     }
 
@@ -134,16 +135,15 @@ public class ModelImpl implements Model {
     }
 
     @Override
-    public Observable<UploadImageResult> updateProfilePhoto(Uri imageUri) {
+    public Observable<UploadImageResult> updateProfilePhoto(String path) {
         String userId = LocalUser.getInst().getUserId();
         PublicInfo publicInfo = getCachedUserPublicInfo();
-
-        if (imageUri == null || publicInfo == null || Utils.isNullOrEmpty(userId) ||
-                publicInfo.getPhotoUrl().equalsIgnoreCase(imageUri.toString())) {
+        if (Utils.isNullOrEmpty(userId) || Utils.isNullOrEmpty(path) ||
+                publicInfo == null || publicInfo.getPhotoUrl().equalsIgnoreCase(path)) {
             return Observable.empty();
         }
 
-        MultipartBody.Part part = getMultipartFromPath(PHOTO, imageUri);
+        MultipartBody.Part part = getMultipartFromPath(PHOTO, path);
         if (part == null) {
             return Observable.error(new NullPointerException());
         }
@@ -154,15 +154,15 @@ public class ModelImpl implements Model {
     }
 
     @Override
-    public Observable<UploadImageResult> updateProfileAvatar(Uri imageUri) {
+    public Observable<UploadImageResult> updateProfileAvatar(String path) {
         String userId = LocalUser.getInst().getUserId();
         PublicInfo publicInfo = getCachedUserPublicInfo();
-        if (imageUri == null || publicInfo == null || Utils.isNullOrEmpty(userId) ||
-                publicInfo.getPhotoUrl().equalsIgnoreCase(imageUri.toString())) {
+        if (Utils.isNullOrEmpty(userId) || Utils.isNullOrEmpty(path) ||
+                publicInfo == null || publicInfo.getAvatarUrl().equalsIgnoreCase(path)) {
             return Observable.empty();
         }
 
-        MultipartBody.Part part = getMultipartFromPath(AVATAR, imageUri);
+        MultipartBody.Part part = getMultipartFromPath(AVATAR, path);
         if (part == null) {
             return Observable.error(new NullPointerException());
         }
@@ -230,9 +230,8 @@ public class ModelImpl implements Model {
     }
 
     @Nullable
-    private MultipartBody.Part getMultipartFromPath(@NonNull UploadPhotoType type, @NonNull Uri
-            uri) {
-        String path = ContentUriUtils.uriToPath(App.getInst(), uri);
+    private MultipartBody.Part getMultipartFromPath(@NonNull UploadPhotoType type, @Nullable String path) {
+        path = ContentUriUtils.uriToPath(App.getInst(), Uri.parse(path));
         if (path == null) return null;
         File file = new File(path);
         if (!file.exists() || !file.isFile())
@@ -265,7 +264,11 @@ public class ModelImpl implements Model {
         })
                 .flatMap(dbUsers -> Observable.from(dbUsers))
                 .map(mapperUserDbDto)
-                .toList()
+                .toSortedList((userDto, userDto2) -> {
+                    long order = userDto.getOrder();
+                    long order2 = userDto2.getOrder();
+                    return order > order2 ? 1 : order == order2 ? 0 : -1;
+                })
                 .map(userDtos -> {
                     if (userDtos == null || userDtos.isEmpty()) {
                         throw new RuntimeException();
@@ -275,51 +278,58 @@ public class ModelImpl implements Model {
     }
 
     public Observable<List<UserDto>> getUserListRemote() {
-        L.e("get remote");
+        L.e("getUserListRemote");
         return mSoftdesignApiInterface
                 .userGetList()
                 .map(listBaseResponse -> listBaseResponse.getBody())
                 .map(mapperListUserApiDto)
-                .doOnNext(userDtos -> {
-                    int i = 0;
-                    for (UserDto dto : userDtos) {
-                        DbUser dbUser = new DbUser();
-                        dbUser.setRemoteId(dto.getRemoteId());
-                        dbUser.setName(dto.getFullName());
-
-                        dbUser.setRating(dto.getRating());
-                        dbUser.setLinesCount(dto.getCodeLinesCount());
-                        dbUser.setProjectCount(dto.getProjectCount());
-                        dbUser.setMobilePhoneNumber(dto.getPhoneNumber());
-                        dbUser.setEmail(dto.getEmail());
-                        dbUser.setVkProfile(dto.getVkProfileUrl());
-                        dbUser.setAvatarUrl(dto.getAvatarUrl());
-                        dbUser.setPhotoUrl(dto.getPhotoUrl());
-                        dbUser.setAbout(dto.getAbout());
-
-                        daoSession.getDbUserDao().insertOrReplace(dbUser);
-
-                        List<DbRepository> dbRepositories = new ArrayList<>();
-                        for (RepositoryDto repositoryDto : dto.getRepositories()) {
-                            DbRepository dbRepository = new DbRepository();
-                            dbRepository.setRemoteId(repositoryDto.getId());
-                            dbRepository.setUserRemoteId(dbUser.getRemoteId());
-                            dbRepository.setGitUrl(repositoryDto.getGitUrl());
-                            dbRepositories.add(dbRepository);
-                        }
-                        daoSession.getDbRepositoryDao().insertOrReplaceInTx(dbRepositories);
-
-                        DbUserAttribute dbUserAttribute = new DbUserAttribute();
-                        dbUserAttribute.setUserRemoteId(dbUser.getRemoteId());
-                        dbUserAttribute.setOrder(i++);
-                        daoSession.getDbUserAttributeDao().insert(dbUserAttribute);
-                    }
-                })
+                .doOnNext(userDtos -> initAndSaveAllUsersIntoDb(userDtos))
                 .compose(applySchedulers());
     }
 
     @SuppressWarnings("unchecked")
     private <T> Observable.Transformer<T, T> applySchedulers() {
         return (Observable.Transformer<T, T>) mSchedulersTransformer;
+    }
+
+    private void initAndSaveAllUsersIntoDb(List<UserDto> userDtos) {
+        try {
+            int i = 0;
+            List<DbUser> dbUserList = new ArrayList<>();
+            List<DbRepository> dbRepositoryList = new ArrayList<>();
+            List<DbUserAttribute> dbUserAttributeList = new ArrayList<>();
+            for (UserDto dto : userDtos) {
+                DbUser dbUser = new DbUser();
+                dbUser.setRemoteId(dto.getRemoteId());
+                dbUser.setName(dto.getFullName());
+                dbUser.setRating(dto.getRating());
+                dbUser.setLinesCount(dto.getCodeLinesCount());
+                dbUser.setProjectCount(dto.getProjectCount());
+                dbUser.setMobilePhoneNumber(dto.getPhoneNumber());
+                dbUser.setEmail(dto.getEmail());
+                dbUser.setVkProfile(dto.getVkProfileUrl());
+                dbUser.setAvatarUrl(dto.getAvatarUrl());
+                dbUser.setPhotoUrl(dto.getPhotoUrl());
+                dbUser.setAbout(dto.getAbout());
+                dbUserList.add(dbUser);
+
+                for (RepositoryDto repositoryDto : dto.getRepositories()) {
+                    DbRepository dbRepository = new DbRepository();
+                    dbRepository.setRemoteId(repositoryDto.getId());
+                    dbRepository.setUserRemoteId(dbUser.getRemoteId());
+                    dbRepository.setGitUrl(repositoryDto.getGitUrl());
+                    dbRepositoryList.add(dbRepository);
+                }
+                DbUserAttribute dbUserAttribute = new DbUserAttribute();
+                dbUserAttribute.setUserRemoteId(dbUser.getRemoteId());
+                dbUserAttribute.setOrder(i++);
+                dbUserAttributeList.add(dbUserAttribute);
+            }
+            daoSession.getDbRepositoryDao().insertOrReplaceInTx(dbRepositoryList);
+            daoSession.getDbUserDao().insertOrReplaceInTx(dbUserList);
+            daoSession.getDbUserAttributeDao().insertInTx(dbUserAttributeList);
+        } catch (Exception e) {
+            L.e("Cache user list error: ", e);
+        }
     }
 }

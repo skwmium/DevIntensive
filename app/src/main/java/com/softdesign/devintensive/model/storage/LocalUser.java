@@ -4,7 +4,7 @@ import android.support.annotation.Nullable;
 
 import com.softdesign.devintensive.model.managers.PreferencesManager;
 import com.softdesign.devintensive.utils.Const;
-import com.softdesign.devintensive.utils.LogoutEvent;
+import com.softdesign.devintensive.utils.LocalUserEvent;
 import com.softdesign.devintensive.utils.Utils;
 
 import org.greenrobot.eventbus.EventBus;
@@ -27,13 +27,16 @@ public final class LocalUser {
             return false;
         setAuthToken(authToken);
         setUserId(userId);
+        if (isLogined()) {
+            EventBus.getDefault().post(new LocalUserEvent(LocalUserEvent.Action.LOGIN));
+        }
         return true;
     }
 
     public boolean logout() {
         setAuthToken(null);
         setUserId(null);
-        EventBus.getDefault().post(new LogoutEvent());
+        EventBus.getDefault().post(new LocalUserEvent(LocalUserEvent.Action.LOGOUT));
         return true;
     }
 
