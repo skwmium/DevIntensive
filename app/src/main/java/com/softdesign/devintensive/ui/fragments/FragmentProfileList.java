@@ -80,6 +80,7 @@ public class FragmentProfileList extends BaseFragment implements ViewProfileList
     }
 
     private void init() {
+        setHasOptionsMenu(true);
         activityCallback.setActionBar(toolbar);
         toolbar.setOnClickListener(view -> recyclerView.scrollToPosition(0));
         initRecycler();
@@ -114,12 +115,15 @@ public class FragmentProfileList extends BaseFragment implements ViewProfileList
     }
 
     @Override
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.toolbar_profile_list, menu);
-
+    public void onPrepareOptionsMenu(Menu menu) {
         MenuItem searchItem = menu.findItem(R.id.nav_search);
         SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
         searchView.setOnQueryTextListener(this);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.toolbar_profile_list, menu);
     }
 
     @Override
