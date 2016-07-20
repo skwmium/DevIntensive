@@ -8,9 +8,9 @@ import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.softdesign.devintensive.BR;
 import com.softdesign.devintensive.utils.Utils;
-import com.squareup.picasso.Picasso;
 
 /**
  * Created by skwmium on 23.06.16.
@@ -92,11 +92,10 @@ public class ProfileViewModel extends BaseViewModel implements EditableModel {
     public static void loadImage(ImageView view, String url, Drawable placeholder) {
         if (Utils.isNullOrEmpty(url))
             return;
-        Picasso.with(view.getContext())
+        Glide.with(view.getContext())
                 .load(url)
                 .placeholder(placeholder)
-                .resize(Utils.getFullScreenWidthRatio16().x,
-                        Utils.getFullScreenWidthRatio16().y)
+                .dontAnimate()
                 .into(view);
     }
 
