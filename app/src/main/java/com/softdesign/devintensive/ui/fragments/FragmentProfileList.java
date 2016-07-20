@@ -8,6 +8,8 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.SearchView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
+import android.support.v7.widget.helper.ItemTouchHelper.Callback;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -22,6 +24,7 @@ import com.softdesign.devintensive.presenter.BasePresenter;
 import com.softdesign.devintensive.presenter.PresenterProfileList;
 import com.softdesign.devintensive.ui.activities.BaseActivity;
 import com.softdesign.devintensive.ui.adapters.AdapterProfileList;
+import com.softdesign.devintensive.ui.adapters.OnItemChangedListener;
 import com.softdesign.devintensive.ui.viewmodel.ProfileViewModel;
 import com.softdesign.devintensive.view.ViewProfileList;
 
@@ -78,6 +81,8 @@ public class FragmentProfileList extends BaseFragment implements ViewProfileList
 
     private void init() {
         activityCallback.setActionBar(toolbar);
+        toolbar.setOnClickListener(view -> recyclerView.scrollToPosition(0));
+        initRecycler();
 
         BaseActivity baseActivity = getBaseActivity();
         ActionBar actionBar = null;
@@ -87,12 +92,19 @@ public class FragmentProfileList extends BaseFragment implements ViewProfileList
         if (actionBar != null) {
             actionBar.setTitle(R.string.nav_item_contacts);
         }
-        toolbar.setOnClickListener(view -> recyclerView.scrollToPosition(0));
+    }
 
+    private void initRecycler() {
         mAdapterProfileList = new AdapterProfileList();
         mAdapterProfileList.setItemCLickListener(presenter);
+        mAdapterProfileList.setOnItemChangedListener(presenter);
+
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(mAdapterProfileList);
+
+        Callback callback = new MyTouchHelperCallback(mAdapterProfileList);
+        ItemTouchHelper touchHelper = new ItemTouchHelper(callback);
+        touchHelper.attachToRecyclerView(recyclerView);
     }
 
     @Override
@@ -129,5 +141,43 @@ public class FragmentProfileList extends BaseFragment implements ViewProfileList
     public boolean onQueryTextChange(String newText) {
         presenter.filterProfiles(newText);
         return false;
+    }
+
+
+    // ---------- TOUCH HELPER CALLBACK----------
+    class MyTouchHelperCallback extends Callback {
+        private final OnItemChangedListener mAdapter;
+
+        public MyTouchHelperCallback(OnItemChangedListener adapter) {
+            mAdapter = adapter;
+        }
+
+        @Override
+        public int getMovementFlags(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder) {
+            int dragFlags = android.support.v7.widget.helper.ItemTouchHelper.UP | android.support.v7.widget.helper.ItemTouchHelper.DOWN;
+            int swipeFlags = android.support.v7.widget.helper.ItemTouchHelper.START | android.support.v7.widget.helper.ItemTouchHelper.END;
+            return makeMovementFlags(dragFlags, swipeFlags);
+        }
+
+        @Override
+        public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
+            mAdapter.onItemMove(viewHolder.getAdapterPosition(), target.getAdapterPosition());
+            return true;
+        }
+
+        @Override
+        public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
+            mAdapter.onItemDismiss(viewHolder.getAdapterPosition());
+        }
+
+        @Override
+        public boolean isLongPressDragEnabled() {
+            return true;
+        }
+
+        @Override
+        public boolean isItemViewSwipeEnabled() {
+            return true;
+        }
     }
 }

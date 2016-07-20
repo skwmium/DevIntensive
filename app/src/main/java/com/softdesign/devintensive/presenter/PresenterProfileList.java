@@ -10,6 +10,7 @@ import com.softdesign.devintensive.common.App;
 import com.softdesign.devintensive.data.Model;
 import com.softdesign.devintensive.presenter.mappers.MapperUserList;
 import com.softdesign.devintensive.ui.adapters.OnItemCLickListener;
+import com.softdesign.devintensive.ui.adapters.OnItemChangedListener;
 import com.softdesign.devintensive.ui.viewmodel.BaseViewModel;
 import com.softdesign.devintensive.ui.viewmodel.ProfileViewModel;
 import com.softdesign.devintensive.utils.Const;
@@ -31,7 +32,8 @@ import rx.schedulers.Schedulers;
 /**
  * Created by skwmium on 14.07.16.
  */
-public class PresenterProfileList extends BasePresenter implements OnItemCLickListener {
+public class PresenterProfileList extends BasePresenter implements OnItemCLickListener,
+        OnItemChangedListener {
     @Inject
     Model model;
 
@@ -59,6 +61,17 @@ public class PresenterProfileList extends BasePresenter implements OnItemCLickLi
         Bundle bundle = new Bundle();
         bundle.putParcelable(Const.KEY_PROFILE, profileViewModel);
         mView.startProfileView(bundle);
+    }
+
+    @Override
+    public boolean onItemMove(int fromPosition, int toPosition) {
+        L.e("onItemMove ", fromPosition, " ", toPosition);
+        return false;
+    }
+
+    @Override
+    public void onItemDismiss(int position) {
+        L.e("onItemDismiss ", position);
     }
 
     public void onCreate(Bundle savedInstanceState) {
