@@ -261,7 +261,8 @@ public class ActivityMain extends BaseActivity implements ViewMain, ActivityMain
         if (!LocalUser.getInst().isLogined()) {
             startAuthFragment();
         } else {
-            startProfileFragment(null);
+            FragmentProfile fragmentProfile = new FragmentProfile();
+            replaceFragment(fragmentProfile, false);
         }
     }
 
