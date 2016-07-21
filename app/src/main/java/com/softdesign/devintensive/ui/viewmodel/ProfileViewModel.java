@@ -112,8 +112,13 @@ public class ProfileViewModel extends BaseViewModel implements EditableModel {
     @BindingAdapter("entries")
     public static void loadRepositories(RecyclerView recyclerView, List<RepositoryViewModel> repositories) {
         AdapterProfileRepositories adapter = new AdapterProfileRepositories(repositories);
-        adapter.setItemCLickListener(viewModel -> Utils.openWebPage(App.getInst(),
-                ((RepositoryViewModel) viewModel).getRepository()));
+        adapter.setItemCLickListener(viewModel -> {
+            String repository = ((RepositoryViewModel) viewModel).getRepository();
+            if (!repository.startsWith("http")) {
+                repository = "http://" + repository;
+            }
+            Utils.openWebPage(App.getInst(), repository);
+        });
         recyclerView.swapAdapter(adapter, false);
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(recyclerView.getContext());

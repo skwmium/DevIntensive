@@ -147,20 +147,25 @@ public class ActivityMain extends BaseActivity implements ViewMain, ActivityMain
 
     @Override
     public void startProfileFragment(Bundle arg) {
+        if (arg == null)
+            popFragmentsBackStack();
         FragmentProfile fragmentProfile = new FragmentProfile();
         fragmentProfile.setArguments(arg);
-        replaceFragment(fragmentProfile, true);
+        replaceFragment(fragmentProfile, arg != null);
     }
 
     @Override
     public void startProfileListFragment() {
+        if (isFragmentShowsNow(FragmentProfileList.class.getSimpleName()))
+            return;
+        popFragmentsBackStack();
         FragmentProfileList fragmentProfileList = new FragmentProfileList();
-        replaceFragment(fragmentProfileList, true);
+        replaceFragment(fragmentProfileList, false);
     }
 
     @Override
     public void startAuthFragment() {
-        mFragmentManager.popBackStack();
+        popFragmentsBackStack();
         FragmentAuth fragmentAuth = new FragmentAuth();
         replaceFragment(fragmentAuth, false);
     }
@@ -210,7 +215,7 @@ public class ActivityMain extends BaseActivity implements ViewMain, ActivityMain
     @Subscribe(threadMode = ThreadMode.MAIN)
     public void onLocalUserEvent(LocalUserEvent event) {
         if (event.getAction() == LocalUserEvent.Action.LOGOUT) {
-            mFragmentManager.popBackStack();
+            popFragmentsBackStack();
             replaceFragment(new FragmentAuth(), false);
         } else {
             presenter.reloadProfile();
@@ -255,8 +260,9 @@ public class ActivityMain extends BaseActivity implements ViewMain, ActivityMain
     }
 
     private void openInitialFragment() {
-        Fragment fragment = mFragmentManager.findFragmentByTag(FRAGMENT_TAG);
-        if (fragment != null) return;
+//        Fragment fragment = mFragmentManager.findFragmentByTag(FRAGMENT_TAG);
+//        if (fragment != null) return;
+        if (mFragmentManager.getBackStackEntryCount() > 0) return;
 
         if (!LocalUser.getInst().isLogined()) {
             startAuthFragment();
@@ -268,10 +274,19 @@ public class ActivityMain extends BaseActivity implements ViewMain, ActivityMain
 
     private void replaceFragment(Fragment fragment, boolean addToBackStack) {
         FragmentTransaction transaction = mFragmentManager.beginTransaction();
-        transaction.replace(R.id.container, fragment, FRAGMENT_TAG);
+        transaction.replace(R.id.container, fragment, fragment.getClass().getSimpleName());
         if (addToBackStack) {
             transaction.addToBackStack(null);
         }
         transaction.commit();
+    }
+
+    private void popFragmentsBackStack() {
+        mFragmentManager.popBackStack();
+    }
+
+    private boolean isFragmentShowsNow(String tag) {
+        Fragment fragment = mFragmentManager.findFragmentByTag(tag);
+        return fragment != null && fragment.isVisible();
     }
 }

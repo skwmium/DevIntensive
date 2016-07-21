@@ -3,9 +3,9 @@
             android:opacity="opaque">
     <item android:drawable="@color/color_primary"/>
 
-    <item
-        android:width="144dp"
-        android:height="144dp"
-        android:drawable="@drawable/ic_android_24dp"
-        android:gravity="center"/>
+    <item>
+        <bitmap
+            android:gravity="center"
+            android:src="@drawable/ic_android"/>
+    </item>
 </layer-list>

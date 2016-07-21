@@ -91,9 +91,14 @@ public class PresenterProfileList extends BasePresenter implements OnItemCLickLi
             ArrayList<ProfileViewModel> savedList = savedInstanceState.getParcelableArrayList(Const.KEY_PROFILE_LIST);
             if (savedList != null) {
                 mProfileList = savedList;
-                mView.showProfileList(mProfileList);
-                return;
             }
+        }
+    }
+
+    public void onCreated() {
+        if (!mProfileList.isEmpty()) {
+            mView.showProfileList(mProfileList);
+            return;
         }
         loadProfileList();
     }

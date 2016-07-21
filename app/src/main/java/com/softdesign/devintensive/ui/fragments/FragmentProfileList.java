@@ -57,6 +57,7 @@ public class FragmentProfileList extends BaseFragment implements ViewProfileList
                 .moduleViewDynamically(new ModuleViewDynamically(this))
                 .build()
                 .inject(this);
+        presenter.onCreate(savedInstanceState);
     }
 
     @Nullable
@@ -69,7 +70,7 @@ public class FragmentProfileList extends BaseFragment implements ViewProfileList
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         init();
-        presenter.onCreate(savedInstanceState);
+        presenter.onCreated();
     }
 
     @Nullable
