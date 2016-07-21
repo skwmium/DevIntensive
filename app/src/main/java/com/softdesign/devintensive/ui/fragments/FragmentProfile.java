@@ -82,7 +82,6 @@ public class FragmentProfile extends BaseFragment implements ViewProfile, View.O
         if (mProfileBinding != null) {
             mProfileBinding.contentProfile.imageActionPhone.setOnClickListener(this);
             mProfileBinding.contentProfile.imageActionEmail.setOnClickListener(this);
-            mProfileBinding.contentProfile.imageActionRepo.setOnClickListener(this);
             mProfileBinding.contentProfile.imageActionVk.setOnClickListener(this);
             mProfileBinding.relativeProfilePlaceholder.setOnClickListener(this);
         }
@@ -124,9 +123,6 @@ public class FragmentProfile extends BaseFragment implements ViewProfile, View.O
                 break;
             case R.id.image_action_email:
                 presenter.sendEmailClicked();
-                break;
-            case R.id.image_action_repo:
-                presenter.watchRepoClicked();
                 break;
             case R.id.image_action_vk:
                 presenter.watchVkClicked();

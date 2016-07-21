@@ -24,7 +24,7 @@ public class MapperParamEdit implements Func1<ProfileViewModel, ParamEdit> {
                     ParamEdit paramEdit = new ParamEdit();
                     paramEdit.setPhoneNumber(model.getMobilePhoneNumber());
                     paramEdit.setVkUrl(model.getVkProfileUrl());
-                    paramEdit.setGithubUrl(model.getRepository());
+//                    paramEdit.setGithubUrl(model.getRepository());
                     paramEdit.setBiography(model.getAbout());
                     return paramEdit;
                 })

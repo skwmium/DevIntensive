@@ -20,15 +20,15 @@ import rx.functions.Func1;
  */
 public class MapperUserDtoViewModel implements Func1<UserDto, ProfileViewModel> {
     @Nullable
-    private String mLocalUserid;
+    private String mLocalUserId;
 
     @Inject
     public MapperUserDtoViewModel() {
-        mLocalUserid = LocalUser.getInst().getUserId();
+        mLocalUserId = LocalUser.getInst().getUserId();
     }
 
     private boolean isLocalUser(String id) {
-        return mLocalUserid != null && id != null && mLocalUserid.equals(id);
+        return mLocalUserId != null && id != null && mLocalUserId.equals(id);
     }
 
     @Override
@@ -52,6 +52,7 @@ public class MapperUserDtoViewModel implements Func1<UserDto, ProfileViewModel> 
 
                     if (user.getRepositories() != null) {
                         List<String> stringList = new ArrayList<>();
+                        //noinspection Convert2streamapi
                         for (RepositoryDto dto : user.getRepositories()) {
                             stringList.add(dto.getGitUrl());
                         }

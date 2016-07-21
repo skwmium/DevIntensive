@@ -22,7 +22,6 @@ public class MapperRepoApiDto implements Func1<Repo, RepositoryDto> {
                 .map(repo -> {
                     RepositoryDto dto = new RepositoryDto();
                     dto.setId(repo.getId());
-                    dto.setTitle(repo.getTitle());
                     dto.setGitUrl(repo.getGitUrl());
                     return dto;
                 })

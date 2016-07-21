@@ -64,7 +64,6 @@ public class MapperUserApiDto implements Func1<User, UserDto> {
                         for (Repo repo : repositories.getRepositories()) {
                             RepositoryDto dto = new RepositoryDto();
                             dto.setId(repo.getId());
-                            dto.setTitle(repo.getTitle());
                             dto.setGitUrl(repo.getGitUrl());
                             repositoriesStrings.add(dto);
                         }

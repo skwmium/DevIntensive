@@ -6,10 +6,14 @@ import android.graphics.drawable.Drawable;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
 
 import com.bumptech.glide.Glide;
 import com.softdesign.devintensive.BR;
+import com.softdesign.devintensive.common.App;
+import com.softdesign.devintensive.ui.adapters.AdapterProfileRepositories;
 import com.softdesign.devintensive.utils.Utils;
 
 import java.util.ArrayList;
@@ -31,8 +35,7 @@ public class ProfileViewModel extends BaseViewModel implements EditableModel {
     private String mMobilePhoneNumber;
     private String mEmail;
     private String mVkProfileUrl;
-    private String mRepository;//TODO
-    private List<String> mRepositories;//TODO
+    private List<RepositoryViewModel> mRepositories;
     private String mAbout;
     private String mAvatarUrl;
     private String mPhotoUrl;
@@ -51,9 +54,7 @@ public class ProfileViewModel extends BaseViewModel implements EditableModel {
         mMobilePhoneNumber = in.readString();
         mEmail = in.readString();
         mVkProfileUrl = in.readString();
-        mRepository = in.readString();
-        mRepositories = new ArrayList<>();
-        in.readStringList(mRepositories);
+        mRepositories = in.createTypedArrayList(RepositoryViewModel.CREATOR);
         mAbout = in.readString();
         mAvatarUrl = in.readString();
         mPhotoUrl = in.readString();
@@ -76,8 +77,7 @@ public class ProfileViewModel extends BaseViewModel implements EditableModel {
         dest.writeString(mMobilePhoneNumber);
         dest.writeString(mEmail);
         dest.writeString(mVkProfileUrl);
-        dest.writeString(mRepository);
-        dest.writeStringList(mRepositories);
+        dest.writeTypedList(mRepositories);
         dest.writeString(mAbout);
         dest.writeString(mAvatarUrl);
         dest.writeString(mPhotoUrl);
@@ -107,6 +107,18 @@ public class ProfileViewModel extends BaseViewModel implements EditableModel {
                 .placeholder(placeholder)
                 .dontAnimate()
                 .into(view);
+    }
+
+    @BindingAdapter("entries")
+    public static void loadRepositories(RecyclerView recyclerView, List<RepositoryViewModel> repositories) {
+        AdapterProfileRepositories adapter = new AdapterProfileRepositories(repositories);
+        adapter.setItemCLickListener(viewModel -> Utils.openWebPage(App.getInst(),
+                ((RepositoryViewModel) viewModel).getRepository()));
+        recyclerView.swapAdapter(adapter, false);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(recyclerView.getContext());
+        linearLayoutManager.setAutoMeasureEnabled(true);
+        recyclerView.setLayoutManager(linearLayoutManager);
     }
 
     public void updateValues(@Nullable ProfileViewModel profileViewModel) {
@@ -139,10 +151,8 @@ public class ProfileViewModel extends BaseViewModel implements EditableModel {
             mVkProfileUrl = profileViewModel.mVkProfileUrl;
             notifyPropertyChanged(BR.vkProfileUrl);
         }
-        if (mRepository != null && !mRepository.equals(profileViewModel.mRepository)) {
-            mRepository = profileViewModel.mRepository;
-            notifyPropertyChanged(BR.repository);
-        }
+        mRepositories = profileViewModel.getRepositories();
+        notifyPropertyChanged(BR.repositories);
         if (mAbout != null && !mAbout.equals(profileViewModel.mAbout)) {
             mAbout = profileViewModel.mAbout;
             notifyPropertyChanged(BR.about);
@@ -197,11 +207,7 @@ public class ProfileViewModel extends BaseViewModel implements EditableModel {
     }
 
     @Bindable
-    public String getRepository() {
-        return mRepository;
-    }
-
-    public List<String> getRepositories() {
+    public List<RepositoryViewModel> getRepositories() {
         return mRepositories;
     }
 
@@ -273,13 +279,14 @@ public class ProfileViewModel extends BaseViewModel implements EditableModel {
         notifyPropertyChanged(BR.vkProfileUrl);
     }
 
-    public void setRepository(String repository) {
-        mRepository = repository;
-        notifyPropertyChanged(BR.repository);
-    }
-
     public void setRepositories(List<String> repositories) {
-        mRepositories = repositories;
+        mRepositories = new ArrayList<>();
+        for (String repo : repositories) {
+            RepositoryViewModel repositoryViewModel = new RepositoryViewModel();
+            repositoryViewModel.setRepository(repo);
+            mRepositories.add(repositoryViewModel);
+        }
+        notifyPropertyChanged(BR.repositories);
     }
 
     public void setAbout(String about) {
@@ -299,11 +306,21 @@ public class ProfileViewModel extends BaseViewModel implements EditableModel {
 
     public void setEditable(boolean editable) {
         mIsEditable = editable;
+        if (mRepositories != null) {
+            for (RepositoryViewModel model : mRepositories) {
+                model.setEditable(editable);
+            }
+        }
         notifyPropertyChanged(BR.editable);
     }
 
     public void setCanBeEditable(boolean canBeEditable) {
         mIsCanBeEditable = canBeEditable;
+        if (mRepositories != null) {
+            for (RepositoryViewModel model : mRepositories) {
+                model.setCanBeEditable(canBeEditable);
+            }
+        }
         notifyPropertyChanged(BR.canBeEditable);
     }
 }

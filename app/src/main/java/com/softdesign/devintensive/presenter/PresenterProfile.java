@@ -137,10 +137,6 @@ public class PresenterProfile extends BasePresenter {
         Utils.sendEmail(mView.getContext(), null, mProfileViewModel.getEmail());
     }
 
-    public void watchRepoClicked() {
-        Utils.openWebPage(mView.getContext(), mProfileViewModel.getRepository());
-    }
-
     public void watchVkClicked() {
         Utils.openWebPage(mView.getContext(), mProfileViewModel.getVkProfileUrl());
     }
