@@ -19,8 +19,6 @@
         <item name="android:windowBackground">@drawable/bg_launch_screen</item>
     </style>
 
-    <style name="AppTheme.NoActionBar.Auth"/>
-
     <style name="activity_base_progress_dialog">
         <item name="android:fullDark">@android:color/transparent</item>
     </style>
@@ -56,10 +54,12 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">@dimen/font_larger_22</item>
         <item name="android:fontFamily">sans-serif</item>
+        <item name="android:layout_gravity">center_horizontal</item>
     </style>
 
     <style name="profile_subheader_text.subtext">
         <item name="android:textSize">@dimen/font_normal_15</item>
+        <item name="android:maxLines">1</item>
     </style>
 
     <style name="profile_item">
@@ -91,7 +91,6 @@
         <item name="android:textColor">@color/profile_item_text</item>
         <item name="android:textColorHint">@color/profile_item_text_hint</item>
         <item name="android:fontFamily">sans-serif-condensed</item>
-        <item name="android:inputType">textMultiLine</item>
         <item name="android:paddingTop">@dimen/spacing_small_8</item>
     </style>
 
@@ -111,7 +110,8 @@
 
     <!--profile public info-->
     <style name="profile_public_info_dark" parent="AppTheme">
-        <item name="android:textColor">@android:color/primary_text_dark</item>
+        <item name="android:textColor">@android:color/white</item>
+        <item name="android:background">@color/profile_subheader_bg</item>
         <item name="dividerColor">@color/profile_subheader_divider</item>
     </style>
 

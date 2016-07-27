@@ -35,7 +35,7 @@
 
             <TextView
                 style="@style/profile_subheader_text"
-                android:text="@{profile.linesCount}"/>
+                android:text="@{profile.codeLinesCount}"/>
 
             <TextView
                 style="@style/profile_subheader_text.subtext"

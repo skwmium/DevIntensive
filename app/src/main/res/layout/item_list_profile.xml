@@ -33,9 +33,10 @@
                 <com.softdesign.devintensive.ui.view.AspectRatioImageView
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:scaleType="centerCrop"
                     app:aspect_ratio="ratio_16x9"
                     app:imageUrl="@{profile.photoUrl}"
-                    app:placeholder="@{@drawable/bg_user}"/>
+                    app:placeholder="@{@drawable/bg_image_item}"/>
 
                 <TextView
                     android:layout_width="match_parent"

@@ -17,7 +17,8 @@ import java.util.List;
 /**
  * Created by skwmium on 14.07.16.
  */
-public class AdapterProfileList extends RecyclerView.Adapter<AdapterProfileList.ViewHolder> {
+public class AdapterProfileList extends RecyclerView.Adapter<AdapterProfileList.ViewHolder>
+        implements OnItemChangedListener {
     @NonNull
     private List<ProfileViewModel> mProfileViewModels = new ArrayList<>();
     @Nullable
@@ -58,6 +59,20 @@ public class AdapterProfileList extends RecyclerView.Adapter<AdapterProfileList.
     public int getItemCount() {
         return mProfileViewModels.size();
     }
+
+
+    // ---------- ITEM CHANGE ----------
+    @Override
+    public boolean onItemMove(int fromPosition, int toPosition) {
+        notifyItemMoved(fromPosition, toPosition);
+        return true;
+    }
+
+    @Override
+    public void onItemDismiss(int position) {
+        notifyItemRemoved(position);
+    }
+
 
     // ---------- HOLDER ----------
     public static class ViewHolder extends RecyclerView.ViewHolder {

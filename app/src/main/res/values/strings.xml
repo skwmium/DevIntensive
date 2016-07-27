@@ -4,6 +4,7 @@
     <!--nav drawer-->
     <string name="nav_item_profile">Профиль</string>
     <string name="nav_item_contacts">Команда</string>
+    <string name="nav_item_logout">Logout</string>
 
     <!--auth screen-->
     <string name="auth_screen_title">Войти</string>
@@ -45,6 +46,7 @@
     <!--error-->
     <string name="error_loading_data">Ошибка во время загрузки данных</string>
     <string name="error_indefinite">Произошла ошшибка, повторите действие позже</string>
+    <string name="error_photo_file_creation">Ошибка во время подготовки камеры</string>
     <string name="error_upload_avatar">Ошибка во время загрузки аватара</string>
     <string name="error_upload_photo">Ошибка во время загрузки фото</string>
 

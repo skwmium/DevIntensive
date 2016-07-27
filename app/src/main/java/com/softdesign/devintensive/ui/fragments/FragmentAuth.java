@@ -10,11 +10,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import com.softdesign.devintensive.R;
-import com.softdesign.devintensive.di.DaggerComponentAuth;
-import com.softdesign.devintensive.di.ModuleViewAuth;
+import com.softdesign.devintensive.di.DaggerComponentView;
+import com.softdesign.devintensive.di.ModuleViewDynamically;
 import com.softdesign.devintensive.presenter.BasePresenter;
 import com.softdesign.devintensive.presenter.PresenterAuth;
-import com.softdesign.devintensive.ui.activities.ActivityAuth;
 import com.softdesign.devintensive.view.ViewAuth;
 
 import javax.inject.Inject;
@@ -38,15 +37,15 @@ public class FragmentAuth extends BaseFragment implements ViewAuth {
     TextView textForgotPassword;
 
     @Inject
-    PresenterAuth mAuthPresenter;
+    PresenterAuth presenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        DaggerComponentAuth
+        DaggerComponentView
                 .builder()
-                .moduleViewAuth(new ModuleViewAuth(this))
+                .moduleViewDynamically(new ModuleViewDynamically(this))
                 .build()
                 .inject(this);
     }
@@ -60,14 +59,14 @@ public class FragmentAuth extends BaseFragment implements ViewAuth {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        buttonLogin.setOnClickListener(view1 -> mAuthPresenter.loginClicked());
-        textForgotPassword.setOnClickListener(view2 -> mAuthPresenter.forgotPasswordClicked());
+        buttonLogin.setOnClickListener(view1 -> presenter.loginClicked());
+        textForgotPassword.setOnClickListener(view2 -> presenter.forgotPasswordClicked());
     }
 
     @Nullable
     @Override
     protected BasePresenter getPresenter() {
-        return mAuthPresenter;
+        return presenter;
     }
 
     @Override
@@ -81,9 +80,17 @@ public class FragmentAuth extends BaseFragment implements ViewAuth {
     }
 
     @Override
-    public void startRestorePasswordFragment() {
-        ActivityAuth activityAuth = getBaseActivity().as(ActivityAuth.class);
-        if (activityAuth == null) return;
-        activityAuth.replaceFragment(new FragmentRestorePassword(), true);
+    public void startRestorePasswordView() {
+        activityCallback.startRestorePasswordFragment();
+    }
+
+    @Override
+    public void startProfileView() {
+        activityCallback.startProfileFragment(null);
+    }
+
+    @Override
+    protected boolean isDrawerLocked() {
+        return true;
     }
 }

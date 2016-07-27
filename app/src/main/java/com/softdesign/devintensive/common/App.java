@@ -7,8 +7,10 @@ import android.support.annotation.StringRes;
 import android.widget.Toast;
 
 import com.crashlytics.android.Crashlytics;
+import com.facebook.stetho.Stetho;
 import com.softdesign.devintensive.di.ComponentApp;
 import com.softdesign.devintensive.di.DaggerComponentApp;
+import com.squareup.leakcanary.LeakCanary;
 
 import io.fabric.sdk.android.Fabric;
 
@@ -50,6 +52,8 @@ public class App extends Application {
     }
 
     private void initServices() {
+        LeakCanary.install(this);
         if (BuildConfiguration.CRASHLYTICS_ENABLED) Fabric.with(this, new Crashlytics());
+        if (BuildConfiguration.STETHO_ENABLED) Stetho.initializeWithDefaults(this);
     }
 }
