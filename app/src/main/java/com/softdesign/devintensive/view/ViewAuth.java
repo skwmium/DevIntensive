@@ -8,5 +8,7 @@ public interface ViewAuth extends View {
 
     String getPassword();
 
-    void startRestorePasswordFragment();
+    void startRestorePasswordView();
+
+    void startProfileView();
 }

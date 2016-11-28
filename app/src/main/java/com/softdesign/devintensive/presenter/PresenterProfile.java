@@ -1,6 +1,5 @@
 package com.softdesign.devintensive.presenter;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -11,12 +10,11 @@ import android.support.annotation.Nullable;
 
 import com.softdesign.devintensive.R;
 import com.softdesign.devintensive.common.App;
-import com.softdesign.devintensive.data.Model;
-import com.softdesign.devintensive.presenter.mappers.MapperParamEdit;
-import com.softdesign.devintensive.presenter.mappers.MapperUser;
+import com.softdesign.devintensive.model.Model;
+import com.softdesign.devintensive.model.mappers.MapperParamEdit;
+import com.softdesign.devintensive.model.mappers.MapperUserDtoViewModel;
 import com.softdesign.devintensive.ui.viewmodel.ProfileViewModel;
 import com.softdesign.devintensive.utils.Const;
-import com.softdesign.devintensive.utils.L;
 import com.softdesign.devintensive.utils.Utils;
 import com.softdesign.devintensive.view.ViewProfile;
 
@@ -30,25 +28,25 @@ import rx.Scheduler;
 import rx.Subscriber;
 import rx.Subscription;
 
+import static android.Manifest.permission.CAMERA;
+import static android.Manifest.permission.READ_EXTERNAL_STORAGE;
+import static android.Manifest.permission.WRITE_EXTERNAL_STORAGE;
+import static com.softdesign.devintensive.utils.Const.REQUEST_PROFILE_PERMISSION_CAMERA;
+import static com.softdesign.devintensive.utils.Const.REQUEST_PROFILE_PERMISSION_READ_EXTERNAL_STORAGE;
+
 /**
  * Created by skwmium on 05.07.16.
  */
 @SuppressWarnings("Convert2MethodRef")
 public class PresenterProfile extends BasePresenter {
-    private enum State {
-        IDLE,
-        UPLOADING_AVATAR,
-        UPLOADING_PHOTO
-    }
+    @Inject
+    Model model;
 
     @Inject
-    Model mModel;
+    MapperUserDtoViewModel mapperUserDtoViewModel;
 
     @Inject
-    MapperUser mMapperUser;
-
-    @Inject
-    MapperParamEdit mMapperParamEdit;
+    MapperParamEdit mapperParamEdit;
 
     @Inject
     @Named(Const.IO_THREAD)
@@ -59,8 +57,6 @@ public class PresenterProfile extends BasePresenter {
 
     @Nullable
     private File mPhotoFile;
-    @NonNull
-    private State mCurrentState = State.IDLE;
 
     @Inject
     public PresenterProfile() {
@@ -73,7 +69,10 @@ public class PresenterProfile extends BasePresenter {
 
     public void onCreate(Bundle savedInstanceState) {
         if (savedInstanceState != null) {
-            mProfileViewModel = (ProfileViewModel) savedInstanceState.getSerializable(Const.KEY_PROFILE);
+            mProfileViewModel = savedInstanceState.getParcelable(Const.KEY_PROFILE);
+        }
+        if (mProfileViewModel == null && mView.getArguments() != null) {
+            mProfileViewModel = mView.getArguments().getParcelable(Const.KEY_PROFILE);
         }
         if (mProfileViewModel == null) {
             loadProfile();
@@ -83,34 +82,33 @@ public class PresenterProfile extends BasePresenter {
     }
 
     public void onSaveInstanceState(Bundle outState) {
-        outState.putSerializable(Const.KEY_PROFILE, mProfileViewModel);
+        outState.putParcelable(Const.KEY_PROFILE, mProfileViewModel);
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         switch (requestCode) {
-            case Const.REQUEST_PHOTO_PICKER:
+            case Const.REQUEST_PROFILE_PHOTO_PICKER:
                 if (resultCode == Activity.RESULT_OK && data != null) {
-                    updateImageByState(data.getData().toString());
+                    updateProfilePhoto(data.getData().toString());
                 }
-                changeState(State.IDLE);
                 break;
-            case Const.REQUEST_PHOTO_CAMERA:
+            case Const.REQUEST_PROFILE_PHOTO_CAMERA:
                 if (resultCode == Activity.RESULT_OK && mPhotoFile != null) {
-                    updateImageByState(Uri.fromFile(mPhotoFile).toString());
+                    updateProfilePhoto(Uri.fromFile(mPhotoFile).toString());
                 }
-                changeState(State.IDLE);
                 break;
         }
     }
 
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
         switch (requestCode) {
-            case Const.REQUEST_PERMISSION_READ_EXTERNAL_STORAGE:
+            case REQUEST_PROFILE_PERMISSION_READ_EXTERNAL_STORAGE:
                 if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    Utils.showPhotoPickerDialog(mView.getActivity(), Const.REQUEST_PHOTO_PICKER);
+                    mView.showPhotoPicker(Const.REQUEST_PROFILE_PHOTO_PICKER);
                 }
                 break;
-            case Const.REQUEST_PERMISSION_CAMERA:
+            case REQUEST_PROFILE_PERMISSION_CAMERA:
                 if (grantResults.length == 2
                         && grantResults[0] == PackageManager.PERMISSION_GRANTED
                         && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
@@ -139,39 +137,38 @@ public class PresenterProfile extends BasePresenter {
         Utils.sendEmail(mView.getContext(), null, mProfileViewModel.getEmail());
     }
 
-    public void watchRepoClicked() {
-        Utils.openWebPage(mView.getContext(), mProfileViewModel.getRepository());
-    }
-
     public void watchVkClicked() {
-        Utils.openWebPage(mView.getContext(), mProfileViewModel.getVkProfile());
+        Utils.openWebPage(mView.getContext(), mProfileViewModel.getVkProfileUrl());
     }
 
     public void changeProfilePhotoClicked() {
-        changeState(State.UPLOADING_PHOTO);
-        mView.showTakePhotoChooser();
-    }
-
-    public void changeProfileAvatarClicked() {
-        changeState(State.UPLOADING_AVATAR);
         mView.showTakePhotoChooser();
     }
 
     public void takePhotoClicked() {
-        if (Utils.checkPermissionAndRequestIfNotGranted(mView.getActivity(), new String[]{Manifest.permission.CAMERA, Manifest.permission.WRITE_EXTERNAL_STORAGE}, Const.REQUEST_PERMISSION_CAMERA)) {
-            mPhotoFile = Utils.takePhoto(mView.getActivity());
+        String[] permissions = new String[]{CAMERA, WRITE_EXTERNAL_STORAGE};
+        if (mView.checkPermissionsAndRequestIfNotGranted(permissions, REQUEST_PROFILE_PERMISSION_CAMERA)) {
+            mPhotoFile = Utils.createFileForPhoto();
+            if (mPhotoFile == null) {
+                mView.showMessage(R.string.error_photo_file_creation);
+                return;
+            }
+            mView.takePhoto(mPhotoFile, Const.REQUEST_PROFILE_PHOTO_CAMERA);
         }
     }
 
     public void openGalleryClicked() {
-        if (Utils.checkPermissionAndRequestIfNotGranted(mView.getActivity(), Manifest.permission.READ_EXTERNAL_STORAGE, Const.REQUEST_PERMISSION_READ_EXTERNAL_STORAGE))
-            Utils.showPhotoPickerDialog(mView.getActivity(), Const.REQUEST_PHOTO_PICKER);
+        String[] permissions = new String[]{READ_EXTERNAL_STORAGE};
+        if (mView.checkPermissionsAndRequestIfNotGranted(permissions,
+                REQUEST_PROFILE_PERMISSION_READ_EXTERNAL_STORAGE)) {
+            mView.showPhotoPicker(Const.REQUEST_PROFILE_PHOTO_PICKER);
+        }
     }
 
     private void loadProfile() {
         mView.showProgress();
-        Subscription subscription = mModel.userGetMe()
-                .map(mMapperUser)
+        Subscription subscription = model.userGetMe()
+                .map(mapperUserDtoViewModel)
                 .subscribe(new Subscriber<ProfileViewModel>() {
                     @Override
                     public void onCompleted() {
@@ -197,10 +194,9 @@ public class PresenterProfile extends BasePresenter {
         mView.showProgress();
         Subscription subscription = Observable.just(mProfileViewModel)
                 .subscribeOn(schedulerIo)
-                .map(mMapperParamEdit)
-                .flatMap(paramEdit -> mModel.userEditProfile(paramEdit))
-                .map(editProfileResult -> editProfileResult.getUser())
-                .map(mMapperUser)
+                .map(mapperParamEdit)
+                .flatMap(paramEdit -> model.userEditProfile(paramEdit))
+                .map(mapperUserDtoViewModel)
                 .subscribe(new Subscriber<ProfileViewModel>() {
                     @Override
                     public void onCompleted() {
@@ -222,37 +218,11 @@ public class PresenterProfile extends BasePresenter {
         addSubscription(subscription);
     }
 
-    private void updateImageByState(String imageUrl) {
-        if (isState(State.UPLOADING_AVATAR)) {
-            updateProfileAvatar(imageUrl);
-            mProfileViewModel.setAvatarUrl(imageUrl);
-        } else if (isState(State.UPLOADING_PHOTO)) {
-            updateProfilePhoto(imageUrl);
-            mProfileViewModel.setPhotoUrl(imageUrl);
-        }
-    }
-
-    private void updateProfileAvatar(String imageUrl) {
-        mModel.updateProfileAvatar(imageUrl)
-                .doOnError(throwable -> mView.showMessage(R.string.error_upload_avatar))
-                .doOnNext(uploadImageResult -> mView.showMessage(R.string.profile_avatar_was_changed))
-                .subscribe();
-    }
-
-    private void updateProfilePhoto(String imageUrl) {
-        mModel.updateProfilePhoto(imageUrl)
+    private void updateProfilePhoto(String path) {
+        mProfileViewModel.setPhotoUrl(path);
+        model.updateProfilePhoto(path)
                 .doOnError(throwable -> mView.showMessage(R.string.error_upload_photo))
                 .doOnNext(uploadImageResult -> mView.showMessage(R.string.profile_photo_was_changed))
                 .subscribe();
-    }
-
-
-    // ---------- STATE ----------
-    private boolean isState(@NonNull State state) {
-        return mCurrentState == state;
-    }
-
-    private void changeState(@NonNull State state) {
-        mCurrentState = state;
     }
 }

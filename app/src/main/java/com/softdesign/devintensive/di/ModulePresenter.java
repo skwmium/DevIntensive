@@ -1,7 +1,7 @@
 package com.softdesign.devintensive.di;
 
-import com.softdesign.devintensive.data.Model;
-import com.softdesign.devintensive.data.ModelImpl;
+import com.softdesign.devintensive.model.Model;
+import com.softdesign.devintensive.model.ModelImpl;
 
 import javax.inject.Singleton;
 

@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <data>
+
+        <import type="android.view.View"/>
 
         <variable
             name="profile"
@@ -15,7 +18,9 @@
 
 
         <!--mobile-->
-        <LinearLayout style="@style/profile_item">
+        <LinearLayout
+            style="@style/profile_item"
+            android:visibility="@{profile.canBeEditable ? View.VISIBLE : View.GONE}">
 
             <ImageView
                 style="@style/profile_item_icon"
@@ -23,12 +28,14 @@
 
             <android.support.design.widget.TextInputLayout style="@style/profile_item_text_input">
 
-                <EditText
+                <android.support.design.widget.TextInputEditText
                     style="@style/profile_item_text_input_edit"
                     android:enabled="@{profile.editable}"
                     android:focusable="@{profile.editable}"
                     android:focusableInTouchMode="@{profile.editable}"
                     android:hint="@string/profile_label_mobile_phone"
+                    android:inputType="phone"
+                    android:maxLines="1"
                     android:text="@={profile.mobilePhoneNumber}"/>
             </android.support.design.widget.TextInputLayout>
 
@@ -39,11 +46,15 @@
         </LinearLayout>
 
 
-        <View style="@style/profile_item_divider"/>
+        <View
+            style="@style/profile_item_divider"
+            android:visibility="@{profile.canBeEditable ? View.VISIBLE : View.GONE}"/>
 
 
         <!--email-->
-        <LinearLayout style="@style/profile_item">
+        <LinearLayout
+            style="@style/profile_item"
+            android:visibility="@{profile.canBeEditable ? View.VISIBLE : View.GONE}">
 
             <ImageView
                 style="@style/profile_item_icon"
@@ -51,17 +62,19 @@
 
             <android.support.design.widget.TextInputLayout style="@style/profile_item_text_input">
 
-                <EditText
+                <android.support.design.widget.TextInputEditText
                     android:id="@+id/edit_email"
                     style="@style/profile_item_text_input_edit"
                     android:enabled="@{profile.editable}"
                     android:focusable="@{profile.editable}"
                     android:focusableInTouchMode="@{profile.editable}"
                     android:hint="@string/profile_label_email"
+                    android:inputType="textEmailAddress"
+                    android:maxLines="1"
                     android:text="@={profile.email}">
 
                     <requestFocus/>
-                </EditText>
+                </android.support.design.widget.TextInputEditText>
             </android.support.design.widget.TextInputLayout>
 
             <ImageView
@@ -71,11 +84,15 @@
         </LinearLayout>
 
 
-        <View style="@style/profile_item_divider"/>
+        <View
+            style="@style/profile_item_divider"
+            android:visibility="@{profile.canBeEditable ? View.VISIBLE : View.GONE}"/>
 
 
         <!--vkontakte-->
-        <LinearLayout style="@style/profile_item">
+        <LinearLayout
+            style="@style/profile_item"
+            android:visibility="@{profile.canBeEditable ? View.VISIBLE : View.GONE}">
 
             <ImageView
                 style="@style/profile_item_icon"
@@ -83,13 +100,15 @@
 
             <android.support.design.widget.TextInputLayout style="@style/profile_item_text_input">
 
-                <EditText
+                <android.support.design.widget.TextInputEditText
                     style="@style/profile_item_text_input_edit"
                     android:enabled="@{profile.editable}"
                     android:focusable="@{profile.editable}"
                     android:focusableInTouchMode="@{profile.editable}"
                     android:hint="@string/profile_label_profile_vk"
-                    android:text="@={profile.vkProfile}"/>
+                    android:inputType="textUri"
+                    android:maxLines="1"
+                    android:text="@={profile.vkProfileUrl}"/>
             </android.support.design.widget.TextInputLayout>
 
             <ImageView
@@ -99,33 +118,23 @@
         </LinearLayout>
 
 
-        <View style="@style/profile_item_divider"/>
+        <View
+            style="@style/profile_item_divider"
+            android:visibility="@{profile.canBeEditable ? View.VISIBLE : View.GONE}"/>
 
 
-        <!--repo-->
+        <!--repos-->
         <LinearLayout style="@style/profile_item">
 
             <ImageView
                 style="@style/profile_item_icon"
                 android:src="@drawable/ic_github_24dp"/>
 
-            <android.support.design.widget.TextInputLayout style="@style/profile_item_text_input">
-
-                <EditText
-                    style="@style/profile_item_text_input_edit"
-                    android:enabled="@{profile.editable}"
-                    android:focusable="@{profile.editable}"
-                    android:focusableInTouchMode="@{profile.editable}"
-                    android:hint="@string/profile_label_repository"
-                    android:text="@={profile.repository}"/>
-            </android.support.design.widget.TextInputLayout>
-
-            <ImageView
-                android:id="@+id/image_action_repo"
-                style="@style/profile_item_icon"
-                android:src="@drawable/ic_visibility_24dp"/>
+            <android.support.v7.widget.RecyclerView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:entries="@{profile.repositories}"/>
         </LinearLayout>
-
 
         <View style="@style/profile_item_divider"/>
 
@@ -139,12 +148,13 @@
 
             <android.support.design.widget.TextInputLayout style="@style/profile_item_text_input">
 
-                <EditText
+                <android.support.design.widget.TextInputEditText
                     style="@style/profile_item_text_input_edit"
                     android:enabled="@{profile.editable}"
                     android:focusable="@{profile.editable}"
                     android:focusableInTouchMode="@{profile.editable}"
                     android:hint="@string/profile_label_about_me"
+                    android:inputType="textMultiLine"
                     android:text="@={profile.about}"/>
             </android.support.design.widget.TextInputLayout>
         </LinearLayout>

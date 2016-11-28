@@ -8,7 +8,10 @@
             type="com.softdesign.devintensive.ui.viewmodel.ProfileViewModel"/>
     </data>
 
-    <merge>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/profile_subheader_height_min"
+        android:orientation="horizontal">
 
         <LinearLayout
             style="@style/profile_subheader_item"
@@ -23,7 +26,8 @@
                 android:text="@string/profile_label_rating"/>
         </LinearLayout>
 
-        <View style="@style/profile_subheader_divider"/>
+        <com.softdesign.devintensive.ui.view.DividerView
+            style="@style/profile_subheader_divider"/>
 
         <LinearLayout
             style="@style/profile_subheader_item"
@@ -31,14 +35,15 @@
 
             <TextView
                 style="@style/profile_subheader_text"
-                android:text="@{profile.linesCount}"/>
+                android:text="@{profile.codeLinesCount}"/>
 
             <TextView
                 style="@style/profile_subheader_text.subtext"
                 android:text="@string/profile_label_lines_count"/>
         </LinearLayout>
 
-        <View style="@style/profile_subheader_divider"/>
+        <com.softdesign.devintensive.ui.view.DividerView
+            style="@style/profile_subheader_divider"/>
 
         <LinearLayout
             style="@style/profile_subheader_item"
@@ -52,5 +57,5 @@
                 style="@style/profile_subheader_text.subtext"
                 android:text="@string/profile_label_projects_count"/>
         </LinearLayout>
-    </merge>
+    </LinearLayout>
 </layout>

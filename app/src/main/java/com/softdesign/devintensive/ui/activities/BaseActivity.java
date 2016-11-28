@@ -1,6 +1,7 @@
 package com.softdesign.devintensive.ui.activities;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -15,33 +16,22 @@ import android.view.ViewGroup;
 
 import com.softdesign.devintensive.R;
 import com.softdesign.devintensive.ui.view.InflaterFactory;
-import com.softdesign.devintensive.presenter.BasePresenter;
 
 import butterknife.ButterKnife;
 
 /**
  * Created by skwmium on 22.06.16.
  */
-public abstract class BaseActivity extends AppCompatActivity {
+@SuppressWarnings("unused")
+public abstract class BaseActivity extends AppCompatActivity implements com.softdesign.devintensive.view.View {
+    @Nullable
     private ProgressDialog mProgressDialog;
 
-    public <T extends View> T $(@IdRes int id) {
-        //noinspection unchecked
-        return (T) findViewById(id);
-    }
-
+    // ---------- ACTIVITY LOGIC ----------
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         getLayoutInflater().setFactory(new InflaterFactory(this));
         super.onCreate(savedInstanceState);
-    }
-
-    @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        if (getPresenter() != null) {
-            getPresenter().onStop();
-        }
     }
 
     @Override
@@ -63,6 +53,9 @@ public abstract class BaseActivity extends AppCompatActivity {
         return rootGroup.getChildAt(0);
     }
 
+
+    // ---------- PROGRESS DIALOG ----------
+    @Override
     public void showProgress() {
         if (mProgressDialog == null) {
             mProgressDialog = new ProgressDialog(this, R.style.activity_base_progress_dialog);
@@ -73,11 +66,19 @@ public abstract class BaseActivity extends AppCompatActivity {
         mProgressDialog.setContentView(R.layout.dialog_progress_activity);
     }
 
+    @Override
     public void hideProgress() {
         if (mProgressDialog == null || !mProgressDialog.isShowing()) {
             return;
         }
         mProgressDialog.dismiss();
+    }
+
+
+    // ---------- MESSAGES ----------
+    @Override
+    public void showMessage(@StringRes int res) {
+        showSnackbar(res);
     }
 
     public void showSnackbar(@StringRes int res) {
@@ -91,12 +92,21 @@ public abstract class BaseActivity extends AppCompatActivity {
         Snackbar.make(rootView, s, Snackbar.LENGTH_SHORT).show();
     }
 
-    @Nullable
-    protected abstract BasePresenter getPresenter();
+
+    // ---------- UTIL ----------
+    public <T extends View> T $(@IdRes int id) {
+        //noinspection unchecked
+        return (T) findViewById(id);
+    }
 
     @Nullable
     public <T extends BaseActivity> T as(Class<T> clazz) {
         //noinspection unchecked
         return (T) this;
+    }
+
+    @Override
+    public Context getContext() {
+        return getApplicationContext();
     }
 }

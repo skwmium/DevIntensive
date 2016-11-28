@@ -4,12 +4,11 @@ import android.support.annotation.Nullable;
 
 import com.softdesign.devintensive.R;
 import com.softdesign.devintensive.common.App;
-import com.softdesign.devintensive.data.Model;
-import com.softdesign.devintensive.data.network.api.RetrofitException;
-import com.softdesign.devintensive.data.network.dto.AuthResult;
-import com.softdesign.devintensive.data.network.dto.BaseResponse;
-import com.softdesign.devintensive.data.storage.LocalUser;
-import com.softdesign.devintensive.ui.activities.ActivityProfile;
+import com.softdesign.devintensive.model.Model;
+import com.softdesign.devintensive.model.network.api.RetrofitException;
+import com.softdesign.devintensive.model.network.dto.AuthResult;
+import com.softdesign.devintensive.model.network.dto.BaseResponse;
+import com.softdesign.devintensive.model.storage.LocalUser;
 import com.softdesign.devintensive.view.ViewAuth;
 
 import javax.inject.Inject;
@@ -23,7 +22,7 @@ import rx.Subscription;
 @SuppressWarnings("Convert2MethodRef")
 public class PresenterAuth extends BasePresenter {
     @Inject
-    protected Model mModel;
+    Model model;
 
     private ViewAuth mView;
 
@@ -42,7 +41,7 @@ public class PresenterAuth extends BasePresenter {
 
         if (!checkAuthData(email, password)) return;
         mView.showProgress();
-        Subscription subscription = mModel
+        Subscription subscription = model
                 .autUser(email, password)
                 .subscribe(new Subscriber<AuthResult>() {
                     @Override
@@ -51,7 +50,7 @@ public class PresenterAuth extends BasePresenter {
                         if (!LocalUser.getInst().isLogined()) {
                             mView.showMessage(R.string.auth_error_indefinite);
                         } else {
-                            ActivityProfile.start(mView.getContext());
+                            mView.startProfileView();
                         }
                     }
 
@@ -76,7 +75,7 @@ public class PresenterAuth extends BasePresenter {
     }
 
     public void forgotPasswordClicked() {
-        mView.startRestorePasswordFragment();
+        mView.startRestorePasswordView();
     }
 
     private boolean checkAuthData(@Nullable String email, @Nullable String password) {

@@ -2,9 +2,9 @@ package com.softdesign.devintensive.presenter;
 
 import com.softdesign.devintensive.R;
 import com.softdesign.devintensive.common.App;
-import com.softdesign.devintensive.data.Model;
-import com.softdesign.devintensive.data.network.api.RetrofitException;
-import com.softdesign.devintensive.data.network.dto.BaseResponse;
+import com.softdesign.devintensive.model.Model;
+import com.softdesign.devintensive.model.network.api.RetrofitException;
+import com.softdesign.devintensive.model.network.dto.BaseResponse;
 import com.softdesign.devintensive.view.ViewRestorePassword;
 
 import javax.inject.Inject;
@@ -17,7 +17,7 @@ import rx.Subscription;
  */
 public class PresenterRestorePassword extends BasePresenter {
     @Inject
-    protected Model mModel;
+    protected Model model;
 
     private ViewRestorePassword mView;
 
@@ -32,11 +32,12 @@ public class PresenterRestorePassword extends BasePresenter {
 
     public void restoreClicked() {
         mView.showProgress();
-        Subscription subscription = mModel
+        Subscription subscription = model
                 .userRestorePassword(mView.getEmail())
                 .subscribe(new Subscriber<BaseResponse>() {
                     @Override
                     public void onCompleted() {
+                        mView.hideProgress();
                     }
 
                     @Override
@@ -54,7 +55,6 @@ public class PresenterRestorePassword extends BasePresenter {
                     @Override
                     public void onNext(BaseResponse baseResponse) {
                         mView.showMessage(R.string.auth_password_was_restored);
-                        mView.hideProgress();
                         mView.goBack();
                     }
                 });

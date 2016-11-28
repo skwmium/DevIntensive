@@ -3,11 +3,21 @@ package com.softdesign.devintensive.ui.viewmodel;
 import android.databinding.Bindable;
 import android.databinding.BindingAdapter;
 import android.graphics.drawable.Drawable;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.support.annotation.Nullable;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.widget.ImageView;
 
+import com.bumptech.glide.Glide;
 import com.softdesign.devintensive.BR;
-import com.squareup.picasso.Picasso;
+import com.softdesign.devintensive.common.App;
+import com.softdesign.devintensive.ui.adapters.AdapterProfileRepositories;
+import com.softdesign.devintensive.utils.Utils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by skwmium on 23.06.16.
@@ -17,26 +27,103 @@ import com.squareup.picasso.Picasso;
  * не будут тормозить ui
  */
 public class ProfileViewModel extends BaseViewModel implements EditableModel {
+    private String mId;
     private String mName;
     private String mRating;
-    private String mLinesCount;
+    private String mCodeLinesCount;
     private String mProjectCount;
     private String mMobilePhoneNumber;
     private String mEmail;
-    private String mVkProfile;
-    private String mRepository;
+    private String mVkProfileUrl;
+    private List<RepositoryViewModel> mRepositories;
     private String mAbout;
     private String mAvatarUrl;
     private String mPhotoUrl;
     private boolean mIsEditable;
+    private boolean mIsCanBeEditable;
+
+    public ProfileViewModel() {
+    }
+
+    protected ProfileViewModel(Parcel in) {
+        mId = in.readString();
+        mName = in.readString();
+        mRating = in.readString();
+        mCodeLinesCount = in.readString();
+        mProjectCount = in.readString();
+        mMobilePhoneNumber = in.readString();
+        mEmail = in.readString();
+        mVkProfileUrl = in.readString();
+        mRepositories = in.createTypedArrayList(RepositoryViewModel.CREATOR);
+        mAbout = in.readString();
+        mAvatarUrl = in.readString();
+        mPhotoUrl = in.readString();
+        mIsEditable = in.readByte() != 0x00;
+        mIsCanBeEditable = in.readByte() != 0x00;
+    }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(mId);
+        dest.writeString(mName);
+        dest.writeString(mRating);
+        dest.writeString(mCodeLinesCount);
+        dest.writeString(mProjectCount);
+        dest.writeString(mMobilePhoneNumber);
+        dest.writeString(mEmail);
+        dest.writeString(mVkProfileUrl);
+        dest.writeTypedList(mRepositories);
+        dest.writeString(mAbout);
+        dest.writeString(mAvatarUrl);
+        dest.writeString(mPhotoUrl);
+        dest.writeByte((byte) (mIsEditable ? 0x01 : 0x00));
+        dest.writeByte((byte) (mIsCanBeEditable ? 0x01 : 0x00));
+    }
+
+    @SuppressWarnings("unused")
+    public static final Parcelable.Creator<ProfileViewModel> CREATOR = new Parcelable.Creator<ProfileViewModel>() {
+        @Override
+        public ProfileViewModel createFromParcel(Parcel in) {
+            return new ProfileViewModel(in);
+        }
+
+        @Override
+        public ProfileViewModel[] newArray(int size) {
+            return new ProfileViewModel[size];
+        }
+    };
 
     @BindingAdapter({"bind:imageUrl", "bind:placeholder"})
     public static void loadImage(ImageView view, String url, Drawable placeholder) {
-        Picasso.with(view.getContext())
+        if (Utils.isNullOrEmpty(url))
+            return;
+        Glide.with(view.getContext())
                 .load(url)
                 .placeholder(placeholder)
-                .fit()
+                .dontAnimate()
                 .into(view);
+    }
+
+    @BindingAdapter("entries")
+    public static void loadRepositories(RecyclerView recyclerView, List<RepositoryViewModel> repositories) {
+        AdapterProfileRepositories adapter = new AdapterProfileRepositories(repositories);
+        adapter.setItemCLickListener(viewModel -> {
+            String repository = ((RepositoryViewModel) viewModel).getRepository();
+            if (!repository.startsWith("http")) {
+                repository = "http://" + repository;
+            }
+            Utils.openWebPage(App.getInst(), repository);
+        });
+        recyclerView.swapAdapter(adapter, false);
+
+        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(recyclerView.getContext());
+        linearLayoutManager.setAutoMeasureEnabled(true);
+        recyclerView.setLayoutManager(linearLayoutManager);
     }
 
     public void updateValues(@Nullable ProfileViewModel profileViewModel) {
@@ -49,9 +136,9 @@ public class ProfileViewModel extends BaseViewModel implements EditableModel {
             mRating = profileViewModel.mRating;
             notifyPropertyChanged(BR.rating);
         }
-        if (mLinesCount != null && !mLinesCount.equals(profileViewModel.mLinesCount)) {
-            mLinesCount = profileViewModel.mLinesCount;
-            notifyPropertyChanged(BR.linesCount);
+        if (mCodeLinesCount != null && !mCodeLinesCount.equals(profileViewModel.mCodeLinesCount)) {
+            mCodeLinesCount = profileViewModel.mCodeLinesCount;
+            notifyPropertyChanged(BR.codeLinesCount);
         }
         if (mProjectCount != null && !mProjectCount.equals(profileViewModel.mProjectCount)) {
             mProjectCount = profileViewModel.mProjectCount;
@@ -65,14 +152,12 @@ public class ProfileViewModel extends BaseViewModel implements EditableModel {
             mEmail = profileViewModel.mEmail;
             notifyPropertyChanged(BR.email);
         }
-        if (mVkProfile != null && !mVkProfile.equals(profileViewModel.mVkProfile)) {
-            mVkProfile = profileViewModel.mVkProfile;
-            notifyPropertyChanged(BR.vkProfile);
+        if (mVkProfileUrl != null && !mVkProfileUrl.equals(profileViewModel.mVkProfileUrl)) {
+            mVkProfileUrl = profileViewModel.mVkProfileUrl;
+            notifyPropertyChanged(BR.vkProfileUrl);
         }
-        if (mRepository != null && !mRepository.equals(profileViewModel.mRepository)) {
-            mRepository = profileViewModel.mRepository;
-            notifyPropertyChanged(BR.repository);
-        }
+        mRepositories = profileViewModel.getRepositories();
+        notifyPropertyChanged(BR.repositories);
         if (mAbout != null && !mAbout.equals(profileViewModel.mAbout)) {
             mAbout = profileViewModel.mAbout;
             notifyPropertyChanged(BR.about);
@@ -87,6 +172,10 @@ public class ProfileViewModel extends BaseViewModel implements EditableModel {
         }
     }
 
+    public String getId() {
+        return mId;
+    }
+
     @Bindable
     public String getName() {
         return mName;
@@ -98,8 +187,8 @@ public class ProfileViewModel extends BaseViewModel implements EditableModel {
     }
 
     @Bindable
-    public String getLinesCount() {
-        return mLinesCount;
+    public String getCodeLinesCount() {
+        return mCodeLinesCount;
     }
 
     @Bindable
@@ -118,13 +207,13 @@ public class ProfileViewModel extends BaseViewModel implements EditableModel {
     }
 
     @Bindable
-    public String getVkProfile() {
-        return mVkProfile;
+    public String getVkProfileUrl() {
+        return mVkProfileUrl;
     }
 
     @Bindable
-    public String getRepository() {
-        return mRepository;
+    public List<RepositoryViewModel> getRepositories() {
+        return mRepositories;
     }
 
     @Bindable
@@ -148,8 +237,17 @@ public class ProfileViewModel extends BaseViewModel implements EditableModel {
         return mIsEditable;
     }
 
-    // ---------- SETTERS ----------
+    @Override
+    @Bindable
+    public boolean isCanBeEditable() {
+        return mIsCanBeEditable;
+    }
 
+
+    // ---------- SETTERS ----------
+    public void setId(String id) {
+        mId = id;
+    }
 
     public void setName(String name) {
         mName = name;
@@ -161,9 +259,9 @@ public class ProfileViewModel extends BaseViewModel implements EditableModel {
         notifyPropertyChanged(BR.rating);
     }
 
-    public void setLinesCount(int linesCount) {
-        mLinesCount = String.valueOf(linesCount);
-        notifyPropertyChanged(BR.linesCount);
+    public void setCodeLinesCount(int codeLinesCount) {
+        mCodeLinesCount = String.valueOf(codeLinesCount);
+        notifyPropertyChanged(BR.codeLinesCount);
     }
 
     public void setProjectCount(int projectCount) {
@@ -181,18 +279,23 @@ public class ProfileViewModel extends BaseViewModel implements EditableModel {
         notifyPropertyChanged(BR.email);
     }
 
-    public void setVkProfile(String vkProfile) {
-        mVkProfile = vkProfile;
-        notifyPropertyChanged(BR.vkProfile);
+    public void setVkProfileUrl(String vkProfileUrl) {
+        mVkProfileUrl = vkProfileUrl;
+        notifyPropertyChanged(BR.vkProfileUrl);
     }
 
-    public void setRepository(String repository) {
-        mRepository = repository;
-        notifyPropertyChanged(BR.repository);
+    public void setRepositories(List<String> repositories) {
+        mRepositories = new ArrayList<>();
+        for (String repo : repositories) {
+            RepositoryViewModel repositoryViewModel = new RepositoryViewModel();
+            repositoryViewModel.setRepository(repo);
+            mRepositories.add(repositoryViewModel);
+        }
+        notifyPropertyChanged(BR.repositories);
     }
 
     public void setAbout(String about) {
-        mAbout = about;
+        mAbout = about.trim();
         notifyPropertyChanged(BR.about);
     }
 
@@ -208,6 +311,21 @@ public class ProfileViewModel extends BaseViewModel implements EditableModel {
 
     public void setEditable(boolean editable) {
         mIsEditable = editable;
+        if (mRepositories != null) {
+            for (RepositoryViewModel model : mRepositories) {
+                model.setEditable(editable);
+            }
+        }
         notifyPropertyChanged(BR.editable);
+    }
+
+    public void setCanBeEditable(boolean canBeEditable) {
+        mIsCanBeEditable = canBeEditable;
+        if (mRepositories != null) {
+            for (RepositoryViewModel model : mRepositories) {
+                model.setCanBeEditable(canBeEditable);
+            }
+        }
+        notifyPropertyChanged(BR.canBeEditable);
     }
 }

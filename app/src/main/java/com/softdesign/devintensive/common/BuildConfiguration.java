@@ -19,5 +19,6 @@ public final class BuildConfiguration {
 
     // ---------- ANALYTICS ----------
     public static final boolean CRASHLYTICS_ENABLED = true;//!DEBUG;
+    public static final boolean STETHO_ENABLED = DEBUG;
 
 }

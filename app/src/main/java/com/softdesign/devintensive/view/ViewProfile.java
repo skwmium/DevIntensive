@@ -1,21 +1,29 @@
 package com.softdesign.devintensive.view;
 
-import android.content.Intent;
+import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 
-import com.softdesign.devintensive.ui.activities.ActivityProfile;
 import com.softdesign.devintensive.ui.viewmodel.ProfileViewModel;
+
+import java.io.File;
 
 /**
  * Created by skwmium on 05.07.16.
  */
 public interface ViewProfile extends View {
-    Intent getIntent();
+    @Nullable
+    Bundle getArguments();
 
     void setProfileViewModel(ProfileViewModel profileViewModel);
 
     void showTakePhotoChooser();
 
-    ActivityProfile getActivity();
-
     void setEditMode(boolean editMode);
+
+    boolean checkPermissionsAndRequestIfNotGranted(@NonNull String[] permissons, int requestCode);
+
+    void showPhotoPicker(int requestCode);
+
+    void takePhoto(File file, int requestCode);
 }

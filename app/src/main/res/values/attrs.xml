@@ -8,4 +8,17 @@
     <declare-styleable name="ProfileSubheaderBehavior">
         <attr name="behavior_min_height" format="dimension"/>
     </declare-styleable>
+
+
+    <declare-styleable name="AspectRatioImageView">
+        <attr name="aspect_ratio" format="enum">
+            <enum name="ratio_16x9" value="0"/>
+            <enum name="ratio_4x3" value="1"/>
+            <enum name="ratio_1x1" value="2"/>
+        </attr>
+    </declare-styleable>
+
+    <declare-styleable name="DividerView">
+        <attr name="dividerColor" format="reference"/>
+    </declare-styleable>
 </resources>

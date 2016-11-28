@@ -9,8 +9,8 @@ import android.widget.Button;
 import android.widget.EditText;
 
 import com.softdesign.devintensive.R;
-import com.softdesign.devintensive.di.DaggerComponentRestorePassword;
-import com.softdesign.devintensive.di.ModuleRestorePassword;
+import com.softdesign.devintensive.di.DaggerComponentView;
+import com.softdesign.devintensive.di.ModuleViewDynamically;
 import com.softdesign.devintensive.presenter.BasePresenter;
 import com.softdesign.devintensive.presenter.PresenterRestorePassword;
 import com.softdesign.devintensive.view.ViewRestorePassword;
@@ -30,15 +30,15 @@ public class FragmentRestorePassword extends BaseFragment implements ViewRestore
     Button buttonRestore;
 
     @Inject
-    PresenterRestorePassword mPresenter;
+    PresenterRestorePassword presenter;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        DaggerComponentRestorePassword
+        DaggerComponentView
                 .builder()
-                .moduleRestorePassword(new ModuleRestorePassword(this))
+                .moduleViewDynamically(new ModuleViewDynamically(this))
                 .build()
                 .inject(this);
     }
@@ -52,13 +52,13 @@ public class FragmentRestorePassword extends BaseFragment implements ViewRestore
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        buttonRestore.setOnClickListener(view1 -> mPresenter.restoreClicked());
+        buttonRestore.setOnClickListener(view1 -> presenter.restoreClicked());
     }
 
     @Nullable
     @Override
     protected BasePresenter getPresenter() {
-        return mPresenter;
+        return presenter;
     }
 
     @Override
@@ -68,6 +68,11 @@ public class FragmentRestorePassword extends BaseFragment implements ViewRestore
 
     @Override
     public void goBack() {
-        getBaseActivity().onBackPressed();
+        activityCallback.onBackPressed();
+    }
+
+    @Override
+    protected boolean isDrawerLocked() {
+        return true;
     }
 }

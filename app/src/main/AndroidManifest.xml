@@ -32,12 +32,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".ui.activities.ActivityAuth"
-            android:noHistory="true"
-            android:screenOrientation="userPortrait"
-            android:theme="@style/AppTheme.NoActionBar.Auth"/>
-        <activity
-            android:name=".ui.activities.ActivityProfile"
+            android:name=".ui.activities.ActivityMain"
             android:theme="@style/AppTheme.NoActionBar"/>
 
         <provider

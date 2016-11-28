@@ -5,27 +5,38 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
+import android.graphics.Point;
 import android.net.Uri;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.util.DisplayMetrics;
 import android.util.TypedValue;
+import android.view.Display;
+import android.view.WindowManager;
 
 import com.softdesign.devintensive.common.App;
 
 import java.io.File;
+import java.io.IOException;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import static android.os.Environment.DIRECTORY_PICTURES;
+import static java.text.DateFormat.MEDIUM;
 
 /**
  * Created by skwmium on 08.07.16.
  */
+@SuppressWarnings("unused")
 public class Utils {
+    @Nullable
+    static Point sFullScreenWidthRatio16;
 
     // ---------- INTENTS ----------
     public static void dialPhoneNumber(@NonNull Context context, @Nullable String phoneNumber) {
@@ -50,35 +61,6 @@ public class Utils {
         startActivity(context, intent);
     }
 
-    public static void showPhotoPickerDialog(@NonNull Activity activity, int resultCode) {
-        Intent intent = new Intent();
-        intent.setType("image/*");
-        intent.setAction(Intent.ACTION_GET_CONTENT);
-        intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
-        Intent chooserIntent = Intent.createChooser(intent, null);
-        activity.startActivityForResult(chooserIntent, resultCode);
-    }
-
-    @Nullable
-    public static File takePhoto(@NonNull Activity activity) {
-        try {
-            String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-            String imageFileName = "JPEG_" + timeStamp + "_";
-            File storageDir = activity.getExternalFilesDir(Environment.DIRECTORY_PICTURES);
-            File image = File.createTempFile(imageFileName, ".jpg", storageDir);
-            if (image == null) return null;
-            Uri photoURI = FileProvider.getUriForFile(activity, "com.softdesign.devintensive.fileprovider", image);
-
-            Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
-            activity.startActivityForResult(takePictureIntent, Const.REQUEST_PHOTO_CAMERA);
-            return image;
-        } catch (Exception e) {
-            L.e(e);
-            return null;
-        }
-    }
-
     private static void startActivity(@NonNull Context context, @NonNull Intent intent) {
         if (!(context instanceof Activity)) {
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
@@ -89,12 +71,75 @@ public class Utils {
     }
 
 
-    // ---------- PERMISSIONS ----------
-    public static boolean checkPermissionAndRequestIfNotGranted(@NonNull Activity activity, @NonNull String permission, int requestCode) {
-        return checkPermissionAndRequestIfNotGranted(activity, new String[]{permission}, requestCode);
+    // ---------- PHOTO PICKER ----------
+    public static void showPhotoPickerDialog(@NonNull Activity activity, int requestCode) {
+        Intent intent = createPhotoPickerDialogIntent();
+        activity.startActivityForResult(intent, requestCode);
     }
 
-    public static boolean checkPermissionAndRequestIfNotGranted(@NonNull Activity activity, @NonNull String[] permissions, int requestCode) {
+    public static void showPhotoPickerDialog(@NonNull Fragment fragment, int requestCode) {
+        Intent intent = createPhotoPickerDialogIntent();
+        fragment.startActivityForResult(intent, requestCode);
+    }
+
+    private static Intent createPhotoPickerDialogIntent() {
+        Intent intent = new Intent();
+        intent.setType("image/*");
+        intent.setAction(Intent.ACTION_GET_CONTENT);
+        intent.putExtra(Intent.EXTRA_LOCAL_ONLY, true);
+        return Intent.createChooser(intent, null);
+    }
+
+
+    // ---------- TAKE PHOTO ----------
+    public static void takePhoto(@NonNull Activity activity, @Nullable File file, int requestCode) {
+        Uri uriForFile = FileProvider.getUriForFile(App.getInst(), Const.FILE_PROVIDER_AUTHORITY, file);
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uriForFile);
+        activity.startActivityForResult(takePictureIntent, requestCode);
+    }
+
+    public static void takePhoto(@NonNull Fragment fragment, @Nullable File file, int requestCode) {
+        Uri uriForFile = FileProvider.getUriForFile(App.getInst(), Const.FILE_PROVIDER_AUTHORITY, file);
+        Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, uriForFile);
+        fragment.startActivityForResult(takePictureIntent, requestCode);
+    }
+
+    @Nullable
+    public static File createFileForPhoto() {
+        DateFormat dateTimeInstance = SimpleDateFormat.getTimeInstance(MEDIUM);
+        String timeStamp = dateTimeInstance.format(new Date());
+        String imageFileName = Const.PHOTO_FILE_PREFIX + timeStamp;
+        File storageDir = App.getInst().getExternalFilesDir(DIRECTORY_PICTURES);
+        File fileImage;
+        try {
+            fileImage = File.createTempFile(imageFileName, ".jpg", storageDir);
+        } catch (IOException e) {
+            return null;
+        }
+        return fileImage;
+    }
+
+
+    // ---------- PERMISSIONS ----------
+    public static boolean checkPermissionsAndRequestIfNotGranted(@NonNull Fragment fragment, @NonNull String[] permissions, int requestCode) {
+        boolean allGranted = true;
+        for (String permission : permissions) {
+            int selfPermission = ContextCompat.checkSelfPermission(fragment.getContext(), permission);
+            if (selfPermission != PackageManager.PERMISSION_GRANTED) {
+                allGranted = false;
+                break;
+            }
+        }
+        if (!allGranted) {
+            fragment.requestPermissions(permissions, requestCode);
+            return false;
+        }
+        return true;
+    }
+
+    public static boolean checkPermissionsAndRequestIfNotGranted(@NonNull Activity activity, @NonNull String[] permissions, int requestCode) {
         boolean allGranted = true;
         for (String permission : permissions) {
             int selfPermission = ContextCompat.checkSelfPermission(activity, permission);
@@ -129,6 +174,18 @@ public class Utils {
             return TypedValue.complexToDimensionPixelSize(typedValue.data, displayMetrics);
         }
         return 0;
+    }
+
+    public static Point getFullScreenWidthRatio16() {
+        if (sFullScreenWidthRatio16 == null) {
+            WindowManager wm = (WindowManager) App.getInst().getSystemService(Context.WINDOW_SERVICE);
+            Display display = wm.getDefaultDisplay();
+            Point size = new Point();
+            display.getSize(size);
+
+            sFullScreenWidthRatio16 = new Point(size.x, (int) (size.x / 1.78));
+        }
+        return sFullScreenWidthRatio16;
     }
 
     public static int lerp(int start, int end, float friction) {
